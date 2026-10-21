@@ -1,4 +1,23 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FadeInView,
+  StaggerContainer,
+  StaggerItem,
+  MagneticButton,
+} from "@/components/motion/MotionContainers";
+
 export default function FAQ() {
+  const [openIds, setOpenIds] = useState<number[]>([1]); // First FAQ open by default for immediate preview
+
+  const toggleFaq = (id: number) => {
+    setOpenIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
   const faqs = [
     {
       id: 1,
@@ -40,8 +59,8 @@ export default function FAQ() {
     >
       <div className="container mx-auto max-w-4xl px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60">
+        <FadeInView y={20} className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60 shadow-inner">
             💡 Got Questions? We Have Answers
           </span>
           <h2
@@ -53,42 +72,70 @@ export default function FAQ() {
           <p className="text-base text-slate-400 leading-relaxed">
             Everything you need to know about our free client-side tools, prompt systems, digital kits, and buyer protection.
           </p>
-        </div>
+        </FadeInView>
 
-        {/* Accordion */}
-        <div className="space-y-4">
-          {faqs.map((faq) => (
-            <details
-              key={faq.id}
-              className="group rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all duration-200 shadow-lg backdrop-blur-sm"
-            >
-              <summary className="cursor-pointer list-none px-6 py-5 text-base sm:text-lg font-semibold text-slate-100 flex items-center justify-between gap-4 select-none">
-                <span>{faq.question}</span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-slate-400 group-open:bg-indigo-600 group-open:text-white transition-colors shrink-0">
-                  <svg
-                    className="h-4 w-4 transition-transform duration-200 group-open:rotate-180"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
+        {/* Accordion with Framer Motion AnimatePresence */}
+        <StaggerContainer className="space-y-4">
+          {faqs.map((faq) => {
+            const isOpen = openIds.includes(faq.id);
+            return (
+              <StaggerItem key={faq.id}>
+                <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-colors duration-200 shadow-lg backdrop-blur-sm overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
+                    className="w-full text-left px-6 py-5 text-base sm:text-lg font-semibold text-slate-100 flex items-center justify-between gap-4 cursor-pointer select-none"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </span>
-              </summary>
-              <div className="px-6 pb-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-4">
-                <p>{faq.answer}</p>
-              </div>
-            </details>
-          ))}
-        </div>
+                    <span>{faq.question}</span>
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors shrink-0 ${
+                        isOpen
+                          ? "bg-indigo-600 text-white"
+                          : "bg-slate-800 text-slate-400"
+                      }`}
+                    >
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </motion.span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 pb-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-4">
+                          <p>{faq.answer}</p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </StaggerItem>
+            );
+          })}
+        </StaggerContainer>
 
         {/* Help Box */}
-        <div className="mt-14 text-center p-8 rounded-2xl bg-gradient-to-b from-slate-900/80 to-slate-900/40 border border-slate-800/80 max-w-xl mx-auto shadow-xl">
+        <FadeInView y={20} delay={0.2} className="mt-14 text-center p-8 rounded-2xl bg-gradient-to-b from-slate-900/80 to-slate-900/40 border border-slate-800/80 max-w-xl mx-auto shadow-xl">
           <div className="w-10 h-10 rounded-full bg-indigo-950 border border-indigo-800/60 flex items-center justify-center text-indigo-400 mx-auto mb-3">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -106,14 +153,16 @@ export default function FAQ() {
               support@devassets.online
             </a>
           </p>
-          <a
-            href="mailto:support@devassets.online"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition-colors shadow-sm"
-          >
-            <span>Contact Support</span>
-            <span>→</span>
-          </a>
-        </div>
+          <MagneticButton>
+            <a
+              href="mailto:support@devassets.online"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition-colors shadow-sm"
+            >
+              <span>Contact Support</span>
+              <span>→</span>
+            </a>
+          </MagneticButton>
+        </FadeInView>
       </div>
     </section>
   );

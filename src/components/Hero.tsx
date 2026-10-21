@@ -1,3 +1,9 @@
+import {
+  FadeInView,
+  FloatingElement,
+  MagneticButton,
+} from "@/components/motion/MotionContainers";
+
 export default function Hero() {
   return (
     <section className="relative min-h-[85vh] flex items-center justify-center bg-slate-950 px-6 py-20 transition-colors duration-300 overflow-hidden">
@@ -8,71 +14,87 @@ export default function Hero() {
 
       <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         {/* Left Column (Headline + Subheading + CTAs + Badges) */}
-        <div className="lg:col-span-7 space-y-6 text-center lg:text-left animate-slide-up">
-          {/* Tagline Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-950/70 px-4 py-1.5 text-xs font-semibold text-indigo-300 border border-indigo-800/60 shadow-inner">
-            <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
-            <span>🚀 All-in-One Digital Hub — Web Tools, AI Prompts & Engineering Guides</span>
-          </div>
-
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-black tracking-tight text-slate-50 leading-[1.12]">
-            Free Browser Utilities, Curated AI Prompts &amp;{" "}
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              Developer Guides
-            </span>
-          </h1>
-
-          {/* Subheadline */}
-          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-            Convert files securely in your browser with zero server uploads, 10x your development speed with structured AI prompt systems, and master modern web engineering with in-depth technical manuals.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center pt-2">
-            <a
-              href="#tools"
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all duration-200 active:scale-[0.98] text-center"
-            >
-              Try Free Tools
-            </a>
-            <a
-              href="#products"
-              className="w-full sm:w-auto px-8 py-3.5 bg-slate-900/80 hover:bg-slate-850 text-slate-200 font-semibold rounded-xl border border-slate-700/80 hover:border-slate-600 shadow-md transition-all duration-200 text-center"
-            >
-              Browse All Products
-            </a>
-          </div>
-
-          {/* Trust Badges Row */}
-          <div className="pt-4 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-medium text-slate-400">
-            <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
-              <span className="text-emerald-400">🔒</span>
-              <span>256-Bit SSL Encrypted Checkout</span>
+        <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          {/* Tagline Badge: delay 0.1s */}
+          <FadeInView delay={0.1} y={15}>
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-950/70 px-4 py-1.5 text-xs font-semibold text-indigo-300 border border-indigo-800/60 shadow-inner">
+              <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
+              <span>🚀 All-in-One Digital Hub — Web Tools, AI Prompts & Engineering Guides</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
-              <span className="text-indigo-400">⚡</span>
-              <span>100% Client-Side Privacy</span>
+          </FadeInView>
+
+          {/* Main Headline: delay 0.2s */}
+          <FadeInView delay={0.2} y={25}>
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-black tracking-tight text-slate-50 leading-[1.12]">
+              Free Browser Utilities, Curated AI Prompts &amp;{" "}
+              <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                Developer Guides
+              </span>
+            </h1>
+          </FadeInView>
+
+          {/* Subheadline: delay 0.35s */}
+          <FadeInView delay={0.35} y={20}>
+            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Convert files securely in your browser with zero server uploads, 10x your development speed with structured AI prompt systems, and master modern web engineering with in-depth technical manuals.
+            </p>
+          </FadeInView>
+
+          {/* CTAs: delay 0.5s */}
+          <FadeInView delay={0.5} y={20}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center pt-2">
+              <MagneticButton className="w-full sm:w-auto">
+                <a
+                  href="#tools"
+                  className="w-full sm:w-auto block px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 transition-all duration-200 text-center"
+                >
+                  Try Free Tools
+                </a>
+              </MagneticButton>
+              <MagneticButton className="w-full sm:w-auto">
+                <a
+                  href="#products"
+                  className="w-full sm:w-auto block px-8 py-3.5 bg-slate-900/80 hover:bg-slate-850 text-slate-200 font-semibold rounded-xl border border-slate-700/80 hover:border-slate-600 shadow-md transition-all duration-200 text-center"
+                >
+                  Browse All Products
+                </a>
+              </MagneticButton>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
-              <span className="text-cyan-400">📦</span>
-              <span>Instant Digital &amp; Tool Access</span>
+          </FadeInView>
+
+          {/* Trust Badges Row: delay 0.6s */}
+          <FadeInView delay={0.6} y={15}>
+            <div className="pt-4 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-medium text-slate-400">
+              <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
+                <span className="text-emerald-400">🔒</span>
+                <span>256-Bit SSL Encrypted Checkout</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
+                <span className="text-indigo-400">⚡</span>
+                <span>100% Client-Side Privacy</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
+                <span className="text-cyan-400">📦</span>
+                <span>Instant Digital &amp; Tool Access</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
+                <span className="text-purple-400">🔄</span>
+                <span>Lifetime Updates Included</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
-              <span className="text-purple-400">🔄</span>
-              <span>Lifetime Updates Included</span>
-            </div>
-          </div>
+          </FadeInView>
         </div>
 
-        {/* Right Column (Visual Preview Container) */}
-        <div className="lg:col-span-5 flex justify-center relative animate-fade-in">
-          <div className="relative w-full max-w-[440px] bg-gradient-to-br from-slate-900/90 to-slate-950 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-800/90 space-y-4 backdrop-blur-xl">
-            {/* Top Bar Indicator */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-slate-300 font-semibold font-mono">DevAssets Live Hub</span>
+        {/* Right Column (Visual Preview Container: scale in + idle floating) */}
+        <div className="lg:col-span-5 flex justify-center relative">
+          <FadeInView delay={0.3} scale={0.95} y={0} duration={0.8} className="w-full max-w-[440px]">
+            <FloatingElement duration={6} yOffset={8}>
+              <div className="relative w-full bg-gradient-to-br from-slate-900/90 to-slate-950 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-800/90 space-y-4 backdrop-blur-xl">
+                {/* Top Bar Indicator */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-slate-300 font-semibold font-mono">DevAssets Live Hub</span>
               </div>
               <span className="px-2 py-0.5 rounded-md bg-indigo-950/80 border border-indigo-800/50 text-[10px] text-indigo-300 font-semibold">
                 Client-Native
@@ -151,8 +173,10 @@ export default function Hero() {
               ⚡ 100% Client-side sandbox &bull; Instant download after checkout
             </p>
           </div>
-        </div>
-      </div>
-    </section>
+        </FloatingElement>
+      </FadeInView>
+    </div>
+  </div>
+</section>
   );
 }
