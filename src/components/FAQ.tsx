@@ -2,58 +2,56 @@ export default function FAQ() {
   const faqs = [
     {
       id: 1,
-      question:
-        "What is included in the JavaScript and React toolkits?",
+      question: "Are the web utilities really free and private?",
       answer:
-        "The Advanced JavaScript Patterns & Engine Toolkit includes 50+ modular JS/TS utility and pattern files, a complete Jest test suite with benchmarks, and an 85-page technical reference manual. The React Enterprise Starter Kit includes 2 complete reference app codebases (E-Commerce Admin Dashboard & Real-Time Chat), a reusable custom hooks & TypeScript component library, performance profiling setup, and a 30-page architecture manual.",
+        "Yes, 100%. Our web tools execute entirely on your device using client-side Web APIs (such as Web Audio API, Canvas 2D, and WebAssembly). Your files, images, videos, and PDFs are processed strictly within your browser's local memory and are never uploaded or transmitted to our servers.",
     },
     {
       id: 2,
-      question:
-        "What does the Technical SEO & Core Web Vitals Audit Toolkit cover?",
+      question: "In what formats are the AI Prompts and PDF Guides delivered?",
       answer:
-        "The toolkit includes copy-paste JSON-LD structured data schemas, Lighthouse CI configs, Core Web Vitals (LCP, INP, CLS) debugging workflows, and a comprehensive 30-day technical SEO audit template with a step-by-step guide in PDF format.",
+        "Immediately upon successful checkout, you will receive instant on-screen access and a download link. AI Prompt packages are delivered in structured JSON, clean Markdown (.MD), and printable PDF formats. Codekits and starter kits are provided in clean, unminified .ZIP archives along with comprehensive PDF manuals.",
     },
     {
       id: 3,
-      question:
-        "Who are these toolkits for, and what experience level is required?",
+      question: "How does the 30-Day All-Access Pass work?",
       answer:
-        "Our toolkits are designed for junior to intermediate developers, freelancers, and technical marketers ready to level up their workflow. A foundational understanding of web development is recommended, as our resources focus on advanced, production-ready patterns rather than introductory theory.",
+        "The 30-Day All-Access Pass is a strictly prepaid, one-time purchase. It grants you 30 days of unlimited client-side processing across all tools plus tokens to download any 3 premium digital packages. It does NOT automatically renew or charge your payment method again—there are zero hidden subscription traps.",
     },
     {
       id: 4,
-      question: "How does instant delivery work?",
+      question: "Can I use the included code and prompts in commercial client projects?",
       answer:
-        "After your payment is securely processed, you receive instant on-screen download links as well as an email confirmation with your .ZIP archive and PDF files. No delays — access your code and documentation immediately.",
+        "Absolutely. All of our standalone products and bundles come with a commercial developer license. You have full rights to adapt, integrate, and deploy the code, components, and prompt outputs across unlimited personal, client, or enterprise SaaS products.",
     },
     {
       id: 5,
-      question:
-        "Can I use the included source code in commercial projects?",
+      question: "What is your refund policy?",
       answer:
-        "Yes. All toolkits include a Single-Developer Commercial & Personal Use license. You can use, modify, and deploy the code in your personal projects, client work, or commercial SaaS applications.",
+        "We offer a 14-day refund policy for verifiable technical defects, non-delivery of download links, corrupted archive files, or accidental duplicate charges that our support team cannot resolve within 48 hours. Please review our full Refund Policy page for complete terms.",
     },
   ];
 
   return (
     <section
       id="faq"
-      className="py-20 bg-slate-950 transition-colors duration-300 scroll-mt-24 border-t border-slate-900"
+      aria-labelledby="faq-heading"
+      className="py-24 bg-slate-950 transition-colors duration-300 scroll-mt-20 border-t border-slate-900"
     >
       <div className="container mx-auto max-w-4xl px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/60 px-3.5 py-1.5 text-xs font-semibold text-indigo-400 border border-indigo-900/50 tracking-wide mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60">
             💡 Got Questions? We Have Answers
           </span>
-          <h2 className="text-3xl font-extrabold text-slate-50 sm:text-4xl">
-            Frequently Asked{" "}
-            <span className="text-gradient">Questions</span>
+          <h2
+            id="faq-heading"
+            className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight"
+          >
+            Frequently Asked Questions
           </h2>
-          <p className="mt-4 text-slate-400 text-sm">
-            Everything you need to know about our developer toolkits, instant
-            delivery, licensing, and payment security.
+          <p className="text-base text-slate-400 leading-relaxed">
+            Everything you need to know about our free client-side tools, prompt systems, digital kits, and buyer protection.
           </p>
         </div>
 
@@ -62,37 +60,44 @@ export default function FAQ() {
           {faqs.map((faq) => (
             <details
               key={faq.id}
-              className="group rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/80 transition-all duration-200 shadow-md"
+              className="group rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-all duration-200 shadow-lg backdrop-blur-sm"
             >
-              <summary className="cursor-pointer list-none px-6 py-5 text-base sm:text-lg font-semibold text-slate-100 flex items-center justify-between gap-4">
-                {faq.question}
-                <svg
-                  className="h-5 w-5 text-slate-500 shrink-0 transition-transform duration-200 group-open:rotate-180"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+              <summary className="cursor-pointer list-none px-6 py-5 text-base sm:text-lg font-semibold text-slate-100 flex items-center justify-between gap-4 select-none">
+                <span>{faq.question}</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-slate-400 group-open:bg-indigo-600 group-open:text-white transition-colors shrink-0">
+                  <svg
+                    className="h-4 w-4 transition-transform duration-200 group-open:rotate-180"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </span>
               </summary>
-              <div className="px-6 pb-5 text-sm sm:text-base text-slate-400 leading-relaxed">
+              <div className="px-6 pb-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-4">
                 <p>{faq.answer}</p>
               </div>
             </details>
           ))}
         </div>
 
-        {/* CTA */}
-        <div className="mt-12 text-center p-6 rounded-2xl bg-slate-900/40 border border-slate-800/60 max-w-xl mx-auto">
-          <p className="text-sm text-slate-300 font-medium">
+        {/* Help Box */}
+        <div className="mt-14 text-center p-8 rounded-2xl bg-gradient-to-b from-slate-900/80 to-slate-900/40 border border-slate-800/80 max-w-xl mx-auto shadow-xl">
+          <div className="w-10 h-10 rounded-full bg-indigo-950 border border-indigo-800/60 flex items-center justify-center text-indigo-400 mx-auto mb-3">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p className="text-base text-slate-200 font-bold">
             Have a question that is not answered here?
           </p>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-2 mb-4">
             Reach out to our support team anytime at{" "}
             <a
               href="mailto:support@devassets.online"
@@ -101,6 +106,13 @@ export default function FAQ() {
               support@devassets.online
             </a>
           </p>
+          <a
+            href="mailto:support@devassets.online"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700 transition-colors shadow-sm"
+          >
+            <span>Contact Support</span>
+            <span>→</span>
+          </a>
         </div>
       </div>
     </section>

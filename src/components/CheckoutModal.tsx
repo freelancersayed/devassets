@@ -86,7 +86,7 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
               <h3 className="font-bold text-slate-100 text-sm">
                 {product.title}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">{product.category}</p>
+              <p className="text-xs text-slate-500 mt-1">{product.categoryLabel || product.category}</p>
             </div>
           </div>
 

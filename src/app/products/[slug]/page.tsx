@@ -92,7 +92,7 @@ export default async function ProductPage({ params }: Props) {
           <span className="text-5xl">{product.emoji}</span>
           <div>
             <span className="inline-block rounded-full bg-indigo-950/60 border border-indigo-900/50 px-3 py-1 text-xs font-bold uppercase text-indigo-400 mb-2">
-              {product.category}
+              {product.categoryLabel || product.category}
             </span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-50">
               {product.title}
