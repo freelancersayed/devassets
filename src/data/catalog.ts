@@ -481,6 +481,49 @@ export const productsData: CatalogProduct[] = [
 
   // Category: bundle
   {
+    id: 400,
+    slug: "starter-single-asset",
+    title: "Starter / Single Asset Pass",
+    category: "bundle",
+    categoryLabel: "Starter Pass",
+    description:
+      "Ideal for developers seeking a single production-ready toolkit or prompt system. Unlock instant access to any 1 code kit, AI prompt library, or PDF masterclass with lifetime updates.",
+    price: "29.00",
+    originalPrice: "59.00",
+    emoji: "💎",
+    badgeColor: "text-cyan-400",
+    badgeBg: "bg-cyan-400/10",
+    deliverables: [
+      "Any 1 Full Codekit or Prompt Library of Choice",
+      "Single-Developer Commercial License",
+      "Immediate Multi-Format Download (.ZIP, JSON, PDF)",
+      "Lifetime Updates for Selected Asset",
+    ],
+    features: [
+      "Choose any single asset across the entire store",
+      "Commercial usage rights included",
+      "One-time payment — zero recurring fees",
+    ],
+    fileTree: [
+      "devassets-single-asset/",
+      "├── asset-license-key.txt",
+      "├── download-instructions.pdf",
+      "├── selected-asset.zip",
+      "└── README.md",
+    ],
+    modules: [
+      "Feature 1: Instant Download of Selected Codekit or Prompts",
+      "Feature 2: Full Source Code / Markdown / PDF Access",
+      "Feature 3: Single-Developer Commercial License",
+    ],
+    specs: {
+      format: "Instant Digital Download (.ZIP + PDF)",
+      version: "v2026.1",
+      license: "Single-Developer Commercial License",
+      support: "support@devassets.online",
+    },
+  },
+  {
     id: 401,
     slug: "all-access-pass-30-day",
     title: "30-Day All-Access Pass (Prepaid One-Time)",

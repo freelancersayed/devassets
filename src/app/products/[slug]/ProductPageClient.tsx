@@ -12,7 +12,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
       <button
         type="button"
         onClick={() => setShowModal(true)}
-        className="block w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 py-3.5 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition-all duration-200 active:scale-[0.98] cursor-pointer"
+        className="block w-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 py-3.5 text-center text-sm font-semibold text-white shadow-[0_0_25px_rgba(99,102,241,0.5)] hover:shadow-[0_0_35px_rgba(99,102,241,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden before:absolute before:inset-0 before:bg-white/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity"
       >
         Buy Now
       </button>

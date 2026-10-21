@@ -101,8 +101,14 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Action CTA: Explore Store */}
+        {/* Action CTA: Sign In + Explore Store */}
         <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/login"
+            className="text-xs sm:text-sm font-semibold text-slate-300 hover:text-white px-3 py-2 rounded-xl hover:bg-white/[0.05] transition-colors"
+          >
+            Sign In
+          </Link>
           <a
             href="#products"
             onClick={(e) => scrollToSection(e, "products")}
@@ -191,7 +197,14 @@ export default function Navbar() {
             About Us
           </Link>
 
-          <div className="pt-2 border-t border-slate-800/80">
+          <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="block w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-200 bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-colors"
+            >
+              Sign In
+            </Link>
             <a
               href="#products"
               onClick={(e) => scrollToSection(e, "products")}
