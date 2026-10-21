@@ -1,81 +1,135 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
-import { products } from "@/data/products";
+import { productsData, type CatalogProduct } from "@/data/catalog";
 import CheckoutModal from "./CheckoutModal";
-import type { Product } from "@/data/products";
+
+type CategoryFilter = "all" | "tools" | "prompts" | "pdf" | "bundle";
+
+interface FilterTab {
+  id: CategoryFilter;
+  label: string;
+}
+
+const filterTabs: FilterTab[] = [
+  { id: "all", label: "⭐ All Products" },
+  { id: "tools", label: "🛠️ Tools & Licenses" },
+  { id: "prompts", label: "🤖 AI Prompts" },
+  { id: "pdf", label: "📚 PDF Masterclasses" },
+  { id: "bundle", label: "👑 All-Access Passes" },
+];
 
 export default function ProductCatalog() {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [activeTab, setActiveTab] = useState<CategoryFilter>("all");
+  const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
+
+  const filteredProducts = useMemo(() => {
+    if (activeTab === "all") return productsData;
+    return productsData.filter((p) => p.category === activeTab);
+  }, [activeTab]);
 
   return (
     <>
       <section
         id="products"
-        aria-labelledby="products-heading"
-        className="py-20 bg-slate-950 transition-colors duration-300 scroll-mt-24"
+        aria-labelledby="store-heading"
+        className="py-24 bg-slate-950 border-t border-slate-900 scroll-mt-20"
       >
         <div className="container mx-auto max-w-7xl px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/60 px-3.5 py-1.5 text-xs font-semibold text-indigo-400 border border-indigo-900/50 tracking-wide mb-3">
-              📦 Developer Toolkits &amp; Code Kits
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-purple-400 border border-purple-900/60">
+              💎 Curated Digital Store
             </span>
             <h2
-              id="products-heading"
-              className="text-3xl font-extrabold text-slate-50 sm:text-4xl"
+              id="store-heading"
+              className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight"
             >
-              Our Production-Ready Developer Kits
+              Explore Premium Digital Assets &amp; Resources
             </h2>
-            <p className="mt-4 text-slate-400 text-sm">
-              Each kit includes source code, documentation, and a commercial
-              license. Select a product to view full details or purchase.
+            <p className="text-base text-slate-400 leading-relaxed">
+              Select a single asset or choose an all-access pass for unlimited tools and asset downloads.
             </p>
           </div>
 
+          {/* Interactive Filter Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 mb-14">
+            {filterTabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/25 border border-indigo-500/30 scale-105"
+                      : "bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-slate-800"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <article
                 key={product.id}
                 itemScope
                 itemType="https://schema.org/Product"
-                className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/50 p-8 shadow-xl transition-all hover:border-slate-700/80 hover:shadow-indigo-900/10"
+                className="group flex flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/50 p-7 shadow-xl hover:border-indigo-500/40 hover:bg-slate-900/80 transition-all duration-300 relative backdrop-blur-sm"
               >
                 <div>
+                  {/* Top Badges */}
                   <div className="flex items-center justify-between mb-4">
-                    <span className="inline-block rounded-full bg-indigo-950/60 border border-indigo-900/50 px-3 py-1 text-xs font-bold uppercase text-indigo-400">
-                      {product.category.split("+")[0].trim()}
+                    <span className="inline-block rounded-full bg-indigo-950/80 border border-indigo-900/50 px-3 py-1 text-xs font-bold uppercase text-indigo-300">
+                      {product.categoryLabel}
                     </span>
-                    <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
-                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                      Instant Access
+                    <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 bg-emerald-950/40 border border-emerald-900/40 px-2.5 py-0.5 rounded-full">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Instant Delivery
                     </span>
                   </div>
 
-                  {/* Emoji icon */}
-                  <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-950 border border-slate-800/60 mb-4 text-4xl">
-                    {product.emoji}
+                  {/* Emoji Icon & Title */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 text-3xl shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-inner">
+                      {product.emoji}
+                    </div>
+                    <div>
+                      <h3
+                        itemProp="name"
+                        className="text-lg font-bold text-slate-100 group-hover:text-indigo-300 transition-colors leading-snug"
+                      >
+                        {product.title}
+                      </h3>
+                    </div>
                   </div>
 
-                  <h3 itemProp="name" className="text-xl font-bold text-slate-50">
-                    {product.title}
-                  </h3>
-
+                  {/* Short Description */}
                   <p
                     itemProp="description"
-                    className="mt-3 text-sm text-slate-400 leading-relaxed line-clamp-3"
+                    className="mt-2 text-xs text-slate-400 leading-relaxed line-clamp-3"
                   >
                     {product.description}
                   </p>
 
-                  <ul className="mt-6 space-y-3">
-                    {product.features.map((feature, index) => (
-                      <li
+                  {/* Deliverables Checklist */}
+                  <div className="mt-5 pt-4 border-t border-slate-800/80 space-y-2">
+                    <p className="text-[11px] uppercase tracking-wider font-bold text-slate-500 mb-2">
+                      Included in Package:
+                    </p>
+                    {product.deliverables.slice(0, 4).map((item, index) => (
+                      <div
                         key={index}
-                        className="flex items-center gap-2.5 text-xs text-slate-300"
+                        className="flex items-start gap-2 text-xs text-slate-300"
                       >
                         <svg
-                          className="h-4 w-4 text-indigo-400 shrink-0"
+                          className="h-3.5 w-3.5 text-emerald-400 shrink-0 mt-0.5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -88,49 +142,52 @@ export default function ProductCatalog() {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        {feature}
-                      </li>
+                        <span className="line-clamp-1">{item}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
 
+                {/* Price and Buttons */}
                 <div
-                  className="mt-8 pt-6 border-t border-slate-800"
+                  className="mt-7 pt-5 border-t border-slate-800"
                   itemProp="offers"
                   itemScope
                   itemType="https://schema.org/Offer"
                 >
                   <meta itemProp="priceCurrency" content="USD" />
                   <meta itemProp="price" content={product.price} />
-                  <link
-                    itemProp="availability"
-                    href="https://schema.org/InStock"
-                  />
+                  <link itemProp="availability" href="https://schema.org/InStock" />
 
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-black text-slate-50">
-                      ${product.price}
-                    </span>
-                    <span className="text-sm font-medium line-through text-slate-500">
-                      ${product.originalPrice}
-                    </span>
-                    <span className="text-xs font-semibold text-indigo-400">
-                      USD
+                  <div className="flex items-baseline justify-between mb-4">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-black text-slate-50">
+                        ${product.price}
+                      </span>
+                      <span className="text-sm font-medium line-through text-slate-500">
+                        ${product.originalPrice}
+                      </span>
+                      <span className="text-xs font-semibold text-indigo-400">
+                        USD
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500">
+                      One-Time Payment
                     </span>
                   </div>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-2 gap-2.5">
                     <button
                       type="button"
                       onClick={() => setSelectedProduct(product)}
                       aria-label={`Buy ${product.title} for $${product.price} USD`}
-                      className="block w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition-all duration-200 active:scale-[0.98] cursor-pointer"
+                      className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-center text-xs sm:text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition-all duration-200 active:scale-[0.98] cursor-pointer"
                     >
                       Buy Now
                     </button>
                     <Link
                       href={`/products/${product.slug}`}
-                      className="block w-full rounded-xl bg-slate-800/80 hover:bg-slate-800 py-3 text-center text-sm font-semibold text-slate-300 border border-slate-700/50 transition-all duration-200"
+                      className="w-full py-2.5 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-center text-xs sm:text-sm font-semibold text-slate-300 border border-slate-700/60 hover:text-white transition-all duration-200"
                     >
                       View Details →
                     </Link>
@@ -142,6 +199,7 @@ export default function ProductCatalog() {
         </div>
       </section>
 
+      {/* Checkout Modal */}
       {selectedProduct && (
         <CheckoutModal
           product={selectedProduct}
