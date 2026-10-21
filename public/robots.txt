@@ -1,0 +1,17 @@
+# Robots.txt for DevAssets
+# https://devassets.online
+
+User-agent: *
+Allow: /
+
+# Disallow internal build artifacts
+Disallow: /assets/*.map$
+
+# Crawl-delay for polite scraping
+Crawl-delay: 1
+
+# Host
+Host: https://devassets.online
+
+# Sitemap reference
+Sitemap: https://devassets.online/sitemap.xml
