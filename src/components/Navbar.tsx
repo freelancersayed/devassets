@@ -109,13 +109,12 @@ export default function Navbar() {
           >
             Sign In
           </Link>
-          <a
-            href="#products"
-            onClick={(e) => scrollToSection(e, "products")}
-            aria-label="Explore our curated digital store"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-semibold rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/25"
+          <Link
+            href="/register"
+            aria-label="Get started with free tools and resources"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-semibold rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/25"
           >
-            <span>Explore Store</span>
+            <span>Get Started Free</span>
             <svg
               className="w-4 h-4"
               fill="none"
@@ -125,7 +124,7 @@ export default function Navbar() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -205,16 +204,16 @@ export default function Navbar() {
             >
               Sign In
             </Link>
-            <a
-              href="#products"
-              onClick={(e) => scrollToSection(e, "products")}
-              className="flex items-center justify-center gap-2 w-full px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-600/25"
+            <Link
+              href="/register"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-center gap-2 w-full px-5 py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-600/25"
             >
-              <span>Explore Store</span>
+              <span>Get Started Free</span>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       )}
