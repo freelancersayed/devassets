@@ -11,6 +11,10 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "^1.7.12",
+    "better-auth": "^1.7.12",
+    "framer-motion": "^14.5.0",
+    "mongodb": "^7.7.0",
     "next": "^15.3.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
