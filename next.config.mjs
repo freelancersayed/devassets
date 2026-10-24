@@ -12,11 +12,11 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: '/api/convert',
         destination:
           process.env.PYTHON_API_URL
-            ? `${process.env.PYTHON_API_URL}/api/:path*`
-            : 'http://127.0.0.1:8000/api/:path*',
+            ? `${process.env.PYTHON_API_URL}/api/convert`
+            : 'http://127.0.0.1:8000/api/convert',
       },
     ];
   },
