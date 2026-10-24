@@ -62,7 +62,7 @@ export default function ToolsSection() {
                     {renderIcon(tool.icon)}
                   </div>
                   <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-400">
-                    100% Client-Side
+                    {tool.badge || "Free Tool"}
                   </span>
                 </div>
 
