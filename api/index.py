@@ -5,6 +5,20 @@ import tempfile
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 
+# Monkey-patch paddle AnalysisConfig for compatibility between PaddlePaddle 2.6.x and PaddleOCR 3.x
+try:
+    import paddle
+    for mod_path in ['paddle.base.libpaddle', 'paddle.fluid.core']:
+        try:
+            import importlib
+            m = importlib.import_module(mod_path)
+            if hasattr(m, 'AnalysisConfig') and not hasattr(m.AnalysisConfig, 'set_optimization_level'):
+                setattr(m.AnalysisConfig, 'set_optimization_level', lambda self, *a, **kw: None)
+        except Exception:
+            pass
+except Exception:
+    pass
+
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -37,9 +51,22 @@ app.add_middleware(
 _ocr_engines = {}
 
 def get_ocr_engine(lang: str = "beng"):
-    # PaddleOCR supports "en" reliably out of the box
     target_lang = "en"
     if target_lang not in _ocr_engines:
+        try:
+            # Re-apply patch in case paddle was reloaded
+            import paddle
+            for mod_path in ['paddle.base.libpaddle', 'paddle.fluid.core']:
+                try:
+                    import importlib
+                    m = importlib.import_module(mod_path)
+                    if hasattr(m, 'AnalysisConfig') and not hasattr(m.AnalysisConfig, 'set_optimization_level'):
+                        setattr(m.AnalysisConfig, 'set_optimization_level', lambda self, *a, **kw: None)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
         try:
             from img2table.ocr import PaddleOCR
             _ocr_engines[target_lang] = PaddleOCR(lang="en", kw={"use_angle_cls": True})
@@ -169,41 +196,41 @@ async def convert_image_to_docx(
 
         # Extract non-table text lines via raw PaddleOCR if available
         text_elements = []
-        try:
-            from paddleocr import PaddleOCR as RawPaddleOCR
-            raw_ocr = RawPaddleOCR(use_angle_cls=True, lang="en", show_log=False)
-            ocr_result = raw_ocr.ocr(temp_input_path, cls=True)
-            if ocr_result and ocr_result[0]:
-                for line in ocr_result[0]:
-                    coords = line[0]
-                    txt = line[1][0]
-                    
-                    if not txt.strip():
-                        continue
-                    
-                    min_x = min(pt[0] for pt in coords)
-                    min_y = min(pt[1] for pt in coords)
-                    max_x = max(pt[0] for pt in coords)
-                    max_y = max(pt[1] for pt in coords)
-                    center_x = (min_x + max_x) / 2
-                    center_y = (min_y + max_y) / 2
+        if ocr_engine:
+            try:
+                from paddleocr import PaddleOCR as RawPaddleOCR
+                raw_ocr = RawPaddleOCR(use_angle_cls=True, lang="en", show_log=False)
+                ocr_result = raw_ocr.ocr(temp_input_path, cls=True)
+                if ocr_result and ocr_result[0]:
+                    for line in ocr_result[0]:
+                        coords = line[0]
+                        txt = line[1][0]
+                        
+                        if not txt.strip():
+                            continue
+                        
+                        min_x = min(pt[0] for pt in coords)
+                        min_y = min(pt[1] for pt in coords)
+                        max_x = max(pt[0] for pt in coords)
+                        max_y = max(pt[1] for pt in coords)
+                        center_x = (min_x + max_x) / 2
+                        center_y = (min_y + max_y) / 2
 
-                    # Check if center falls inside any table bbox
-                    in_table = False
-                    for tb in table_boxes:
-                        if tb['x1'] <= center_x <= tb['x2'] and tb['y1'] <= center_y <= tb['y2']:
-                            in_table = True
-                            break
+                        in_table = False
+                        for tb in table_boxes:
+                            if tb['x1'] <= center_x <= tb['x2'] and tb['y1'] <= center_y <= tb['y2']:
+                                in_table = True
+                                break
 
-                    if not in_table:
-                        text_elements.append({
-                            'y1': min_y,
-                            'x1': min_x,
-                            'text': txt.strip(),
-                            'type': 'text'
-                        })
-        except Exception as paddle_err:
-            print(f"Raw PaddleOCR extraction warning: {paddle_err}")
+                        if not in_table:
+                            text_elements.append({
+                                'y1': min_y,
+                                'x1': min_x,
+                                'text': txt.strip(),
+                                'type': 'text'
+                            })
+            except Exception as paddle_err:
+                print(f"Raw PaddleOCR extraction warning: {paddle_err}")
 
         # Merge text elements and table elements in natural top-to-bottom layout order
         all_elements = []
