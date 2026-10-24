@@ -1,27 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { toolsData, type ToolItem } from "@/data/catalog";
 
 export default function ToolsSection() {
-  const [activeTool, setActiveTool] = useState<ToolItem | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [processSuccess, setProcessSuccess] = useState(false);
-
-  const handleLaunch = (tool: ToolItem) => {
-    setActiveTool(tool);
-    setIsProcessing(false);
-    setProcessSuccess(false);
-  };
-
-  const handleRunDemo = () => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setProcessSuccess(true);
-    }, 1200);
-  };
-
   const renderIcon = (iconName: ToolItem["icon"]) => {
     switch (iconName) {
       case "FileText":
@@ -106,116 +88,18 @@ export default function ToolsSection() {
 
               {/* Action Button */}
               <div className="mt-6 pt-4">
-                <button
-                  type="button"
-                  onClick={() => handleLaunch(tool)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 active:scale-[0.98] shadow-md border border-slate-700/60 hover:border-indigo-500 cursor-pointer"
+                <Link
+                  href={`/tools/${tool.slug}`}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 active:scale-[0.98] shadow-md border border-slate-700/60 hover:border-indigo-500"
                 >
                   <span>Launch Tool</span>
                   <span className="text-base">→</span>
-                </button>
+                </Link>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Interactive Tool Modal Launcher */}
-      {activeTool && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in"
-          onClick={() => setActiveTool(null)}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="relative w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-8 animate-slide-up"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setActiveTool(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
-              aria-label="Close modal"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 border border-slate-800">
-                {renderIcon(activeTool.icon)}
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-50">{activeTool.title}</h3>
-                <span className="text-xs text-emerald-400 font-medium">⚡ Client-Side Web API Engine</span>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-400 mt-2 mb-5">
-              {activeTool.privacyNotice}
-            </p>
-
-            {/* Sandbox Dropzone Area */}
-            <div className="rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/80 p-8 text-center space-y-3">
-              <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-              </div>
-              <p className="text-sm font-semibold text-slate-200">
-                Drag &amp; drop file here or click to browse
-              </p>
-              <p className="text-xs text-slate-500">
-                Processed locally in your browser memory via WebAssembly &amp; Web Workers.
-              </p>
-            </div>
-
-            {/* Status / Output Preview */}
-            <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span>Privacy Status:</span>
-                <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
-              </div>
-              {isProcessing && (
-                <div className="flex items-center gap-2 text-indigo-400 font-medium py-1 animate-pulse">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  <span>Processing file stream in browser memory...</span>
-                </div>
-              )}
-              {processSuccess && (
-                <div className="text-emerald-400 font-medium py-1">
-                  ✓ Done! Extracted output generated. Click below to download.
-                </div>
-              )}
-            </div>
-
-            {/* Modal Actions */}
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <button
-                type="button"
-                onClick={handleRunDemo}
-                disabled={isProcessing}
-                className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {isProcessing ? "Processing..." : "Run Client-Side Test"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTool(null)}
-                className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
