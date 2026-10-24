@@ -1,4 +1,11 @@
 import { MongoClient } from "mongodb";
+import dns from "node:dns";
+
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
+} catch {
+  // Ignore in environments where setServers is restricted
+}
 
 const uri =
   process.env.MONGODB_URI ||
