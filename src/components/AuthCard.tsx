@@ -42,6 +42,7 @@ const slides = [
           <div className="flex items-center gap-2">
             <span className="text-base">📄</span>
             <div>
+              
               <p className="font-semibold text-white">PDF to Word / TXT</p>
               <p className="text-[10px] text-slate-400">Zero-knowledge memory stream</p>
             </div>

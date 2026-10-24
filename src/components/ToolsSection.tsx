@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toolsData, type ToolItem } from "@/data/catalog";
 import {
@@ -111,17 +112,27 @@ export default function ToolsSection() {
                     </div>
                   </div>
 
-                  {/* Action Button */}
+                  {/* Action Button: Dedicated page link for pdf-to-word and modal launcher for other browser tools */}
                   <div className="mt-6 pt-4">
                     <MagneticButton className="w-full">
-                      <button
-                        type="button"
-                        onClick={() => handleLaunch(tool)}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 cursor-pointer"
-                      >
-                        <span>Launch Tool</span>
-                        <span className="text-base">→</span>
-                      </button>
+                      {tool.slug === "pdf-to-word" ? (
+                        <Link
+                          href={`/tools/${tool.slug}`}
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 active:scale-[0.98]"
+                        >
+                          <span>Launch Tool</span>
+                          <span className="text-base">→</span>
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleLaunch(tool)}
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 cursor-pointer active:scale-[0.98]"
+                        >
+                          <span>Launch Tool</span>
+                          <span className="text-base">→</span>
+                        </button>
+                      )}
                     </MagneticButton>
                   </div>
                 </div>
@@ -217,14 +228,23 @@ export default function ToolsSection() {
 
               {/* Modal Actions */}
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={handleRunDemo}
-                  disabled={isProcessing}
-                  className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  {isProcessing ? "Processing..." : "Run Client-Side Test"}
-                </button>
+                {activeTool.slug === "pdf-to-word" ? (
+                  <Link
+                    href={`/tools/${activeTool.slug}`}
+                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
+                  >
+                    Open Full Converter Page →
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleRunDemo}
+                    disabled={isProcessing}
+                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {isProcessing ? "Processing..." : "Run Client-Side Test"}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setActiveTool(null)}
