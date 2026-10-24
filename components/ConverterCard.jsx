@@ -50,13 +50,17 @@ export default function ConverterCard() {
       formData.append("file", file);
       formData.append("lang", lang);
 
-      const res = await fetch("/api/convert", {
+      const endpoint = process.env.NEXT_PUBLIC_PYTHON_API_URL
+        ? `${process.env.NEXT_PUBLIC_PYTHON_API_URL.replace(/\/$/, "")}/api/convert`
+        : "/api/convert";
+
+      const res = await fetch(endpoint, {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) {
-        let errMessage = "Conversion failed. Please verify the Python API is running.";
+        let errMessage = "Conversion failed. Python API backend is offline or unreachable.";
         try {
           const errData = await res.json();
           if (errData.detail) errMessage = errData.detail;
