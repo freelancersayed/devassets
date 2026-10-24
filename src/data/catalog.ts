@@ -52,7 +52,7 @@ export const toolsData: ToolItem[] = [
   {
     id: "tool-2",
     slug: "image-to-text",
-    title: "Image to Text OCR Extractor",
+    title: "Image to Word Formatted Converter",
     badge: "Free Browser Tool",
     icon: "ScanText",
     desc: "Instantly recognize and extract readable text from screenshots and photos with one-click copy.",

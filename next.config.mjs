@@ -9,6 +9,17 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination:
+          process.env.PYTHON_API_URL
+            ? `${process.env.PYTHON_API_URL}/api/:path*`
+            : 'http://127.0.0.1:8000/api/:path*',
+      },
+    ];
+  },
   async headers() {
     return [
       {
