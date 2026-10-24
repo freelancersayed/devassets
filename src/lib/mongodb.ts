@@ -1,12 +1,14 @@
 import { MongoClient } from "mongodb";
 
 const uri =
-  process.env.MONOGO_DB_URI ||
   process.env.MONGODB_URI ||
-  "";
+  process.env.MONOGO_DB_URI ||
+  "mongodb://127.0.0.1:27017/DevAssets";
 
-if (!uri) {
-  console.warn("Warning: MongoDB connection string (MONOGO_DB_URI / MONGODB_URI) is missing in environment variables.");
+if (!process.env.MONGODB_URI && !process.env.MONOGO_DB_URI) {
+  console.warn(
+    "Warning: MongoDB connection string (MONGODB_URI) is missing in environment variables. Using placeholder connection string for static build."
+  );
 }
 
 let client: MongoClient;
