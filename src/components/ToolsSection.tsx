@@ -88,7 +88,7 @@ export default function ToolsSection() {
                         {renderIcon(tool.icon)}
                       </div>
                       <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-400">
-                        100% Client-Side
+                        {tool.badge || "Free Tool"}
                       </span>
                     </div>
 
@@ -112,10 +112,10 @@ export default function ToolsSection() {
                     </div>
                   </div>
 
-                  {/* Action Button: Dedicated page link for pdf-to-word and modal launcher for other browser tools */}
+                  {/* Action Button: Dedicated page link for pdf-to-word & image-to-text, modal launcher for others */}
                   <div className="mt-6 pt-4">
                     <MagneticButton className="w-full">
-                      {tool.slug === "pdf-to-word" ? (
+                      {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" ? (
                         <Link
                           href={`/tools/${tool.slug}`}
                           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 active:scale-[0.98]"
@@ -135,9 +135,6 @@ export default function ToolsSection() {
                       )}
                     </MagneticButton>
                   </div>
-                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-400">
-                    {tool.badge || "Free Tool"}
-                  </span>
                 </div>
               </InteractiveCard>
             </StaggerItem>
@@ -231,7 +228,7 @@ export default function ToolsSection() {
 
               {/* Modal Actions */}
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                {activeTool.slug === "pdf-to-word" ? (
+                {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" ? (
                   <Link
                     href={`/tools/${activeTool.slug}`}
                     className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
