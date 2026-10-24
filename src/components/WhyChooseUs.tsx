@@ -1,3 +1,13 @@
+"use client";
+
+import { motion } from "framer-motion";
+import {
+  FadeInView,
+  StaggerContainer,
+  StaggerItem,
+  InteractiveCard,
+} from "@/components/motion/MotionContainers";
+
 export default function WhyChooseUs() {
   const features = [
     {
@@ -50,8 +60,8 @@ export default function WhyChooseUs() {
     <section id="features" className="py-24 bg-slate-950 border-t border-slate-900 scroll-mt-20">
       <div className="container mx-auto max-w-6xl px-6">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60">
+        <FadeInView y={20} className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60 shadow-inner">
             🛡️ Engineered for Developers
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight">
@@ -60,33 +70,40 @@ export default function WhyChooseUs() {
           <p className="text-base text-slate-400 leading-relaxed">
             Everything we build is engineered with strict attention to privacy, performance, and real-world developer productivity.
           </p>
-        </div>
+        </FadeInView>
 
-        {/* 4 Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 4 Feature Cards with Staggered Scroll-In & Hover Lift */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {features.map((feature, i) => (
-            <div
-              key={i}
-              className="group relative rounded-2xl border border-slate-800 bg-slate-900/60 p-8 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-all duration-300 shadow-xl backdrop-blur-sm"
-            >
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-950 border border-slate-800 group-hover:border-indigo-500/30 transition-colors shadow-inner">
-                  {feature.icon}
-                </div>
-                <span className="rounded-full bg-slate-800/80 border border-slate-700/60 px-3 py-1 text-xs font-semibold text-slate-300">
-                  {feature.badge}
-                </span>
-              </div>
+            <StaggerItem key={i}>
+              <InteractiveCard className="h-full">
+                <div className="group relative rounded-2xl border border-slate-800 bg-slate-900/60 p-8 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-colors duration-300 shadow-xl backdrop-blur-sm h-full flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-5">
+                      <motion.div
+                        whileHover={{ scale: 1.15, rotate: 5 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-950 border border-slate-800 group-hover:border-indigo-500/40 transition-colors shadow-inner"
+                      >
+                        {feature.icon}
+                      </motion.div>
+                      <span className="rounded-full bg-slate-800/80 border border-slate-700/60 px-3 py-1 text-xs font-semibold text-slate-300">
+                        {feature.badge}
+                      </span>
+                    </div>
 
-              <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
-                {feature.title}
-              </h3>
-              <p className="mt-3 text-sm text-slate-400 leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
+                    <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              </InteractiveCard>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
