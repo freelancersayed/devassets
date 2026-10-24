@@ -12,11 +12,11 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/convert',
+        source: '/api/:path*',
         destination:
           process.env.PYTHON_API_URL
-            ? `${process.env.PYTHON_API_URL}/api/convert`
-            : 'http://127.0.0.1:8000/api/convert',
+            ? `${process.env.PYTHON_API_URL}/api/:path*`
+            : 'https://devassets-python-api.onrender.com/api/:path*',
       },
     ];
   },

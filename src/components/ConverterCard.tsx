@@ -63,9 +63,9 @@ export default function ConverterCard() {
       formData.append("file", file);
       formData.append("lang", lang);
 
-      const endpoint = process.env.NEXT_PUBLIC_PYTHON_API_URL
-        ? `${process.env.NEXT_PUBLIC_PYTHON_API_URL.replace(/\/$/, "")}/api/convert`
-        : "/api/convert";
+      const defaultBackend = "https://devassets-python-api.onrender.com";
+      const backendUrl = (process.env.NEXT_PUBLIC_PYTHON_API_URL || defaultBackend).replace(/\/$/, "");
+      const endpoint = `${backendUrl}/api/convert`;
 
       const res = await fetch(endpoint, {
         method: "POST",
