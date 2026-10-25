@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
 import { Document, Packer, Paragraph, TextRun } from "docx";
+import { BanglaLikhi } from "bangla-likhi";
 
 declare global {
   interface Window {
@@ -12,11 +13,13 @@ declare global {
 
 type Status = "idle" | "loading-lib" | "processing" | "done" | "error";
 type Lang = "beng" | "en";
+type OutputFont = "bijoy" | "unicode";
 
 export default function ConverterCard() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [lang, setLang] = useState<Lang>("beng");
+  const [outputFont, setOutputFont] = useState<OutputFont>("bijoy"); // Default: Bijoy (SutonnyMJ)
   const [status, setStatus] = useState<Status>("idle");
   const [statusMsg, setStatusMsg] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
@@ -101,23 +104,40 @@ export default function ConverterCard() {
   };
 
   // Generates 100% Genuine Native OpenXML Microsoft Word (.docx) file
-  const generateAndDownloadDocx = async (textToDownload: string, baseFileName: string) => {
+  const generateAndDownloadDocx = async (
+    textToDownload: string,
+    baseFileName: string,
+    formatChoice: OutputFont = outputFont
+  ) => {
+    const isBijoy = formatChoice === "bijoy";
+    const fontName = isBijoy && lang === "beng" ? "SutonnyMJ" : "Nirmala UI";
+    const fontSize = isBijoy && lang === "beng" ? 28 : 24; // 14pt for SutonnyMJ, 12pt for Unicode
     const safeTitle = (baseFileName || "Converted_Image").replace(/[^a-zA-Z0-9_\u0980-\u09FF-]/g, "_");
 
-    const rawParagraphs = textToDownload
+    // Convert to Bijoy 52 ANSI layout if Bijoy is selected
+    let processedText = textToDownload;
+    if (isBijoy && lang === "beng") {
+      try {
+        processedText = BanglaLikhi.unicodeToBijoy(textToDownload);
+      } catch (err) {
+        console.warn("Bijoy conversion fallback:", err);
+      }
+    }
+
+    const rawParagraphs = processedText
       .split(/\n\s*\n/)
       .map((p) => p.trim())
       .filter(Boolean);
 
-    const docParagraphs = (rawParagraphs.length > 0 ? rawParagraphs : [textToDownload]).map((paraText) => {
+    const docParagraphs = (rawParagraphs.length > 0 ? rawParagraphs : [processedText]).map((paraText) => {
       const lines = paraText.split(/\n/);
       const runs: TextRun[] = [];
       lines.forEach((line, idx) => {
         runs.push(
           new TextRun({
             text: line,
-            font: "Nirmala UI",
-            size: 24, // 12pt standard
+            font: fontName,
+            size: fontSize,
             color: "1e293b",
           })
         );
@@ -157,7 +177,8 @@ export default function ConverterCard() {
     const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = downloadUrl;
-    a.download = `${safeTitle}.docx`;
+    const fontSuffix = isBijoy && lang === "beng" ? "_SutonnyMJ" : "_Unicode";
+    a.download = `${safeTitle}${fontSuffix}.docx`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -167,18 +188,24 @@ export default function ConverterCard() {
   const downloadAsTxt = () => {
     if (!extractedText) return;
     const baseName = file ? file.name.replace(/\.[^/.]+$/, "") : "Extracted_Text";
-    const blob = new Blob([extractedText], { type: "text/plain;charset=utf-8" });
+    const textOut = outputFont === "bijoy" && lang === "beng"
+      ? BanglaLikhi.unicodeToBijoy(extractedText)
+      : extractedText;
+    const blob = new Blob([textOut], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${baseName}.txt`;
+    a.download = `${baseName}_${outputFont}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const handleCopy = () => {
     if (!extractedText) return;
-    navigator.clipboard.writeText(extractedText);
+    const textOut = outputFont === "bijoy" && lang === "beng"
+      ? BanglaLikhi.unicodeToBijoy(extractedText)
+      : extractedText;
+    navigator.clipboard.writeText(textOut);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -236,14 +263,22 @@ export default function ConverterCard() {
 
       setExtractedText(fullText);
       setProgress(98);
-      setStatusMsg("Generating 100% native Microsoft Word (.docx) file...");
+      setStatusMsg(
+        outputFont === "bijoy" && lang === "beng"
+          ? "Generating Microsoft Word file in বিজয় (SutonnyMJ)..."
+          : "Generating Microsoft Word file in ইউনিকোড (Unicode)..."
+      );
 
       const baseName = file.name.replace(/\.[^/.]+$/, "");
-      await generateAndDownloadDocx(fullText, baseName);
+      await generateAndDownloadDocx(fullText, baseName, outputFont);
 
       setProgress(100);
       setStatus("done");
-      setStatusMsg("Conversion 100% complete! Genuine Word (.docx) file downloaded successfully.");
+      setStatusMsg(
+        outputFont === "bijoy" && lang === "beng"
+          ? "সফল হয়েছে! আপনার ওয়ার্ড ফাইলটি বিজয় (SutonnyMJ) ফন্টে তৈরি করে ডাউনলোড করা হয়েছে।"
+          : "সফল হয়েছে! আপনার ওয়ার্ড ফাইলটি ইউনিকোড ফন্টে তৈরি করে ডাউনলোড করা হয়েছে।"
+      );
     } catch (err: unknown) {
       console.error("Client OCR error:", err);
       const message = err instanceof Error ? err.message : "Failed to recognize text from image.";
@@ -274,40 +309,73 @@ export default function ConverterCard() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Image to Word Formatted Converter</h2>
-            <p className="text-xs text-slate-400">100% Client-Side &bull; Native OpenXML .DOCX &bull; Bengali + English</p>
+            <p className="text-xs text-slate-400">100% Client-Side &bull; বিজয় (SutonnyMJ) &amp; Unicode &bull; Bengali + English</p>
           </div>
         </div>
         <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          ⚡ Genuine .DOCX
+          ⚡ বিজয় (SutonnyMJ)
         </span>
       </div>
 
-      {/* Language Selector */}
-      <div className="mb-5 flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60 text-sm gap-2">
-        <span className="text-slate-300 font-medium text-xs sm:text-sm">Recognition Language:</span>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setLang("beng")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              lang === "beng"
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                : "bg-slate-800 text-slate-400 hover:text-white"
-            }`}
-          >
-            বাংলা + English
-          </button>
-          <button
-            type="button"
-            onClick={() => setLang("en")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              lang === "en"
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                : "bg-slate-800 text-slate-400 hover:text-white"
-            }`}
-          >
-            English Only
-          </button>
+      {/* Settings Grid: Language & Font Output */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+        {/* Recognition Language */}
+        <div className="bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60 flex flex-col justify-between gap-2">
+          <span className="text-slate-300 font-medium text-xs">ইমেজ ল্যাঙ্গুয়েজ (Recognition):</span>
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={() => setLang("beng")}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                lang === "beng"
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+              }`}
+            >
+              বাংলা + English
+            </button>
+            <button
+              type="button"
+              onClick={() => setLang("en")}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                lang === "en"
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+              }`}
+            >
+              English Only
+            </button>
+          </div>
+        </div>
+
+        {/* Word Document Font Format */}
+        <div className="bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60 flex flex-col justify-between gap-2">
+          <span className="text-slate-300 font-medium text-xs">ওয়ার্ড ফন্ট ফরম্যাট (Word Font):</span>
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={() => setOutputFont("bijoy")}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                outputFont === "bijoy"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30"
+                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>বিজয় (SutonnyMJ)</span>
+              <span className="text-[10px] opacity-75">★ডিফল্ট</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setOutputFont("unicode")}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                outputFont === "unicode"
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+              }`}
+            >
+              ইউনিকোড
+            </button>
+          </div>
         </div>
       </div>
 
@@ -429,29 +497,50 @@ export default function ConverterCard() {
       {/* Extracted Text Preview Card (when done) */}
       {status === "done" && extractedText && (
         <div className="mt-5 p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2">
             <span className="font-semibold text-slate-300">Extracted Text Preview:</span>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               <button
                 type="button"
                 onClick={handleCopy}
                 className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-xs flex items-center gap-1"
               >
-                {copied ? "✓ Copied!" : "📋 Copy Text"}
+                {copied ? "✓ Copied!" : "📋 Copy"}
               </button>
               <button
                 type="button"
                 onClick={downloadAsTxt}
                 className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-xs"
               >
-                📄 Download .TXT
+                📄 .TXT
               </button>
               <button
                 type="button"
-                onClick={() => generateAndDownloadDocx(extractedText, file?.name.replace(/\.[^/.]+$/, "") || "document")}
-                className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer text-xs font-semibold"
+                onClick={() =>
+                  generateAndDownloadDocx(
+                    extractedText,
+                    file?.name.replace(/\.[^/.]+$/, "") || "document",
+                    "bijoy"
+                  )
+                }
+                className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer text-xs font-semibold"
+                title="Download in SutonnyMJ font"
               >
-                📥 Download .DOCX
+                📥 বিজয় (.docx)
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  generateAndDownloadDocx(
+                    extractedText,
+                    file?.name.replace(/\.[^/.]+$/, "") || "document",
+                    "unicode"
+                  )
+                }
+                className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer text-xs font-semibold"
+                title="Download in Unicode font"
+              >
+                📥 ইউনিকোড (.docx)
               </button>
             </div>
           </div>
@@ -470,19 +559,21 @@ export default function ConverterCard() {
           className={`w-full py-3.5 px-6 rounded-2xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg ${
             !file || status === "processing"
               ? "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50"
-              : "bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-indigo-600/25 active:scale-[0.99] border border-indigo-400/30 cursor-pointer"
+              : "bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white shadow-emerald-600/25 active:scale-[0.99] border border-emerald-400/30 cursor-pointer"
           }`}
         >
           {status === "processing" ? (
             <>
-              <span>Extracting &amp; Generating Word Document...</span>
+              <span>Extracting &amp; Formatting Word Document...</span>
             </>
           ) : (
             <>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              <span>Convert &amp; Download .DOCX</span>
+              <span>
+                Convert &amp; Download in {outputFont === "bijoy" ? "বিজয় (SutonnyMJ)" : "ইউনিকোড"}
+              </span>
             </>
           )}
         </button>
@@ -492,15 +583,15 @@ export default function ConverterCard() {
       <div className="mt-6 pt-4 border-t border-slate-800/60 grid grid-cols-3 gap-2 text-center text-xs text-slate-400">
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
           <p className="font-medium text-emerald-400">⚡ 100% Client-Side</p>
-          <p className="text-[10px] text-slate-500">Zero Server Lag / Private</p>
+          <p className="text-[10px] text-slate-500">Instant / Zero Lag</p>
         </div>
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-slate-300">বাংলা + English</p>
-          <p className="text-[10px] text-slate-500">Neural OCR Engine</p>
+          <p className="font-medium text-amber-300">বিজয় (SutonnyMJ)</p>
+          <p className="text-[10px] text-slate-500">ডিফল্ট বিজয় ফরম্যাট</p>
         </div>
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-indigo-400">Genuine .DOCX</p>
-          <p className="text-[10px] text-slate-500">All Word Versions Compatible</p>
+          <p className="font-medium text-indigo-400">Native OpenXML</p>
+          <p className="text-[10px] text-slate-500">All Word Versions Ready</p>
         </div>
       </div>
     </div>
