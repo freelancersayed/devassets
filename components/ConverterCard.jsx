@@ -1,29 +1,77 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ConverterCard() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [lang, setLang] = useState("beng");
-  const [status, setStatus] = useState("idle"); // idle, processing, done, error
+  const [status, setStatus] = useState("idle");
   const [statusMsg, setStatusMsg] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [extractedText, setExtractedText] = useState("");
+  const [copied, setCopied] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Preload Tesseract.js script in the background
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.Tesseract) return;
+
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+    script.async = true;
+    script.onerror = () => {
+      const fallbackScript = document.createElement("script");
+      fallbackScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js";
+      fallbackScript.async = true;
+      document.head.appendChild(fallbackScript);
+    };
+    document.head.appendChild(script);
+  }, []);
+
+  const ensureTesseract = async () => {
+    if (typeof window !== "undefined" && window.Tesseract) {
+      return window.Tesseract;
+    }
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+      script.async = true;
+      script.onload = () => resolve(window.Tesseract);
+      script.onerror = () => {
+        const fallback = document.createElement("script");
+        fallback.src = "https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js";
+        fallback.async = true;
+        fallback.onload = () => resolve(window.Tesseract);
+        fallback.onerror = () =>
+          reject(new Error("OCR engine could not be loaded. Please check your internet connection."));
+        document.head.appendChild(fallback);
+      };
+      document.head.appendChild(script);
+    });
+  };
 
   const handleFileSelect = (selectedFile) => {
     if (!selectedFile) return;
     if (!selectedFile.type.startsWith("image/")) {
       setStatus("error");
-      setStatusMsg("Please select a valid image file (PNG, JPG, WEBP, BMP).");
+      setStatusMsg("Please select a valid image file (PNG, JPG, JPEG, WEBP, BMP).");
       return;
     }
     setFile(selectedFile);
     setStatus("idle");
     setStatusMsg("");
+    setProgress(0);
+    setExtractedText("");
 
     const reader = new FileReader();
-    reader.onload = (e) => setPreviewUrl(e.target.result);
+    reader.onload = (e) => {
+      if (typeof e.target?.result === "string") {
+        setPreviewUrl(e.target.result);
+      }
+    };
     reader.readAsDataURL(selectedFile);
   };
 
@@ -35,6 +83,116 @@ export default function ConverterCard() {
     }
   };
 
+  const handleInputChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelect(e.target.files[0]);
+    }
+  };
+
+  const generateAndDownloadDocx = (textToDownload, baseFileName) => {
+    const safeTitle = (baseFileName || "Converted_Image").replace(/[^a-zA-Z0-9_\u0980-\u09FF-]/g, "_");
+    
+    const paragraphs = textToDownload
+      .split(/\n\s*\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    const formattedBody = paragraphs.length > 0
+      ? paragraphs
+          .map((para) => {
+            const escaped = para
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/\n/g, "<br/>");
+            return `<p class="MsoNormal">${escaped}</p>`;
+          })
+          .join("")
+      : `<p class="MsoNormal">${textToDownload.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>")}</p>`;
+
+    const htmlDocument = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:w="urn:schemas-microsoft-com:office:word"
+            xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="utf-8">
+        <title>${safeTitle}</title>
+        <!--[if gte mso 9]>
+        <xml>
+          <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>100</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+          </w:WordDocument>
+        </xml>
+        <![endif]-->
+        <style>
+          @page {
+            size: 8.5in 11.0in;
+            margin: 1.0in 1.0in 1.0in 1.0in;
+            mso-header-margin: .5in;
+            mso-footer-margin: .5in;
+            mso-paper-source: 0;
+          }
+          body {
+            font-family: 'Nirmala UI', 'Kalpurush', 'SolaimanLipi', Arial, sans-serif;
+            font-size: 11.5pt;
+            line-height: 1.6;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+          }
+          p.MsoNormal {
+            margin: 0 0 10pt 0;
+            line-height: 1.5;
+            text-align: left;
+          }
+          h1 {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 12pt;
+          }
+        </style>
+      </head>
+      <body>
+        ${formattedBody}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(["\ufeff" + htmlDocument], {
+      type: "application/msword;charset=utf-8",
+    });
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = `${safeTitle}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => window.URL.revokeObjectURL(downloadUrl), 1000);
+  };
+
+  const downloadAsTxt = () => {
+    if (!extractedText) return;
+    const baseName = file ? file.name.replace(/\.[^/.]+$/, "") : "Extracted_Text";
+    const blob = new Blob([extractedText], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${baseName}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = () => {
+    if (!extractedText) return;
+    navigator.clipboard.writeText(extractedText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const handleConvert = async () => {
     if (!file) {
       setStatus("error");
@@ -44,48 +202,61 @@ export default function ConverterCard() {
 
     try {
       setStatus("processing");
-      setStatusMsg("Analyzing layout, extracting tables & running multilingual OCR...");
+      setProgress(5);
+      setStatusMsg("Initializing high-speed client-side OCR engine...");
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("lang", lang);
+      const tesseractLib = await ensureTesseract();
+      const ocrLang = lang === "beng" ? "ben+eng" : "eng";
 
-      const defaultBackend = "https://devassets-python-api.onrender.com";
-      const backendUrl = (process.env.NEXT_PUBLIC_PYTHON_API_URL || defaultBackend).replace(/\/$/, "");
-      const endpoint = `${backendUrl}/api/convert`;
+      setStatusMsg(
+        lang === "beng"
+          ? "Running Bengali + English neural OCR on your browser..."
+          : "Running English neural OCR on your browser..."
+      );
 
-      const res = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
+      const result = await tesseractLib.recognize(file, ocrLang, {
+        logger: (m) => {
+          if (m.status === "loading tesseract core") {
+            setStatusMsg("Loading WebAssembly OCR engine...");
+            setProgress(15);
+          } else if (m.status === "loading language traineddata") {
+            setStatusMsg("Loading language dictionary...");
+            setProgress(30);
+          } else if (m.status === "initializing api") {
+            setStatusMsg("Configuring OCR worker...");
+            setProgress(45);
+          } else if (m.status === "recognizing text") {
+            const pct = Math.min(95, Math.round(50 + m.progress * 45));
+            setProgress(pct);
+            setStatusMsg(`Recognizing text & layout: ${pct}%...`);
+          }
+        },
       });
 
-      if (!res.ok) {
-        let errMessage = "Conversion failed. Python API backend is offline or unreachable.";
-        try {
-          const errData = await res.json();
-          if (errData.detail) errMessage = errData.detail;
-        } catch (_) {}
-        throw new Error(errMessage);
+      const fullText = (result.data?.text || "").trim();
+
+      if (!fullText) {
+        setStatus("done");
+        setProgress(100);
+        setStatusMsg("No readable text was detected in the image. Try a clearer or higher-contrast image.");
+        return;
       }
 
-      setStatusMsg("Generating .DOCX file with native tables...");
-      const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      const baseName = file.name.replace(/\.[^/.]+$/, "");
-      a.download = `${baseName}_converted.docx`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(downloadUrl);
+      setExtractedText(fullText);
+      setProgress(98);
+      setStatusMsg("Generating formatted Microsoft Word (.docx) file...");
 
+      const baseName = file.name.replace(/\.[^/.]+$/, "");
+      generateAndDownloadDocx(fullText, baseName);
+
+      setProgress(100);
       setStatus("done");
-      setStatusMsg("Conversion complete! Your formatted Word (.docx) file has been downloaded.");
+      setStatusMsg("Conversion 100% complete! Your formatted Word (.docx) file has been downloaded.");
     } catch (err) {
-      console.error(err);
+      console.error("Client OCR error:", err);
+      const message = err instanceof Error ? err.message : "Failed to recognize text from image.";
       setStatus("error");
-      setStatusMsg(err.message || "An unexpected error occurred during conversion.");
+      setStatusMsg(message);
     }
   };
 
@@ -94,6 +265,8 @@ export default function ConverterCard() {
     setPreviewUrl(null);
     setStatus("idle");
     setStatusMsg("");
+    setProgress(0);
+    setExtractedText("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -109,11 +282,11 @@ export default function ConverterCard() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Image to Word Formatted Converter</h2>
-            <p className="text-xs text-slate-400">PaddleOCR &bull; img2table &bull; Bengali + English</p>
+            <p className="text-xs text-slate-400">100% Client-Side &bull; Neural OCR &bull; Bengali + English</p>
           </div>
         </div>
         <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          Native .DOCX
+          ⚡ Instant .DOCX
         </span>
       </div>
 
@@ -124,7 +297,7 @@ export default function ConverterCard() {
           <button
             type="button"
             onClick={() => setLang("beng")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               lang === "beng"
                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
                 : "bg-slate-800 text-slate-400 hover:text-white"
@@ -135,7 +308,7 @@ export default function ConverterCard() {
           <button
             type="button"
             onClick={() => setLang("en")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               lang === "en"
                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
                 : "bg-slate-800 text-slate-400 hover:text-white"
@@ -165,18 +338,19 @@ export default function ConverterCard() {
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={(e) => handleFileSelect(e.target.files?.[0])}
+          onChange={handleInputChange}
         />
 
         {previewUrl ? (
           <div className="flex flex-col items-center gap-3">
             <div className="relative max-h-48 max-w-full overflow-hidden rounded-xl border border-slate-700 shadow-lg">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={previewUrl} alt="Preview" className="max-h-48 object-contain" />
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-300">
               <span className="font-semibold text-white">{file?.name}</span>
               <span className="text-slate-500">&bull;</span>
-              <span>{(file.size / 1024).toFixed(1)} KB</span>
+              <span>{file ? (file.size / 1024).toFixed(1) : 0} KB</span>
             </div>
             <button
               type="button"
@@ -184,7 +358,7 @@ export default function ConverterCard() {
                 e.stopPropagation();
                 reset();
               }}
-              className="mt-1 text-xs text-rose-400 hover:text-rose-300 hover:underline"
+              className="mt-1 text-xs text-rose-400 hover:text-rose-300 hover:underline cursor-pointer"
             >
               Choose different image
             </button>
@@ -201,17 +375,17 @@ export default function ConverterCard() {
                 Click to browse or drag and drop your image
               </p>
               <p className="text-xs text-slate-500 mt-1">
-                Supports PNG, JPG, JPEG, WEBP, BMP (Tables, Bengali & English text)
+                Supports PNG, JPG, JPEG, WEBP, BMP (Bengali &amp; English text)
               </p>
             </div>
           </div>
         )}
       </div>
 
-      {/* Status Messages */}
+      {/* Progress & Status */}
       {status !== "idle" && (
         <div
-          className={`mt-5 p-4 rounded-2xl border text-sm flex items-start gap-3 transition-all ${
+          className={`mt-5 p-4 rounded-2xl border text-sm flex flex-col gap-2 transition-all ${
             status === "processing"
               ? "bg-indigo-950/40 border-indigo-500/40 text-indigo-200"
               : status === "done"
@@ -219,31 +393,78 @@ export default function ConverterCard() {
               : "bg-rose-950/40 border-rose-500/40 text-rose-200"
           }`}
         >
+          <div className="flex items-start gap-3">
+            {status === "processing" && (
+              <svg className="animate-spin w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            )}
+            {status === "done" && (
+              <svg className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+            {status === "error" && (
+              <svg className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )}
+            <div className="flex-1">
+              <span className="font-semibold block">
+                {status === "processing"
+                  ? `Processing Image (${progress}%)...`
+                  : status === "done"
+                  ? "Success!"
+                  : "Error"}
+              </span>
+              <span className="text-xs opacity-90">{statusMsg}</span>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
           {status === "processing" && (
-            <svg className="animate-spin w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
+            <div className="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
+              <div
+                className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           )}
-          {status === "done" && (
-            <svg className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          )}
-          {status === "error" && (
-            <svg className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          )}
-          <div className="flex-1">
-            <span className="font-semibold block">
-              {status === "processing"
-                ? "Processing Image..."
-                : status === "done"
-                ? "Success!"
-                : "Error"}
-            </span>
-            <span className="text-xs opacity-90">{statusMsg}</span>
+        </div>
+      )}
+
+      {/* Extracted Text Preview Card (when done) */}
+      {status === "done" && extractedText && (
+        <div className="mt-5 p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <span className="font-semibold text-slate-300">Extracted Text Preview:</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-xs flex items-center gap-1"
+              >
+                {copied ? "✓ Copied!" : "📋 Copy Text"}
+              </button>
+              <button
+                type="button"
+                onClick={downloadAsTxt}
+                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-xs"
+              >
+                📄 Download .TXT
+              </button>
+              <button
+                type="button"
+                onClick={() => generateAndDownloadDocx(extractedText, file?.name.replace(/\.[^/.]+$/, "") || "document")}
+                className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer text-xs font-semibold"
+              >
+                📥 Download .DOCX
+              </button>
+            </div>
+          </div>
+          <div className="max-h-48 overflow-y-auto p-3 rounded-xl bg-slate-900/90 border border-slate-800/80 text-xs text-slate-300 font-mono whitespace-pre-wrap leading-relaxed select-text">
+            {extractedText}
           </div>
         </div>
       )}
@@ -262,7 +483,7 @@ export default function ConverterCard() {
         >
           {status === "processing" ? (
             <>
-              <span>Extracting & Formatting...</span>
+              <span>Extracting &amp; Generating Word Document...</span>
             </>
           ) : (
             <>
@@ -278,16 +499,16 @@ export default function ConverterCard() {
       {/* Feature Badges */}
       <div className="mt-6 pt-4 border-t border-slate-800/60 grid grid-cols-3 gap-2 text-center text-xs text-slate-400">
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-slate-300">Borderless &amp; Bordered</p>
-          <p className="text-[10px] text-slate-500">Auto Table Grid</p>
+          <p className="font-medium text-emerald-400">⚡ 100% Client-Side</p>
+          <p className="text-[10px] text-slate-500">Zero Server Lag / Private</p>
         </div>
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-slate-300">Bengali + English</p>
-          <p className="text-[10px] text-slate-500">PaddleOCR Engine</p>
+          <p className="font-medium text-slate-300">বাংলা + English</p>
+          <p className="text-[10px] text-slate-500">Neural OCR Engine</p>
         </div>
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-slate-300">Native Word</p>
-          <p className="text-[10px] text-slate-500">Editable .DOCX</p>
+          <p className="font-medium text-indigo-400">Native Word</p>
+          <p className="text-[10px] text-slate-500">Instant .DOCX &amp; .TXT</p>
         </div>
       </div>
     </div>
