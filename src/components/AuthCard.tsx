@@ -710,12 +710,6 @@ export default function AuthCard({ mode }: AuthCardProps) {
                     .
                   </span>
                 </label>
-                {!agreeTerms && (
-                  <p className="text-[11px] text-slate-500 pl-6.5 flex items-center gap-1">
-                    <span className="text-indigo-400">*</span>
-                    <span>Check this box to activate the create account button</span>
-                  </p>
-                )}
               </div>
             ) : (
               <div className="flex items-center justify-between pt-1 text-xs">
