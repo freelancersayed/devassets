@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { admin } from "better-auth/plugins";
 import client from "./mongodb";
 
 const db = client.db(process.env.DB_NAME || "DevAssests");
@@ -38,4 +39,10 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // 5 minutes cache
     },
   },
+  plugins: [
+    admin({
+      defaultRole: "user",
+      adminRoles: ["admin"],
+    }),
+  ],
 });
