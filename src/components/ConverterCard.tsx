@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
+import { Document, Packer, Paragraph, TextRun } from "docx";
 
 declare global {
   interface Window {
@@ -99,82 +100,60 @@ export default function ConverterCard() {
     }
   };
 
-  const generateAndDownloadDocx = (textToDownload: string, baseFileName: string) => {
+  // Generates 100% Genuine Native OpenXML Microsoft Word (.docx) file
+  const generateAndDownloadDocx = async (textToDownload: string, baseFileName: string) => {
     const safeTitle = (baseFileName || "Converted_Image").replace(/[^a-zA-Z0-9_\u0980-\u09FF-]/g, "_");
-    
-    // Split text into paragraphs and format clean HTML
-    const paragraphs = textToDownload
+
+    const rawParagraphs = textToDownload
       .split(/\n\s*\n/)
       .map((p) => p.trim())
       .filter(Boolean);
 
-    const formattedBody = paragraphs.length > 0
-      ? paragraphs
-          .map((para) => {
-            const escaped = para
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/\n/g, "<br/>");
-            return `<p class="MsoNormal">${escaped}</p>`;
+    const docParagraphs = (rawParagraphs.length > 0 ? rawParagraphs : [textToDownload]).map((paraText) => {
+      const lines = paraText.split(/\n/);
+      const runs: TextRun[] = [];
+      lines.forEach((line, idx) => {
+        runs.push(
+          new TextRun({
+            text: line,
+            font: "Nirmala UI",
+            size: 24, // 12pt standard
+            color: "1e293b",
           })
-          .join("")
-      : `<p class="MsoNormal">${textToDownload.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>")}</p>`;
+        );
+        if (idx < lines.length - 1) {
+          runs.push(new TextRun({ break: 1 }));
+        }
+      });
 
-    const htmlDocument = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:w="urn:schemas-microsoft-com:office:word"
-            xmlns="http://www.w3.org/TR/REC-html40">
-      <head>
-        <meta charset="utf-8">
-        <title>${safeTitle}</title>
-        <!--[if gte mso 9]>
-        <xml>
-          <w:WordDocument>
-            <w:View>Print</w:View>
-            <w:Zoom>100</w:Zoom>
-            <w:DoNotOptimizeForBrowser/>
-          </w:WordDocument>
-        </xml>
-        <![endif]-->
-        <style>
-          @page {
-            size: 8.5in 11.0in;
-            margin: 1.0in 1.0in 1.0in 1.0in;
-            mso-header-margin: .5in;
-            mso-footer-margin: .5in;
-            mso-paper-source: 0;
-          }
-          body {
-            font-family: 'Nirmala UI', 'Kalpurush', 'SolaimanLipi', Arial, sans-serif;
-            font-size: 11.5pt;
-            line-height: 1.6;
-            color: #1e293b;
-            margin: 0;
-            padding: 0;
-          }
-          p.MsoNormal {
-            margin: 0 0 10pt 0;
-            line-height: 1.5;
-            text-align: left;
-          }
-          h1 {
-            font-size: 18pt;
-            font-weight: bold;
-            color: #0f172a;
-            margin-bottom: 12pt;
-          }
-        </style>
-      </head>
-      <body>
-        ${formattedBody}
-      </body>
-      </html>
-    `;
-
-    const blob = new Blob(["\ufeff" + htmlDocument], {
-      type: "application/msword;charset=utf-8",
+      return new Paragraph({
+        children: runs,
+        spacing: {
+          after: 200, // 10pt space after
+          line: 360, // 1.5 line height
+        },
+      });
     });
+
+    const doc = new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 1440, // 1 inch standard margin
+                bottom: 1440,
+                left: 1440,
+                right: 1440,
+              },
+            },
+          },
+          children: docParagraphs,
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
     const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = downloadUrl;
@@ -219,7 +198,6 @@ export default function ConverterCard() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tesseractLib: any = await ensureTesseract();
 
-      // Language selection: 'ben+eng' for Bengali + English, 'eng' for English only
       const ocrLang = lang === "beng" ? "ben+eng" : "eng";
 
       setStatusMsg(
@@ -258,14 +236,14 @@ export default function ConverterCard() {
 
       setExtractedText(fullText);
       setProgress(98);
-      setStatusMsg("Generating formatted Microsoft Word (.docx) file...");
+      setStatusMsg("Generating 100% native Microsoft Word (.docx) file...");
 
       const baseName = file.name.replace(/\.[^/.]+$/, "");
-      generateAndDownloadDocx(fullText, baseName);
+      await generateAndDownloadDocx(fullText, baseName);
 
       setProgress(100);
       setStatus("done");
-      setStatusMsg("Conversion 100% complete! Your formatted Word (.docx) file has been downloaded.");
+      setStatusMsg("Conversion 100% complete! Genuine Word (.docx) file downloaded successfully.");
     } catch (err: unknown) {
       console.error("Client OCR error:", err);
       const message = err instanceof Error ? err.message : "Failed to recognize text from image.";
@@ -296,11 +274,11 @@ export default function ConverterCard() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Image to Word Formatted Converter</h2>
-            <p className="text-xs text-slate-400">100% Client-Side &bull; Neural OCR &bull; Bengali + English</p>
+            <p className="text-xs text-slate-400">100% Client-Side &bull; Native OpenXML .DOCX &bull; Bengali + English</p>
           </div>
         </div>
         <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          ⚡ Instant .DOCX
+          ⚡ Genuine .DOCX
         </span>
       </div>
 
@@ -521,8 +499,8 @@ export default function ConverterCard() {
           <p className="text-[10px] text-slate-500">Neural OCR Engine</p>
         </div>
         <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-indigo-400">Native Word</p>
-          <p className="text-[10px] text-slate-500">Instant .DOCX &amp; .TXT</p>
+          <p className="font-medium text-indigo-400">Genuine .DOCX</p>
+          <p className="text-[10px] text-slate-500">All Word Versions Compatible</p>
         </div>
       </div>
     </div>
