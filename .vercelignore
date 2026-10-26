@@ -1,6 +1,7 @@
-api
-requirements.txt
-Dockerfile
-Procfile
-render.yaml
-.python-version
+/api
+/requirements.txt
+/Dockerfile
+/Procfile
+/render.yaml
+/.python-version
+!src/app/api/**
