@@ -14,7 +14,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "home", label: "Home", href: "/" },
   { id: "tools", label: "Tools", href: "/#tools" },
-  { id: "prompts", label: "Prompts", href: "/#prompts" },
+  { id: "prompts", label: "Prompts", href: "/prompts" },
   { id: "guides", label: "Learning Guides", href: "/#guides" },
   { id: "about", label: "About", href: "/about" },
   { id: "contact", label: "Contact", href: "/contact" },
@@ -35,6 +35,10 @@ export default function Navbar() {
     }
     if (pathname === "/contact") {
       setActiveItem("contact");
+      return;
+    }
+    if (pathname?.startsWith("/prompts")) {
+      setActiveItem("prompts");
       return;
     }
 
@@ -97,7 +101,7 @@ export default function Navbar() {
   ) => {
     setIsOpen(false);
 
-    if (item.id === "about" || item.id === "contact") {
+    if (item.id === "about" || item.id === "contact" || item.id === "prompts") {
       setActiveItem(item.id);
       return;
     }
@@ -115,16 +119,6 @@ export default function Navbar() {
         if (el) el.scrollIntoView({ behavior: "smooth" });
         window.history.pushState(null, "", "/#tools");
         setActiveItem("tools");
-      } else if (item.id === "prompts") {
-        window.dispatchEvent(
-          new CustomEvent("filter-catalog", { detail: { category: "prompts" } })
-        );
-        const el =
-          document.getElementById("catalog-filter") ||
-          document.getElementById("products");
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-        window.history.pushState(null, "", "/#prompts");
-        setActiveItem("prompts");
       } else if (item.id === "guides") {
         window.dispatchEvent(
           new CustomEvent("filter-catalog", { detail: { category: "pdf" } })
