@@ -173,7 +173,24 @@ export default function ToolsSection() {
           {toolsData.map((tool) => (
             <StaggerItem key={tool.id}>
               <InteractiveCard className="h-full">
-                <div className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-7 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-colors duration-300 shadow-xl backdrop-blur-sm">
+                <div
+                  onDragOver={(e) => {
+                    if (tool.slug === "video-to-audio") {
+                      e.preventDefault();
+                    }
+                  }}
+                  onDrop={(e) => {
+                    if (tool.slug === "video-to-audio") {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) {
+                        handleLaunch(tool);
+                        processVideo(file);
+                      }
+                    }
+                  }}
+                  className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-7 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-colors duration-300 shadow-xl backdrop-blur-sm"
+                >
                   <div>
                     {/* Header: Icon + Badge */}
                     <div className="flex items-center justify-between gap-4 mb-5">
