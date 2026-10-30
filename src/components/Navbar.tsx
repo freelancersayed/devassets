@@ -113,6 +113,12 @@ export default function Navbar() {
           >
             About Us
           </Link>
+          <Link
+            href="/access"
+            className="text-indigo-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800/60 hover:bg-indigo-900/60 text-xs font-semibold"
+          >
+            <span>🔑</span> Redeem License
+          </Link>
         </div>
 
         {/* Action CTA: User Session Awareness */}
@@ -239,6 +245,13 @@ export default function Navbar() {
             className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
           >
             About Us
+          </Link>
+          <Link
+            href="/access"
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2.5 text-sm font-semibold text-indigo-300 rounded-xl hover:bg-slate-800/80"
+          >
+            🔑 Redeem License
           </Link>
 
           <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
