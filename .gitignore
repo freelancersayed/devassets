@@ -41,3 +41,9 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Python venv & local tests
+.python310/
+venv/
+.venv/
+test.png
