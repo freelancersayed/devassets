@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toolsData, type ToolItem } from "@/data/catalog";
+import { extractAudioFromVideoFile } from "@/lib/audioExtraction";
 import {
   FadeInView,
   StaggerContainer,
@@ -17,16 +18,101 @@ export default function ToolsSection() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processSuccess, setProcessSuccess] = useState(false);
 
+  // Video to audio tool state inside modal
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoStatusMsg, setVideoStatusMsg] = useState("");
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [videoDownloadUrl, setVideoDownloadUrl] = useState<string | null>(null);
+  const [videoOutputFileName, setVideoOutputFileName] = useState("");
+  const [videoDuration, setVideoDuration] = useState("");
+  const [isDraggingVideo, setIsDraggingVideo] = useState(false);
+  const videoFileInputRef = useRef<HTMLInputElement>(null);
+
+  const resetVideoState = () => {
+    if (videoDownloadUrl) {
+      URL.revokeObjectURL(videoDownloadUrl);
+    }
+    setVideoFile(null);
+    setVideoProgress(0);
+    setVideoStatusMsg("");
+    setVideoError(null);
+    setVideoDownloadUrl(null);
+    setVideoOutputFileName("");
+    setVideoDuration("");
+    setIsDraggingVideo(false);
+    if (videoFileInputRef.current) {
+      videoFileInputRef.current.value = "";
+    }
+  };
+
   const handleLaunch = (tool: ToolItem) => {
+    resetVideoState();
     setActiveTool(tool);
     setIsProcessing(false);
     setProcessSuccess(false);
   };
 
   const handleCloseModal = () => {
+    resetVideoState();
     setActiveTool(null);
     setIsProcessing(false);
     setProcessSuccess(false);
+  };
+
+  const processVideo = async (file: File) => {
+    if (!file) return;
+
+    if (videoDownloadUrl) {
+      URL.revokeObjectURL(videoDownloadUrl);
+      setVideoDownloadUrl(null);
+    }
+
+    setVideoFile(file);
+    setIsProcessing(true);
+    setProcessSuccess(false);
+    setVideoError(null);
+    setVideoProgress(5);
+    setVideoStatusMsg(`Loading ${file.name}...`);
+
+    try {
+      const res = await extractAudioFromVideoFile(file, (pct, msg) => {
+        setVideoProgress(pct);
+        setVideoStatusMsg(msg);
+      });
+
+      setVideoDownloadUrl(res.url);
+      setVideoOutputFileName(res.filename);
+      setVideoDuration(res.duration);
+      setVideoProgress(100);
+      setVideoStatusMsg(`Audio track detached successfully (${res.duration})!`);
+      setIsProcessing(false);
+      setProcessSuccess(true);
+    } catch (err: unknown) {
+      console.error("Audio extraction error:", err);
+      setIsProcessing(false);
+      setVideoError(
+        err instanceof Error && err.message
+          ? err.message
+          : "Could not decode audio track. The video may contain an unsupported codec or have no audio track."
+      );
+    }
+  };
+
+  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processVideo(file);
+    }
+  };
+
+  const handleVideoDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingVideo(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processVideo(file);
+    }
   };
 
   const handleRunDemo = () => {
@@ -123,7 +209,7 @@ export default function ToolsSection() {
                   {/* Action Button: Identical Launch Tool Button for all 4 cards */}
                   <div className="mt-6 pt-4">
                     <MagneticButton className="w-full">
-                      {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" || tool.slug === "video-to-audio" ? (
+                      {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" ? (
                         <Link
                           href={`/tools/${tool.slug}`}
                           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 active:scale-[0.98]"
@@ -197,70 +283,230 @@ export default function ToolsSection() {
                 {activeTool.privacyNotice}
               </p>
 
-              {/* Sandbox Dropzone Area */}
-              <div className="rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/80 p-8 text-center space-y-3">
-                <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                </div>
-                <p className="text-sm font-semibold text-slate-200">
-                  Drag &amp; drop file here or click to browse
-                </p>
-                <p className="text-xs text-slate-500">
-                  Processed locally in your browser memory via WebAssembly &amp; Web Workers.
-                </p>
-              </div>
+              {/* Video to Audio Specific Interactive Detacher */}
+              {activeTool.slug === "video-to-audio" ? (
+                <>
+                  <input
+                    ref={videoFileInputRef}
+                    type="file"
+                    accept=".mp4,.webm,.mov,.m4v,.mkv,video/*"
+                    onChange={handleVideoFileChange}
+                    className="hidden"
+                  />
 
-              {/* Status / Output Preview */}
-              <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span>Privacy Status:</span>
-                  <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
-                </div>
-                {isProcessing && (
-                  <div className="flex items-center gap-2 text-indigo-400 font-medium py-1 animate-pulse">
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    <span>Processing file stream in browser memory...</span>
-                  </div>
-                )}
-                {processSuccess && (
-                  <div className="text-emerald-400 font-medium py-1">
-                    ✓ Done! Extracted output generated. Click below to download.
-                  </div>
-                )}
-              </div>
+                  {/* Sandbox Dropzone Area */}
+                  <div
+                    onClick={() => videoFileInputRef.current?.click()}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDraggingVideo(true);
+                    }}
+                    onDragLeave={() => setIsDraggingVideo(false)}
+                    onDrop={handleVideoDrop}
+                    className={`rounded-xl border-2 border-dashed p-8 text-center space-y-3 cursor-pointer transition-all duration-200 ${
+                      isDraggingVideo
+                        ? "border-indigo-400 bg-indigo-950/60 scale-[1.01]"
+                        : "border-slate-700 hover:border-indigo-500/70 bg-slate-950/80 hover:bg-slate-950"
+                    }`}
+                  >
+                    <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400 transition-transform">
+                      {videoFile ? (
+                        <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
+                      ) : (
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                      )}
+                    </div>
 
-              {/* Modal Actions */}
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" || activeTool.slug === "video-to-audio" ? (
-                  <Link
-                    href={`/tools/${activeTool.slug}`}
-                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
-                  >
-                    Open Full Converter Page →
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleRunDemo}
-                    disabled={isProcessing}
-                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
-                  >
-                    {isProcessing ? "Processing..." : "Run Client-Side Test"}
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
+                    {videoFile ? (
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-slate-100 truncate max-w-sm mx-auto">
+                          {videoFile.name}
+                        </p>
+                        <p className="text-xs text-indigo-400 font-medium">
+                          {(videoFile.size / (1024 * 1024)).toFixed(2)} MB • Click or drop another to replace
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm font-semibold text-slate-200">
+                          Drag &amp; drop file here or click to browse
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          Supports MP4, WebM, MOV. Processed locally in browser memory via Web Audio API.
+                        </p>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Status / Output Preview */}
+                  <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-400 mb-2">
+                      <span>Privacy Status:</span>
+                      <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
+                    </div>
+
+                    {isProcessing && (
+                      <div className="space-y-2 py-1">
+                        <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-800">
+                          <div
+                            className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300"
+                            style={{ width: `${videoProgress}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 text-indigo-400 font-medium">
+                          <svg className="animate-spin h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                          </svg>
+                          <span>{videoStatusMsg || "Processing file stream in browser memory..."}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {processSuccess && videoDownloadUrl && (
+                      <div className="text-emerald-400 font-medium py-1 flex items-center gap-1.5">
+                        <span>✓</span>
+                        <span>{videoStatusMsg || `Audio detached successfully (${videoDuration})!`}</span>
+                      </div>
+                    )}
+
+                    {videoError && (
+                      <div className="text-rose-400 font-medium py-1">
+                        ✕ {videoError}
+                      </div>
+                    )}
+
+                    {!isProcessing && !processSuccess && !videoError && (
+                      <div className="text-slate-500 py-0.5">
+                        Ready. Drop an MP4, WebM, or MOV video to detach audio.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Actions */}
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    {processSuccess && videoDownloadUrl ? (
+                      <a
+                        href={videoDownloadUrl}
+                        download={videoOutputFileName}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-950/40"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>Download Lossless WAV</span>
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => videoFileInputRef.current?.click()}
+                        disabled={isProcessing}
+                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {isProcessing ? "Processing..." : "Select Video File"}
+                      </button>
+                    )}
+
+                    {processSuccess && (
+                      <button
+                        type="button"
+                        onClick={resetVideoState}
+                        className="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
+                      >
+                        Convert Another
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+
+                  <div className="mt-3 text-center">
+                    <Link
+                      href="/tools/video-to-audio"
+                      className="text-xs text-indigo-400 hover:text-indigo-300 underline"
+                    >
+                      Open dedicated full-page converter ↗
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Sandbox Dropzone Area for other tools */}
+                  <div className="rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/80 p-8 text-center space-y-3">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-slate-200">
+                      Drag &amp; drop file here or click to browse
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Processed locally in your browser memory via WebAssembly &amp; Web Workers.
+                    </p>
+                  </div>
+
+                  {/* Status / Output Preview */}
+                  <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-400 mb-2">
+                      <span>Privacy Status:</span>
+                      <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
+                    </div>
+                    {isProcessing && (
+                      <div className="flex items-center gap-2 text-indigo-400 font-medium py-1 animate-pulse">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        <span>Processing file stream in browser memory...</span>
+                      </div>
+                    )}
+                    {processSuccess && (
+                      <div className="text-emerald-400 font-medium py-1">
+                        ✓ Done! Extracted output generated. Click below to download.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Actions */}
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" ? (
+                      <Link
+                        href={`/tools/${activeTool.slug}`}
+                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
+                      >
+                        Open Full Converter Page →
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleRunDemo}
+                        disabled={isProcessing}
+                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {isProcessing ? "Processing..." : "Run Client-Side Test"}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}
