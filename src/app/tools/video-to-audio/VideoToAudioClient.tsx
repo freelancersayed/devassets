@@ -4,16 +4,137 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 
 /**
- * Encodes PCM float samples into standard 16-bit PCM lossless WAV format.
+ * Pure client-side ISO BMFF (MP4/MOV) audio track isolator.
+ * Converts video tracks inside the container into 'free' space atoms
+ * without changing any byte offsets or moving audio chunks in 'mdat'.
+ * This transforms any MP4/MOV video container into an audio-only container
+ * that the browser's native AudioContext.decodeAudioData can parse flawlessly.
+ */
+function isolateAudioTrackInMp4(buffer: ArrayBuffer): boolean {
+  const bytes = new Uint8Array(buffer);
+  const view = new DataView(buffer);
+
+  function readString(offset: number, length: number): string {
+    let str = "";
+    for (let i = 0; i < length; i++) {
+      str += String.fromCharCode(bytes[offset + i]);
+    }
+    return str;
+  }
+
+  function writeString(offset: number, str: string) {
+    for (let i = 0; i < str.length; i++) {
+      bytes[offset + i] = str.charCodeAt(i);
+    }
+  }
+
+  let moovOffset = -1;
+  let moovSize = 0;
+  let offset = 0;
+
+  // Locate the 'moov' atom (can be before or after 'mdat')
+  while (offset + 8 <= bytes.length) {
+    const size = view.getUint32(offset);
+    const type = readString(offset + 4, 4);
+
+    if (size === 0) {
+      if (type === "moov") {
+        moovOffset = offset;
+        moovSize = bytes.length - offset;
+      }
+      break;
+    }
+    const boxSize = size === 1 ? Number(view.getBigUint64(offset + 8)) : size;
+    if (boxSize < 8) break;
+
+    if (type === "moov") {
+      moovOffset = offset;
+      moovSize = boxSize;
+      break;
+    }
+    offset += boxSize;
+  }
+
+  if (moovOffset === -1) return false;
+
+  let trakOffset = moovOffset + 8;
+  const moovEnd = Math.min(moovOffset + moovSize, bytes.length);
+  let modified = false;
+
+  // Inspect each 'trak' inside 'moov'
+  while (trakOffset + 8 <= moovEnd) {
+    const size = view.getUint32(trakOffset);
+    const type = readString(trakOffset + 4, 4);
+    if (size === 0) break;
+    const boxSize = size === 1 ? Number(view.getBigUint64(trakOffset + 8)) : size;
+    if (boxSize < 8 || trakOffset + boxSize > bytes.length) break;
+
+    if (type === "trak") {
+      let isNonAudio = false;
+      const trakEnd = trakOffset + boxSize;
+      let inner = trakOffset + 8;
+
+      while (inner + 8 <= trakEnd) {
+        const inSize = view.getUint32(inner);
+        const inType = readString(inner + 4, 4);
+        if (inSize < 8 || inner + inSize > trakEnd) break;
+
+        if (inType === "mdia") {
+          let mdiaInner = inner + 8;
+          const mdiaEnd = inner + inSize;
+          while (mdiaInner + 8 <= mdiaEnd) {
+            const mSize = view.getUint32(mdiaInner);
+            const mType = readString(mdiaInner + 4, 4);
+            if (mSize < 8 || mdiaInner + mSize > mdiaEnd) break;
+
+            if (mType === "hdlr") {
+              if (mdiaInner + 20 <= mdiaEnd) {
+                const handlerType = readString(mdiaInner + 16, 4);
+                // Flag video, subtitle, hint, or text tracks to be bypassed
+                if (
+                  handlerType === "vide" ||
+                  handlerType === "sbtl" ||
+                  handlerType === "text" ||
+                  handlerType === "hint"
+                ) {
+                  isNonAudio = true;
+                }
+              }
+              break;
+            }
+            mdiaInner += mSize;
+          }
+          break;
+        }
+        inner += inSize;
+      }
+
+      if (isNonAudio) {
+        // Renaming 'trak' to 'free' instructs the audio demuxer to skip this track
+        // without altering any byte offsets in 'mdat' or 'stco' tables
+        writeString(trakOffset + 4, "free");
+        modified = true;
+      }
+    }
+
+    trakOffset += boxSize;
+  }
+
+  return modified;
+}
+
+/**
+ * Encodes an AudioBuffer into standard 16-bit PCM lossless WAV format.
  * High-performance TypedArray implementation.
  */
-function audioDataToWav(channelData: Float32Array[], sampleRate: number): Blob {
-  const numChannels = channelData.length;
-  const numSamples = channelData[0].length;
+function audioBufferToWav(buffer: AudioBuffer): Blob {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
   const format = 1; // 1 = Linear PCM
   const bitDepth = 16;
   const bytesPerSample = bitDepth / 8;
   const blockAlign = numChannels * bytesPerSample;
+  const numSamples = buffer.length;
   const dataSize = numSamples * blockAlign;
   const bufferSize = 44 + dataSize;
 
@@ -45,12 +166,17 @@ function audioDataToWav(channelData: Float32Array[], sampleRate: number): Blob {
   writeString(36, "data");
   view.setUint32(40, dataSize, true);
 
-  // Write 16-bit PCM samples interleaved
+  const channels: Float32Array[] = [];
+  for (let c = 0; c < numChannels; c++) {
+    channels.push(buffer.getChannelData(c));
+  }
+
+  // Interleave channels as 16-bit PCM
   const int16View = new Int16Array(arrayBuffer, 44, numSamples * numChannels);
   let p = 0;
   for (let i = 0; i < numSamples; i++) {
     for (let c = 0; c < numChannels; c++) {
-      const sample = Math.max(-1, Math.min(1, channelData[c][i]));
+      const sample = Math.max(-1, Math.min(1, channels[c][i]));
       int16View[p++] = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
     }
   }
@@ -129,84 +255,85 @@ export default function VideoToAudioClient() {
 
     reader.onload = async (e) => {
       try {
-        const arrayBuffer = e.target?.result as ArrayBuffer;
-        if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+        const rawArrayBuffer = e.target?.result as ArrayBuffer;
+        if (!rawArrayBuffer || rawArrayBuffer.byteLength === 0) {
           throw new Error("Unable to read video file buffer.");
         }
 
         setProgress(50);
-        setStatusMsg("Extracting audio stream from container...");
+        setStatusMsg("Initializing browser Web Audio API context...");
 
-        let channelData: Float32Array[] = [];
-        let sampleRate = 44100;
-        let decoded = false;
+        const AudioContextClass =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
 
-        // Path 1: For MP4 / MOV containers, use @audio/decode-mp4 (pure ISO BMFF Demuxer)
-        if (
-          fileExt === ".mp4" ||
-          fileExt === ".mov" ||
-          fileExt === ".m4v" ||
-          file.type.includes("mp4") ||
-          file.type.includes("quicktime")
-        ) {
+        if (!AudioContextClass) {
+          throw new Error("Web Audio API is not supported in this browser.");
+        }
+
+        const audioCtx = new AudioContextClass();
+
+        if (audioCtx.state === "suspended") {
           try {
-            setProgress(60);
-            setStatusMsg("Demuxing and decoding MP4/MOV audio stream...");
-            const { default: decodeMp4 } = await import("@audio/decode-mp4");
-            const res = await decodeMp4(arrayBuffer.slice(0));
-            if (res && res.channelData && res.channelData.length > 0 && res.channelData[0].length > 0) {
-              channelData = res.channelData;
-              sampleRate = res.sampleRate || 44100;
-              decoded = true;
-            }
-          } catch (mp4Err) {
-            console.warn("decode-mp4 attempt error, falling back to Web Audio API:", mp4Err);
+            await audioCtx.resume();
+          } catch {
+            // resume if allowed
           }
         }
 
-        // Path 2: Native Web Audio API AudioContext (works directly for WebM, WAV, OGG, etc.)
-        if (!decoded) {
-          try {
-            setProgress(70);
-            setStatusMsg("Decoding audio via browser Web Audio API...");
-            const AudioContextClass =
-              window.AudioContext ||
-              (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        setProgress(60);
+        setStatusMsg("Isolating audio track from video container...");
 
-            if (AudioContextClass) {
-              const audioCtx = new AudioContextClass();
-              if (audioCtx.state === "suspended") {
-                await audioCtx.resume();
-              }
-              const audioBuffer = await new Promise<AudioBuffer>((resolve, reject) => {
-                audioCtx.decodeAudioData(arrayBuffer.slice(0), resolve, reject);
-              });
-              for (let c = 0; c < audioBuffer.numberOfChannels; c++) {
-                channelData.push(audioBuffer.getChannelData(c));
-              }
-              sampleRate = audioBuffer.sampleRate;
-              decoded = true;
-              audioCtx.close().catch(() => {});
+        // Clone buffer to avoid detachment issues
+        const processedBuffer = rawArrayBuffer.slice(0);
+
+        // For MP4 and MOV containers, isolate the audio track by masking video trak atoms as 'free'
+        isolateAudioTrackInMp4(processedBuffer);
+
+        setProgress(70);
+        setStatusMsg("Decoding audio track via browser Web Audio API...");
+
+        // Cross-browser decode with cloned buffer
+        const audioBuffer = await new Promise<AudioBuffer>((resolve, reject) => {
+          let resolved = false;
+
+          const successCb = (buf: AudioBuffer) => {
+            if (!resolved) {
+              resolved = true;
+              resolve(buf);
             }
-          } catch (audioCtxErr) {
-            console.warn("AudioContext decode error:", audioCtxErr);
-          }
-        }
+          };
 
-        if (!decoded || channelData.length === 0 || channelData[0].length === 0) {
-          throw new Error("Could not decode audio. Please ensure the video contains an active audio track.");
-        }
+          const errorCb = (err: unknown) => {
+            if (!resolved) {
+              resolved = true;
+              reject(err);
+            }
+          };
+
+          try {
+            const maybePromise = audioCtx.decodeAudioData(processedBuffer.slice(0), successCb, errorCb);
+            if (maybePromise && typeof maybePromise.then === "function") {
+              maybePromise.then(successCb).catch(errorCb);
+            }
+          } catch (syncErr) {
+            if (!resolved) {
+              resolved = true;
+              reject(syncErr);
+            }
+          }
+        });
 
         setProgress(85);
         setStatusMsg("Encoding lossless 16-bit PCM WAV...");
 
-        const wavBlob = audioDataToWav(channelData, sampleRate);
+        const wavBlob = audioBufferToWav(audioBuffer);
         const url = URL.createObjectURL(wavBlob);
 
         const safeBaseName = file.name.replace(/\.[^/.]+$/, "") || "extracted-audio";
         const finalWavName = `${safeBaseName}.wav`;
 
-        const totalSecs = Math.floor(channelData[0].length / sampleRate);
+        const totalSecs = Math.floor(audioBuffer.duration);
         const minutes = Math.floor(totalSecs / 60);
         const seconds = totalSecs % 60;
         const durationStr = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -218,6 +345,8 @@ export default function VideoToAudioClient() {
         setStatusMsg(`Audio track extracted successfully (${durationStr})!`);
         setIsProcessing(false);
         setProcessSuccess(true);
+
+        audioCtx.close().catch(() => {});
       } catch (err: unknown) {
         console.error("Audio extraction error:", err);
         setIsProcessing(false);
