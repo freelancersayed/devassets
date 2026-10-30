@@ -1,0 +1,49 @@
+{
+  "productId": "prod_fullstack_arch_prompts",
+  "sku": "DEV-ARCH-PROMPTS-V2026",
+  "title": "Full-Stack Dev & System Architecture Prompts",
+  "category": "AI Engineering Prompts",
+  "version": "v2026.1",
+  "totalPrompts": 200,
+  "license": "Single-Developer Commercial & Personal Use",
+  "author": "DevAssets Engineering Team",
+  "website": "https://devassets.online/products/fullstack-system-architecture-prompts",
+  "supportedAIs": [
+    "Claude 3.7 Sonnet / Opus",
+    "OpenAI GPT-4o & GPT-4o-mini",
+    "DeepSeek-V3 & DeepSeek-R1",
+    "Cursor AI / Claude Code / Copilot"
+  ],
+  "modules": [
+    {
+      "id": "sec-1",
+      "name": "Section 1: Next.js 15 & Server Action Engineering Prompts",
+      "count": 45,
+      "path": "prompts/nextjs-app-router/"
+    },
+    {
+      "id": "sec-2",
+      "name": "Section 2: High-Concurrency PostgreSQL & Prisma Optimization",
+      "count": 40,
+      "path": "prompts/database-indexing/"
+    },
+    {
+      "id": "sec-3",
+      "name": "Section 3: Defensive TypeScript Types & Strict Schema Validators",
+      "count": 38,
+      "path": "prompts/database-indexing/04-defensive-typescript-validators.md"
+    },
+    {
+      "id": "sec-4",
+      "name": "Section 4: Microservices Event Bus & Redis Caching Directives",
+      "count": 42,
+      "path": "prompts/microservices-api/"
+    },
+    {
+      "id": "sec-5",
+      "name": "Section 5: Automated Jest & Playwright Test Generators",
+      "count": 35,
+      "path": "prompts/unit-testing-jest/"
+    }
+  ]
+}

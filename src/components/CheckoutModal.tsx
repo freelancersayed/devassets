@@ -3,14 +3,54 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import type { Product } from "@/data/products";
+import { useSession } from "@/lib/auth-client";
 
 interface CheckoutModalProps {
   product: Product;
   onClose: () => void;
 }
 
+/**
+ * Maps catalog product slugs/identifiers to FastSpring product paths
+ */
+function getFastSpringProductId(product: Product): string {
+  if (
+    product.slug === "fullstack-system-architecture-prompts" ||
+    product.id === 201
+  ) {
+    return "prod_fullstack_arch_prompts";
+  }
+  return product.slug;
+}
+
+/**
+ * Retrieves the current session user ID or initializes a persistent guest ID
+ */
+function getEffectiveSessionId(authenticatedUserId?: string | null): string {
+  if (authenticatedUserId) {
+    return authenticatedUserId;
+  }
+
+  if (typeof window !== "undefined") {
+    let guestSessionId = localStorage.getItem("devassets_session_id");
+    if (!guestSessionId) {
+      guestSessionId =
+        "usr_" +
+        (typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID().replace(/-/g, "").slice(0, 24)
+          : Date.now().toString(16) + Math.random().toString(16).slice(2, 10));
+      localStorage.setItem("devassets_session_id", guestSessionId);
+    }
+    return guestSessionId;
+  }
+
+  return "guest_session_id";
+}
+
 export default function CheckoutModal({ product, onClose }: CheckoutModalProps) {
   const [agreed, setAgreed] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { data: session } = useSession();
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -29,11 +69,61 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
   }, [handleKeyDown]);
 
   const handleCheckout = () => {
-    if (!agreed) return;
-    // Configurable checkout action — replace with your payment processor integration
-    alert(
-      `Checkout initiated for "${product.title}" at $${product.price} USD.\n\nIntegrate your payment processor (e.g., FastSpring, Paddle, or Lemon Squeezy) here.`
-    );
+    if (!agreed || isProcessing) return;
+
+    setIsProcessing(true);
+    const currentSessionId = getEffectiveSessionId(session?.user?.id);
+    const fastspringProductId = getFastSpringProductId(product);
+
+    // FastSpring Popup Storefront JavaScript SDK integration
+    if (typeof window !== "undefined" && window.fastspring?.builder) {
+      try {
+        // Push user's session ID into checkout tags
+        window.fastspring.builder.tag({
+          referrerAccountId: currentSessionId,
+        });
+
+        // Clear previous state and launch checkout popup
+        window.fastspring.builder.reset();
+        window.fastspring.builder.push({
+          products: [
+            {
+              path: fastspringProductId,
+              quantity: 1,
+            },
+          ],
+          tags: {
+            referrerAccountId: currentSessionId,
+          },
+          checkout: true,
+        });
+
+        // Close local modal once FastSpring overlay takes over
+        setTimeout(() => {
+          setIsProcessing(false);
+          onClose();
+        }, 800);
+      } catch (err) {
+        console.error("[FastSpring] Checkout initiation error:", err);
+        setIsProcessing(false);
+      }
+    } else {
+      // Fallback: Direct redirect if Popup SDK script hasn't completed loading
+      const storefrontDomain =
+        process.env.NEXT_PUBLIC_FASTSPRING_STOREFRONT ||
+        "devassets.test.onfastspring.com";
+
+      const checkoutUrl = `https://${storefrontDomain.replace(
+        /\/$/,
+        ""
+      )}/${encodeURIComponent(
+        fastspringProductId
+      )}?tags[referrerAccountId]=${encodeURIComponent(currentSessionId)}`;
+
+      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+      setIsProcessing(false);
+      onClose();
+    }
   };
 
   return (
@@ -75,8 +165,24 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
           Order Summary
         </h2>
         <p className="text-xs text-slate-500 mb-6">
-          Review your order before proceeding to checkout.
+          Review your order before proceeding to secure checkout.
         </p>
+
+        {/* Account Association Indicator */}
+        <div className="mb-4 flex items-center justify-between rounded-lg bg-slate-950/80 px-3.5 py-2.5 border border-slate-800 text-xs">
+          <span className="text-slate-400">Account:</span>
+          {session?.user ? (
+            <span className="font-medium text-emerald-400 flex items-center gap-1.5 truncate max-w-[240px]">
+              <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+              {session.user.email}
+            </span>
+          ) : (
+            <span className="text-indigo-400 flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-indigo-400"></span>
+              Guest Session (Instant License Allocation)
+            </span>
+          )}
+        </div>
 
         {/* Product details */}
         <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 mb-6">
@@ -164,18 +270,44 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
         <button
           type="button"
           onClick={handleCheckout}
-          disabled={!agreed}
-          className={`w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 shadow-lg ${
-            agreed
+          disabled={!agreed || isProcessing}
+          className={`w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 shadow-lg flex items-center justify-center gap-2 ${
+            agreed && !isProcessing
               ? "bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/25 active:scale-[0.98] cursor-pointer"
               : "bg-slate-700 text-slate-400 cursor-not-allowed shadow-none"
           }`}
         >
-          Proceed to Checkout
+          {isProcessing ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+              Connecting to FastSpring...
+            </>
+          ) : (
+            "Proceed to Checkout"
+          )}
         </button>
 
         <p className="text-center text-[10px] text-slate-600 mt-3">
-          🔒 256-bit SSL encrypted • Secure payment processing
+          🔒 256-bit SSL encrypted • FastSpring Global Merchant of Record
         </p>
       </div>
     </div>

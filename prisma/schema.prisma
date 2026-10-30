@@ -1,0 +1,48 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum PurchaseStatus {
+  ACTIVE
+  EXPIRED
+}
+
+model User {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  email     String         @unique
+  createdAt DateTime       @default(now())
+  purchases UserPurchase[]
+  credits   UserCredit[]
+
+  @@map("users")
+}
+
+model UserPurchase {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String         @db.ObjectId
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId   String
+  purchasedAt DateTime       @default(now())
+  status      PurchaseStatus @default(ACTIVE)
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("user_purchases")
+}
+
+model UserCredit {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String   @db.ObjectId
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  remainingDownloads Int      @default(3)
+  expiresAt          DateTime
+
+  @@unique([userId])
+  @@index([userId])
+  @@map("user_credits")
+}
