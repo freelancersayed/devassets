@@ -226,7 +226,7 @@ export default function ToolsSection() {
                   {/* Action Button: Identical Launch Tool Button for all 4 cards */}
                   <div className="mt-6 pt-4">
                     <MagneticButton className="w-full">
-                      {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" ? (
+                      {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" || tool.slug === "image-studio" ? (
                         <Link
                           href={`/tools/${tool.slug}`}
                           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 active:scale-[0.98]"
@@ -497,12 +497,12 @@ export default function ToolsSection() {
 
                   {/* Modal Actions */}
                   <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                    {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" ? (
+                    {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" || activeTool.slug === "image-studio" ? (
                       <Link
                         href={`/tools/${activeTool.slug}`}
                         className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
                       >
-                        Open Full Converter Page →
+                        Open Full Tool Page →
                       </Link>
                     ) : (
                       <button
