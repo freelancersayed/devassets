@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toolsData, type ToolItem } from "@/data/catalog";
@@ -12,15 +12,233 @@ import {
   MagneticButton,
 } from "@/components/motion/MotionContainers";
 
+/**
+ * Encodes an AudioBuffer into standard 16-bit PCM lossless WAV format.
+ */
+function audioBufferToWav(buffer: AudioBuffer): Blob {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const format = 1; // 1 = Linear PCM
+  const bitDepth = 16;
+  const bytesPerSample = bitDepth / 8;
+  const blockAlign = numChannels * bytesPerSample;
+  const numSamples = buffer.length;
+  const dataSize = numSamples * blockAlign;
+  const bufferSize = 44 + dataSize;
+
+  const arrayBuffer = new ArrayBuffer(bufferSize);
+  const view = new DataView(arrayBuffer);
+
+  const writeString = (offset: number, str: string) => {
+    for (let i = 0; i < str.length; i++) {
+      view.setUint8(offset + i, str.charCodeAt(i));
+    }
+  };
+
+  /* RIFF chunk descriptor */
+  writeString(0, "RIFF");
+  view.setUint32(4, 36 + dataSize, true);
+  writeString(8, "WAVE");
+
+  /* "fmt " sub-chunk */
+  writeString(12, "fmt ");
+  view.setUint32(16, 16, true); // SubChunk1Size (16 for PCM)
+  view.setUint16(20, format, true); // AudioFormat
+  view.setUint16(22, numChannels, true); // NumChannels
+  view.setUint32(24, sampleRate, true); // SampleRate
+  view.setUint32(28, sampleRate * blockAlign, true); // ByteRate
+  view.setUint16(32, blockAlign, true); // BlockAlign
+  view.setUint16(34, bitDepth, true); // BitsPerSample
+
+  /* "data" sub-chunk */
+  writeString(36, "data");
+  view.setUint32(40, dataSize, true);
+
+  // Write 16-bit PCM samples interleaved
+  const channels: Float32Array[] = [];
+  for (let c = 0; c < numChannels; c++) {
+    channels.push(buffer.getChannelData(c));
+  }
+
+  let offset = 44;
+  for (let i = 0; i < numSamples; i++) {
+    for (let c = 0; c < numChannels; c++) {
+      const sample = Math.max(-1, Math.min(1, channels[c][i]));
+      const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+      view.setInt16(offset, intSample, true);
+      offset += 2;
+    }
+  }
+
+  return new Blob([arrayBuffer], { type: "audio/wav" });
+}
+
 export default function ToolsSection() {
   const [activeTool, setActiveTool] = useState<ToolItem | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processSuccess, setProcessSuccess] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [statusMsg, setStatusMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [outputFileName, setOutputFileName] = useState("");
+  const [audioDuration, setAudioDuration] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleLaunch = (tool: ToolItem) => {
-    setActiveTool(tool);
+  const resetToolState = () => {
+    if (downloadUrl) {
+      URL.revokeObjectURL(downloadUrl);
+    }
     setIsProcessing(false);
     setProcessSuccess(false);
+    setProgress(0);
+    setStatusMsg("");
+    setErrorMsg(null);
+    setIsDragging(false);
+    setSelectedFile(null);
+    setDownloadUrl(null);
+    setOutputFileName("");
+    setAudioDuration("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleLaunch = (tool: ToolItem) => {
+    resetToolState();
+    setActiveTool(tool);
+  };
+
+  const handleCloseModal = () => {
+    resetToolState();
+    setActiveTool(null);
+  };
+
+  // Video-to-Audio Detacher core client-side processing
+  const processVideoFile = (file: File) => {
+    if (!file) return;
+
+    const validExtensions = [".mp4", ".webm", ".mov"];
+    const fileExt = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    const isValid =
+      validExtensions.includes(fileExt) ||
+      file.type.startsWith("video/") ||
+      file.type === "video/quicktime" ||
+      file.type === "video/mp4" ||
+      file.type === "video/webm";
+
+    if (!isValid) {
+      setErrorMsg("Please select a supported video file (.mp4, .webm, or .mov).");
+      return;
+    }
+
+    if (downloadUrl) {
+      URL.revokeObjectURL(downloadUrl);
+      setDownloadUrl(null);
+    }
+
+    setSelectedFile(file);
+    setIsProcessing(true);
+    setProcessSuccess(false);
+    setErrorMsg(null);
+    setProgress(15);
+    setStatusMsg(`Reading ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)...`);
+
+    const reader = new FileReader();
+
+    reader.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.min(45, Math.round((event.loaded / event.total) * 45));
+        setProgress(percent);
+      }
+    };
+
+    reader.onload = async (e) => {
+      try {
+        const arrayBuffer = e.target?.result as ArrayBuffer;
+        if (!arrayBuffer) {
+          throw new Error("Unable to read video file buffer.");
+        }
+
+        setProgress(50);
+        setStatusMsg("Decoding audio track via browser Web Audio API...");
+
+        const AudioContextClass =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+
+        if (!AudioContextClass) {
+          throw new Error("Web Audio API is not supported in this browser.");
+        }
+
+        const audioCtx = new AudioContextClass();
+
+        setProgress(70);
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+        setProgress(85);
+        setStatusMsg("Encoding lossless 16-bit PCM WAV...");
+
+        const wavBlob = audioBufferToWav(audioBuffer);
+        const url = URL.createObjectURL(wavBlob);
+
+        const safeBaseName = file.name.replace(/\.[^/.]+$/, "");
+        const finalWavName = `${safeBaseName}.wav`;
+
+        const minutes = Math.floor(audioBuffer.duration / 60);
+        const seconds = Math.floor(audioBuffer.duration % 60);
+        const durationStr = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+        setDownloadUrl(url);
+        setOutputFileName(finalWavName);
+        setAudioDuration(durationStr);
+        setProgress(100);
+        setStatusMsg(`Audio track extracted successfully (${durationStr})!`);
+        setIsProcessing(false);
+        setProcessSuccess(true);
+
+        audioCtx.close().catch(() => {});
+      } catch (err: unknown) {
+        console.error("Audio extraction error:", err);
+        setIsProcessing(false);
+        setErrorMsg(
+          err instanceof Error && err.message
+            ? err.message
+            : "Could not decode audio track. The video may have no audio or uses an unsupported codec."
+        );
+      }
+    };
+
+    reader.onerror = () => {
+      setIsProcessing(false);
+      setErrorMsg("Failed to read the video file. Please try again.");
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processVideoFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      processVideoFile(e.target.files[0]);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!downloadUrl) return;
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = outputFileName || "extracted-audio.wav";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   const handleRunDemo = () => {
@@ -112,7 +330,7 @@ export default function ToolsSection() {
                     </div>
                   </div>
 
-                  {/* Action Button: Dedicated page link for pdf-to-word & image-to-text, modal launcher for others */}
+                  {/* Action Button: Dedicated page link for pdf-to-word & image-to-text, interactive modal launcher for others */}
                   <div className="mt-6 pt-4">
                     <MagneticButton className="w-full">
                       {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" ? (
@@ -151,7 +369,7 @@ export default function ToolsSection() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
-            onClick={() => setActiveTool(null)}
+            onClick={handleCloseModal}
             role="dialog"
             aria-modal="true"
           >
@@ -166,7 +384,7 @@ export default function ToolsSection() {
               {/* Close Button */}
               <button
                 type="button"
-                onClick={() => setActiveTool(null)}
+                onClick={handleCloseModal}
                 className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
                 aria-label="Close modal"
               >
@@ -189,70 +407,224 @@ export default function ToolsSection() {
                 {activeTool.privacyNotice}
               </p>
 
-              {/* Sandbox Dropzone Area */}
-              <div className="rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/80 p-8 text-center space-y-3">
-                <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                </div>
-                <p className="text-sm font-semibold text-slate-200">
-                  Drag &amp; drop file here or click to browse
-                </p>
-                <p className="text-xs text-slate-500">
-                  Processed locally in your browser memory via WebAssembly &amp; Web Workers.
-                </p>
-              </div>
+              {activeTool.slug === "video-to-audio" ? (
+                /* ─── Video to Audio Detacher Interactive UI ─── */
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="videoFileInput"
+                  />
 
-              {/* Status / Output Preview */}
-              <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span>Privacy Status:</span>
-                  <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
-                </div>
-                {isProcessing && (
-                  <div className="flex items-center gap-2 text-indigo-400 font-medium py-1 animate-pulse">
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    <span>Processing file stream in browser memory...</span>
-                  </div>
-                )}
-                {processSuccess && (
-                  <div className="text-emerald-400 font-medium py-1">
-                    ✓ Done! Extracted output generated. Click below to download.
-                  </div>
-                )}
-              </div>
+                  {/* Sandbox Dropzone Area */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`rounded-xl border-2 border-dashed p-8 text-center space-y-3 cursor-pointer transition-all duration-200 ${
+                      isDragging
+                        ? "border-cyan-400 bg-cyan-950/30 scale-[1.01]"
+                        : "border-slate-700 bg-slate-950/80 hover:border-cyan-500/60 hover:bg-slate-950"
+                    }`}
+                  >
+                    <div className="mx-auto w-12 h-12 rounded-full bg-cyan-950/60 border border-cyan-800/50 flex items-center justify-center text-cyan-400">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                      </svg>
+                    </div>
 
-              {/* Modal Actions */}
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" ? (
-                  <Link
-                    href={`/tools/${activeTool.slug}`}
-                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
-                  >
-                    Open Full Converter Page →
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleRunDemo}
-                    disabled={isProcessing}
-                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
-                  >
-                    {isProcessing ? "Processing..." : "Run Client-Side Test"}
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setActiveTool(null)}
-                  className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
+                    {selectedFile ? (
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-cyan-300 truncate max-w-sm mx-auto">
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Click or drop to choose another video
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm font-semibold text-slate-200">
+                          Drag &amp; drop MP4, WebM or MOV file here or click to browse
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          Processed locally in your browser memory via Web Audio API. 100% private.
+                        </p>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Status / Output Preview */}
+                  <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                    <div className="flex items-center justify-between text-slate-400">
+                      <span>Privacy Status:</span>
+                      <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
+                    </div>
+
+                    {isProcessing && (
+                      <div className="space-y-2 pt-1">
+                        <div className="flex items-center justify-between text-cyan-400 font-medium animate-pulse">
+                          <div className="flex items-center gap-2">
+                            <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                            </svg>
+                            <span>{statusMsg || "Processing video file in browser memory..."}</span>
+                          </div>
+                          <span className="font-mono text-cyan-300">{progress}%</span>
+                        </div>
+                        <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-cyan-500 to-indigo-500 transition-all duration-200 rounded-full"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {processSuccess && (
+                      <div className="space-y-1 pt-1">
+                        <div className="flex items-center justify-between text-emerald-400 font-medium">
+                          <span>✓ Done! Audio extracted in lossless 16-bit PCM WAV.</span>
+                          {audioDuration && <span className="font-mono text-xs">⏱ {audioDuration}</span>}
+                        </div>
+                        {outputFileName && (
+                          <p className="text-[11px] text-slate-400 font-mono truncate">
+                            Ready: {outputFileName}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {errorMsg && (
+                      <div className="text-rose-400 font-medium py-1 flex items-center gap-2">
+                        <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>{errorMsg}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Actions */}
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    {processSuccess && downloadUrl ? (
+                      <button
+                        type="button"
+                        onClick={handleDownload}
+                        className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>Download {outputFileName || "Audio.wav"}</span>
+                      </button>
+                    ) : isProcessing ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="flex-1 py-3 px-4 rounded-xl bg-cyan-950 border border-cyan-800 text-cyan-300 font-semibold text-sm cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        <span>Extracting Audio ({progress}%)...</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex-1 py-3 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98]"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <span>Choose Video File (.mp4, .webm, .mov)</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              ) : (
+                /* ─── Generic Fallback / Other Tools UI ─── */
+                <>
+                  <div className="rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/80 p-8 text-center space-y-3">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-slate-200">
+                      Drag &amp; drop file here or click to browse
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Processed locally in your browser memory via WebAssembly &amp; Web Workers.
+                    </p>
+                  </div>
+
+                  <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                    <div className="flex items-center justify-between text-slate-400 mb-2">
+                      <span>Privacy Status:</span>
+                      <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
+                    </div>
+                    {isProcessing && (
+                      <div className="flex items-center gap-2 text-indigo-400 font-medium py-1 animate-pulse">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        <span>Processing file stream in browser memory...</span>
+                      </div>
+                    )}
+                    {processSuccess && (
+                      <div className="text-emerald-400 font-medium py-1">
+                        ✓ Done! Extracted output generated. Click below to download.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" ? (
+                      <Link
+                        href={`/tools/${activeTool.slug}`}
+                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
+                      >
+                        Open Full Converter Page →
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleRunDemo}
+                        disabled={isProcessing}
+                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {isProcessing ? "Processing..." : "Run Client-Side Test"}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}
