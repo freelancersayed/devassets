@@ -4,17 +4,16 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 
 /**
- * Encodes an AudioBuffer into standard 16-bit PCM lossless WAV format.
+ * Encodes PCM float samples into standard 16-bit PCM lossless WAV format.
  * High-performance TypedArray implementation.
  */
-function audioBufferToWav(buffer: AudioBuffer): Blob {
-  const numChannels = buffer.numberOfChannels;
-  const sampleRate = buffer.sampleRate;
+function audioDataToWav(channelData: Float32Array[], sampleRate: number): Blob {
+  const numChannels = channelData.length;
+  const numSamples = channelData[0].length;
   const format = 1; // 1 = Linear PCM
   const bitDepth = 16;
   const bytesPerSample = bitDepth / 8;
   const blockAlign = numChannels * bytesPerSample;
-  const numSamples = buffer.length;
   const dataSize = numSamples * blockAlign;
   const bufferSize = 44 + dataSize;
 
@@ -46,16 +45,12 @@ function audioBufferToWav(buffer: AudioBuffer): Blob {
   writeString(36, "data");
   view.setUint32(40, dataSize, true);
 
-  const channels: Float32Array[] = [];
-  for (let c = 0; c < numChannels; c++) {
-    channels.push(buffer.getChannelData(c));
-  }
-
+  // Write 16-bit PCM samples interleaved
   const int16View = new Int16Array(arrayBuffer, 44, numSamples * numChannels);
   let p = 0;
   for (let i = 0; i < numSamples; i++) {
     for (let c = 0; c < numChannels; c++) {
-      const sample = Math.max(-1, Math.min(1, channels[c][i]));
+      const sample = Math.max(-1, Math.min(1, channelData[c][i]));
       int16View[p++] = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
     }
   }
@@ -95,7 +90,7 @@ export default function VideoToAudioClient() {
   const processVideoFile = (file: File) => {
     if (!file) return;
 
-    const validExtensions = [".mp4", ".webm", ".mov", ".m4v", ".ogg", ".ogv"];
+    const validExtensions = [".mp4", ".webm", ".mov", ".m4v", ".mkv", ".ogg", ".ogv"];
     const dotIndex = file.name.lastIndexOf(".");
     const fileExt = dotIndex !== -1 ? file.name.substring(dotIndex).toLowerCase() : "";
     const isValid =
@@ -140,71 +135,78 @@ export default function VideoToAudioClient() {
         }
 
         setProgress(50);
-        setStatusMsg("Initializing browser Web Audio API context...");
+        setStatusMsg("Extracting audio stream from container...");
 
-        const AudioContextClass =
-          window.AudioContext ||
-          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        let channelData: Float32Array[] = [];
+        let sampleRate = 44100;
+        let decoded = false;
 
-        if (!AudioContextClass) {
-          throw new Error("Web Audio API is not supported in this browser.");
-        }
-
-        const audioCtx = new AudioContextClass();
-
-        if (audioCtx.state === "suspended") {
+        // Path 1: For MP4 / MOV containers, use @audio/decode-mp4 (pure ISO BMFF Demuxer)
+        if (
+          fileExt === ".mp4" ||
+          fileExt === ".mov" ||
+          fileExt === ".m4v" ||
+          file.type.includes("mp4") ||
+          file.type.includes("quicktime")
+        ) {
           try {
-            await audioCtx.resume();
-          } catch {
-            // resume if allowed
+            setProgress(60);
+            setStatusMsg("Demuxing and decoding MP4/MOV audio stream...");
+            const { default: decodeMp4 } = await import("@audio/decode-mp4");
+            const res = await decodeMp4(arrayBuffer.slice(0));
+            if (res && res.channelData && res.channelData.length > 0 && res.channelData[0].length > 0) {
+              channelData = res.channelData;
+              sampleRate = res.sampleRate || 44100;
+              decoded = true;
+            }
+          } catch (mp4Err) {
+            console.warn("decode-mp4 attempt error, falling back to Web Audio API:", mp4Err);
           }
         }
 
-        setProgress(65);
-        setStatusMsg("Decoding audio track via browser Web Audio API...");
-
-        // Cross-browser decode with cloned buffer so detachment doesn't invalidate data
-        const audioBuffer = await new Promise<AudioBuffer>((resolve, reject) => {
-          let resolved = false;
-          const bufferCopy = arrayBuffer.slice(0);
-
-          const successCb = (buf: AudioBuffer) => {
-            if (!resolved) {
-              resolved = true;
-              resolve(buf);
-            }
-          };
-
-          const errorCb = (err: unknown) => {
-            if (!resolved) {
-              resolved = true;
-              reject(err);
-            }
-          };
-
+        // Path 2: Native Web Audio API AudioContext (works directly for WebM, WAV, OGG, etc.)
+        if (!decoded) {
           try {
-            const maybePromise = audioCtx.decodeAudioData(bufferCopy, successCb, errorCb);
-            if (maybePromise && typeof maybePromise.then === "function") {
-              maybePromise.then(successCb).catch(errorCb);
+            setProgress(70);
+            setStatusMsg("Decoding audio via browser Web Audio API...");
+            const AudioContextClass =
+              window.AudioContext ||
+              (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+
+            if (AudioContextClass) {
+              const audioCtx = new AudioContextClass();
+              if (audioCtx.state === "suspended") {
+                await audioCtx.resume();
+              }
+              const audioBuffer = await new Promise<AudioBuffer>((resolve, reject) => {
+                audioCtx.decodeAudioData(arrayBuffer.slice(0), resolve, reject);
+              });
+              for (let c = 0; c < audioBuffer.numberOfChannels; c++) {
+                channelData.push(audioBuffer.getChannelData(c));
+              }
+              sampleRate = audioBuffer.sampleRate;
+              decoded = true;
+              audioCtx.close().catch(() => {});
             }
-          } catch (syncErr) {
-            if (!resolved) {
-              resolved = true;
-              reject(syncErr);
-            }
+          } catch (audioCtxErr) {
+            console.warn("AudioContext decode error:", audioCtxErr);
           }
-        });
+        }
+
+        if (!decoded || channelData.length === 0 || channelData[0].length === 0) {
+          throw new Error("Could not decode audio. Please ensure the video contains an active audio track.");
+        }
 
         setProgress(85);
         setStatusMsg("Encoding lossless 16-bit PCM WAV...");
 
-        const wavBlob = audioBufferToWav(audioBuffer);
+        const wavBlob = audioDataToWav(channelData, sampleRate);
         const url = URL.createObjectURL(wavBlob);
 
         const safeBaseName = file.name.replace(/\.[^/.]+$/, "") || "extracted-audio";
         const finalWavName = `${safeBaseName}.wav`;
 
-        const totalSecs = Math.floor(audioBuffer.duration);
+        const totalSecs = Math.floor(channelData[0].length / sampleRate);
         const minutes = Math.floor(totalSecs / 60);
         const seconds = totalSecs % 60;
         const durationStr = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -216,8 +218,6 @@ export default function VideoToAudioClient() {
         setStatusMsg(`Audio track extracted successfully (${durationStr})!`);
         setIsProcessing(false);
         setProcessSuccess(true);
-
-        audioCtx.close().catch(() => {});
       } catch (err: unknown) {
         console.error("Audio extraction error:", err);
         setIsProcessing(false);
@@ -273,13 +273,13 @@ export default function VideoToAudioClient() {
             <span>&larr; Back to All Utilities</span>
           </Link>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/60 text-xs font-semibold text-cyan-400 mx-auto">
-            ⚡ 100% Client-Side Web Audio API Engine
+            ⚡ 100% Client-Side Pure Demuxing &amp; Web Audio Engine
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
             Video to Audio Detacher
           </h1>
           <p className="text-sm md:text-base text-slate-400 max-w-xl mx-auto">
-            Extract pure, lossless 16-bit PCM WAV audio from MP4, WebM, and MOV videos locally in your browser memory. Zero files are uploaded to any server.
+            Detach and extract lossless 16-bit PCM WAV audio from MP4, WebM, and MOV videos locally in your browser memory. Zero files are uploaded to any server.
           </p>
         </div>
 
@@ -330,7 +330,7 @@ export default function VideoToAudioClient() {
                   Drag &amp; drop MP4, WebM, or MOV video here, or click to browse
                 </p>
                 <p className="text-xs text-slate-500">
-                  Processed in-memory on your device using Web Audio API • 100% private
+                  Processed in-memory on your device • 100% private • No server uploads
                 </p>
               </div>
             )}
@@ -467,4 +467,3 @@ export default function VideoToAudioClient() {
     </div>
   );
 }
-
