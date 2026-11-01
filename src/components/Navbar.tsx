@@ -72,7 +72,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
+        <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
           <Link
             href="/"
             className="hover:text-indigo-400 transition-colors"
@@ -113,19 +113,35 @@ export default function Navbar() {
           >
             About Us
           </Link>
-          <Link
-            href="/access"
-            className="text-indigo-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800/60 hover:bg-indigo-900/60 text-xs font-semibold"
-          >
-            <span>🔑</span> Redeem License
-          </Link>
+
+          {/* Prominent Dashboard Link in Desktop Nav */}
+          {session?.user ? (
+            <Link
+              href="/dashboard"
+              className="text-indigo-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-950/70 border border-indigo-700/60 hover:bg-indigo-900/60 text-xs font-semibold shadow-sm"
+            >
+              <span>📊</span> Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/access"
+              className="text-indigo-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800/60 hover:bg-indigo-900/60 text-xs font-semibold"
+            >
+              <span>🔑</span> Redeem License
+            </Link>
+          )}
         </div>
 
         {/* Action CTA: User Session Awareness */}
         <div className="hidden md:flex items-center gap-3">
           {session?.user ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 backdrop-blur-md">
+              {/* User Avatar + Name (Clickable link to Dashboard) */}
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 backdrop-blur-md transition-colors group cursor-pointer"
+                title="Open Dashboard"
+              >
                 {session.user.image ? (
                   <img
                     src={session.user.image}
@@ -137,10 +153,33 @@ export default function Navbar() {
                     {(session.user.name || session.user.email || "U")[0]}
                   </div>
                 )}
-                <span className="text-xs font-medium text-slate-200 max-w-[120px] truncate">
+                <span className="text-xs font-medium text-slate-200 max-w-[120px] truncate group-hover:text-indigo-300">
                   {session.user.name || session.user.email?.split("@")[0]}
                 </span>
-              </div>
+              </Link>
+
+              {/* Dedicated "Dashboard" Button */}
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 active:scale-95 shadow-lg shadow-indigo-600/30 cursor-pointer"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                  />
+                </svg>
+                <span>Dashboard</span>
+              </Link>
+
+              {/* Sign Out Button */}
               <button
                 type="button"
                 onClick={handleSignOut}
@@ -184,7 +223,7 @@ export default function Navbar() {
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none"
+          className="flex lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none cursor-pointer"
         >
           <svg
             className="h-6 w-6"
@@ -246,13 +285,24 @@ export default function Navbar() {
           >
             About Us
           </Link>
-          <Link
-            href="/access"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2.5 text-sm font-semibold text-indigo-300 rounded-xl hover:bg-slate-800/80"
-          >
-            🔑 Redeem License
-          </Link>
+
+          {session?.user ? (
+            <Link
+              href="/dashboard"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2.5 text-sm font-semibold text-indigo-400 bg-indigo-950/40 border border-indigo-800/50 rounded-xl"
+            >
+              📊 User Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/access"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2.5 text-sm font-semibold text-indigo-300 rounded-xl hover:bg-slate-800/80"
+            >
+              🔑 Redeem License
+            </Link>
+          )}
 
           <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
             {session?.user ? (
@@ -283,6 +333,7 @@ export default function Navbar() {
                   </div>
                   <span className="text-xs text-indigo-400 font-semibold">&rarr;</span>
                 </Link>
+
                 <Link
                   href="/dashboard"
                   onClick={() => setIsOpen(false)}
@@ -291,6 +342,7 @@ export default function Navbar() {
                   <span>📊</span>
                   <span>Open Dashboard</span>
                 </Link>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -298,7 +350,7 @@ export default function Navbar() {
                     handleSignOut();
                   }}
                   disabled={isSigningOut}
-                  className="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-400 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/30 transition-colors"
+                  className="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-400 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/30 transition-colors cursor-pointer"
                 >
                   {isSigningOut ? "Signing out..." : "Sign Out"}
                 </button>
