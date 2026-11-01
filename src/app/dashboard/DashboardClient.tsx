@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth-client";
 
 interface UserPurchase {
@@ -18,6 +17,8 @@ interface UserPurchase {
   purchasedAt: string;
   downloadUrl: string;
 }
+
+type TabType = "overview" | "assets" | "tools" | "prompts" | "redeem" | "account";
 
 const DASHBOARD_TOOLS = [
   {
@@ -146,12 +147,9 @@ Optimize a collection with 5,000,000+ documents handling 1,500 requests/second:
 ];
 
 export default function DashboardClient() {
-  const router = useRouter();
   const { data: session, isPending } = useSession();
 
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "assets" | "tools" | "prompts" | "account"
-  >("overview");
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
 
   // Purchases / Licenses state
   const [purchases, setPurchases] = useState<UserPurchase[]>([]);
@@ -284,7 +282,7 @@ export default function DashboardClient() {
           <div className="space-y-2">
             <h2 className="text-2xl font-bold text-white">Sign In Required</h2>
             <p className="text-sm text-slate-400">
-              Please sign in to access your purchased developer kits, license keys, and personal dashboard.
+              Please sign in to access your developer kits, license keys, and personalized dashboard.
             </p>
           </div>
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
@@ -317,705 +315,731 @@ export default function DashboardClient() {
     return matchesCategory && matchesSearch;
   });
 
+  const SIDEBAR_ITEMS: {
+    id: TabType;
+    label: string;
+    icon: string;
+    badge?: string | number;
+    badgeColor?: string;
+  }[] = [
+    { id: "overview", label: "Overview", icon: "📊" },
+    {
+      id: "assets",
+      label: "My Digital Assets",
+      icon: "📦",
+      badge: purchases.length > 0 ? purchases.length : undefined,
+      badgeColor: "bg-emerald-950 text-emerald-400 border border-emerald-800/60",
+    },
+    {
+      id: "tools",
+      label: "Free Browser Tools",
+      icon: "⚡",
+      badge: "4",
+      badgeColor: "bg-cyan-950 text-cyan-400 border border-cyan-800/60",
+    },
+    {
+      id: "prompts",
+      label: "AI Prompt Vault",
+      icon: "🤖",
+      badge: "5",
+      badgeColor: "bg-purple-950 text-purple-300 border border-purple-800/60",
+    },
+    { id: "redeem", label: "Redeem License", icon: "🔑" },
+    { id: "account", label: "Account & Settings", icon: "⚙️" },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#070A12] text-slate-200 py-8 px-4 sm:px-6 lg:px-8 relative selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#070A12] text-slate-200 py-6 sm:py-8 px-4 sm:px-6 lg:px-8 relative selection:bg-indigo-500 selection:text-white">
       {/* Background Ambient Glows */}
       <div className="absolute top-10 left-1/4 w-96 h-96 bg-indigo-600/10 blur-[130px] rounded-full pointer-events-none" />
       <div className="absolute top-40 right-1/4 w-96 h-96 bg-purple-600/10 blur-[130px] rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto space-y-8 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* ══════════════════════════════════════════════════════════════
-            TOP WELCOME HERO & PROFILE BANNER
+            DESKTOP & MOBILE SIDEBAR + PREVIEW LAYOUT CONTAINER
            ══════════════════════════════════════════════════════════════ */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4 sm:gap-5">
-            {user.image ? (
-              <img
-                src={user.image}
-                alt={user.name || "User Avatar"}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-indigo-400/50 shadow-lg shadow-indigo-500/20"
-              />
-            ) : (
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-indigo-600/30 uppercase">
-                {(user.name || user.email || "U")[0]}
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+          {/* ══════════════════════════════════════════════════════════════
+              LEFT SIDEBAR: মেনু গুলো বাম সাইডে
+             ══════════════════════════════════════════════════════════════ */}
+          <aside className="w-full lg:w-72 shrink-0 space-y-4 lg:sticky lg:top-24">
+            {/* User Profile Summary Card */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/70 border border-white/10 backdrop-blur-xl shadow-xl flex items-center gap-3.5">
+              {user.image ? (
+                <img
+                  src={user.image}
+                  alt={user.name || "User Avatar"}
+                  className="w-12 h-12 rounded-xl object-cover border-2 border-indigo-400/50 shadow-md shadow-indigo-500/20 shrink-0"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-indigo-600/30 uppercase shrink-0">
+                  {(user.name || user.email || "U")[0]}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="font-bold text-white text-sm truncate">
+                    {user.name || "Developer"}
+                  </h3>
+                </div>
+                <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                  {user.email}
+                </p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">
+                    Verified Member
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar Navigation Items Menu */}
+            <div className="p-2 sm:p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl">
+              <div className="px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold hidden lg:block">
+                Dashboard Navigation
+              </div>
+
+              {/* Mobile Horizontal Scroll vs Desktop Vertical Menu */}
+              <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-none">
+                {SIDEBAR_ITEMS.map((item) => {
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setActiveTab(item.id)}
+                      className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer w-full text-left ${
+                        isActive
+                          ? "bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-600/25"
+                          : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-base">{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                      {item.badge !== undefined && (
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            isActive
+                              ? "bg-white/20 text-white"
+                              : item.badgeColor || "bg-white/[0.06] text-slate-300"
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+
+              {/* Sidebar Quick Footer */}
+              <div className="pt-3 mt-2 border-t border-white/[0.08] hidden lg:block space-y-2">
+                <div className="p-3 rounded-xl bg-slate-950/80 border border-white/[0.06] space-y-1">
+                  <div className="flex items-center justify-between text-[11px] font-medium text-slate-300">
+                    <span>Privacy Engine</span>
+                    <span className="text-emerald-400 font-bold">100% Native</span>
+                  </div>
+                  <p className="text-[10px] text-slate-500">
+                    Client WebAssembly &amp; Web Audio memory execution.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                >
+                  <span>🚪</span>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          {/* ══════════════════════════════════════════════════════════════
+              RIGHT PREVIEW & CONTENT AREA: ডানপাশে প্রিভিউ
+             ══════════════════════════════════════════════════════════════ */}
+          <main className="flex-1 w-full min-w-0 space-y-6">
+            {/* ──────────────────────────────────────────────────────────
+                TAB 1: OVERVIEW PREVIEW
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "overview" && (
+              <div className="space-y-6 animate-fadeIn">
+                {/* Overview Banner */}
+                <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-950/70 via-slate-900/80 to-purple-950/50 border border-indigo-500/30 shadow-xl backdrop-blur-xl relative overflow-hidden">
+                  <div className="max-w-2xl space-y-3 relative z-10">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-bold text-indigo-300 bg-indigo-950/80 border border-indigo-800/60 inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Client-Side Workspace Active
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      Welcome to your Developer Hub
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                      Instant access to your purchased system architecture directives, offline browser utilities, and fast license key management.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 4 Stat Metric Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>Digital Assets</span>
+                      <span>📦</span>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">
+                      {purchases.length}
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {purchases.length > 0 ? "Full access active" : "No keys active"}
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>Free Tools</span>
+                      <span>🛠️</span>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-cyan-400">
+                      4
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      100% In-Memory
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>AI Prompts</span>
+                      <span>🤖</span>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-purple-400">
+                      450+
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      Claude 3.7 &bull; GPT-4o
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>Telemetry</span>
+                      <span>🛡️</span>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-emerald-400">
+                      0 KB
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      Zero Server Uploads
+                    </p>
+                  </div>
+                </div>
+
+                {/* Quick Launch Free Tools Grid Preview */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base sm:text-lg font-bold text-white">
+                        Free Client-Side Browser Utilities
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        Zero server latency. Powered natively by HTML5 Canvas &amp; Web Audio API.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("tools")}
+                      className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
+                    >
+                      View All Tools &rarr;
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {DASHBOARD_TOOLS.map((tool) => (
+                      <Link
+                        key={tool.id}
+                        href={tool.route}
+                        className="group p-5 rounded-2xl bg-slate-900/60 hover:bg-slate-900/90 border border-white/10 hover:border-indigo-500/40 backdrop-blur-md transition-all flex flex-col justify-between space-y-4"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-2xl p-2 rounded-xl bg-white/[0.04] border border-white/10 group-hover:scale-110 transition-transform">
+                              {tool.icon}
+                            </span>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${tool.badgeColor}`}>
+                              {tool.badge}
+                            </span>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white text-sm group-hover:text-indigo-300 transition-colors">
+                              {tool.title}
+                            </h4>
+                            <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                              {tool.desc}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs text-indigo-400 font-semibold group-hover:translate-x-0.5 transition-transform">
+                          <span>Launch Tool</span>
+                          <span>&rarr;</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
-            <div className="space-y-1">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  Welcome back, {user.name || user.email?.split("@")[0]}!
-                </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Verified Developer
-                </span>
-                {(user as any).role === "admin" && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-950/80 text-purple-300 border border-purple-800/60">
-                    Admin
-                  </span>
-                )}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-400 flex items-center gap-2">
-                <span>{user.email}</span>
-                <span>&bull;</span>
-                <span className="font-mono text-slate-500">
-                  ID: {user.id ? user.id.slice(0, 8) + "..." : "Active"}
-                </span>
-              </p>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <button
-              onClick={() => {
-                setActiveTab("assets");
-                const el = document.getElementById("redeem-section");
-                el?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:opacity-95 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-indigo-600/25 transition-all cursor-pointer"
-            >
-              <span>🔑</span>
-              <span>Redeem Key</span>
-            </button>
-            <Link
-              href="/#products"
-              className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-slate-200 font-semibold text-xs sm:text-sm transition-all text-center"
-            >
-              <span>Store</span>
-              <span>&rarr;</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════
-            4 REAL-TIME METRIC CARDS
-           ══════════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {/* Card 1: Unlocked Assets */}
-          <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/[0.08] backdrop-blur-md space-y-2 hover:border-indigo-500/40 transition-colors">
-            <div className="flex items-center justify-between text-xs text-slate-400">
-              <span className="font-medium">My Digital Assets</span>
-              <span className="text-indigo-400 text-base">📦</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-black text-white">
-                {purchases.length}
-              </span>
-              <span className="text-xs text-slate-500">Product Kits</span>
-            </div>
-            <p className="text-[11px] text-slate-400 truncate">
-              {purchases.length > 0 ? "Full access unlocked" : "No keys redeemed yet"}
-            </p>
-          </div>
-
-          {/* Card 2: Active License */}
-          <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/[0.08] backdrop-blur-md space-y-2 hover:border-emerald-500/40 transition-colors">
-            <div className="flex items-center justify-between text-xs text-slate-400">
-              <span className="font-medium">License Status</span>
-              <span className="text-emerald-400 text-base">🔑</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl sm:text-2xl font-black text-emerald-400">
-                Lifetime
-              </span>
-              <span className="text-xs text-slate-500">Single-Dev</span>
-            </div>
-            <p className="text-[11px] text-slate-400 truncate">
-              Commercial Royalty-Free
-            </p>
-          </div>
-
-          {/* Card 3: Free Browser Tools */}
-          <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/[0.08] backdrop-blur-md space-y-2 hover:border-cyan-500/40 transition-colors">
-            <div className="flex items-center justify-between text-xs text-slate-400">
-              <span className="font-medium">Free Client Tools</span>
-              <span className="text-cyan-400 text-base">🛠️</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-black text-cyan-400">
-                4 / 4
-              </span>
-              <span className="text-xs text-emerald-400 font-semibold">Active</span>
-            </div>
-            <p className="text-[11px] text-slate-400 truncate">
-              100% In-Browser Memory
-            </p>
-          </div>
-
-          {/* Card 4: Telemetry Privacy */}
-          <div className="p-5 rounded-2xl bg-slate-900/50 border border-white/[0.08] backdrop-blur-md space-y-2 hover:border-purple-500/40 transition-colors">
-            <div className="flex items-center justify-between text-xs text-slate-400">
-              <span className="font-medium">Privacy Status</span>
-              <span className="text-purple-400 text-base">🛡️</span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-black text-white">
-                0 KB
-              </span>
-              <span className="text-xs text-slate-500">Uploaded</span>
-            </div>
-            <p className="text-[11px] text-slate-400 truncate">
-              Zero Server Telemetry
-            </p>
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════
-            TAB CONTROLS NAVIGATION
-           ══════════════════════════════════════════════════════════════ */}
-        <div className="border-b border-white/10 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {[
-            { id: "overview", label: "Overview", icon: "📊" },
-            { id: "assets", label: `My Assets (${purchases.length})`, icon: "📦" },
-            { id: "tools", label: "Browser Tools (4)", icon: "⚡" },
-            { id: "prompts", label: "AI Prompt Vault", icon: "🤖" },
-            { id: "account", label: "Account & Security", icon: "⚙️" },
-          ].map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer ${
-                  isActive
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                    : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════
-            TAB 1: OVERVIEW TAB CONTENT
-           ══════════════════════════════════════════════════════════════ */}
-        {activeTab === "overview" && (
-          <div className="space-y-8 animate-fadeIn">
-            {/* Instant Redeem Banner */}
-            <div
-              id="redeem-section"
-              className="p-6 rounded-3xl bg-gradient-to-br from-indigo-950/70 via-slate-900/80 to-purple-950/50 border border-indigo-500/30 shadow-xl backdrop-blur-xl relative overflow-hidden"
-            >
-              <div className="max-w-2xl space-y-4 relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold text-indigo-300 bg-indigo-950/80 border border-indigo-800/60">
-                  <span>✨</span>
-                  <span>FastSpring License Key Activation</span>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white">
-                  Redeem Your Digital Product License
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  Enter the license key received in your FastSpring purchase email to instantly link your digital architecture prompts and kit to your account.
-                </p>
-
-                <form onSubmit={handleRedeem} className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <input
-                    type="text"
-                    value={licenseKeyInput}
-                    onChange={(e) => setLicenseKeyInput(e.target.value)}
-                    placeholder="e.g. DEVASSETS-DEMO-2026"
-                    className="flex-1 px-4 py-3 rounded-xl bg-slate-950/80 border border-white/10 text-white text-sm font-mono placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors uppercase"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isRedeeming || !licenseKeyInput.trim()}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 disabled:opacity-50 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {isRedeeming ? (
-                      <>
-                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                        </svg>
-                        <span>Verifying...</span>
-                      </>
-                    ) : (
-                      <span>Activate License</span>
-                    )}
-                  </button>
-                </form>
-
-                {/* Demo Key Pill */}
-                <div className="flex items-center gap-2 pt-1 text-xs text-slate-400">
-                  <span>Quick Test Demo Key:</span>
+            {/* ──────────────────────────────────────────────────────────
+                TAB 2: MY DIGITAL ASSETS & DOWNLOADS PREVIEW
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "assets" && (
+              <div className="space-y-6 animate-fadeIn">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/10">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white">
+                      My Unlocked Digital Kits
+                    </h2>
+                    <p className="text-xs text-slate-400">
+                      Download packages and copy license keys for your purchased kits.
+                    </p>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setLicenseKeyInput("DEVASSETS-DEMO-2026")}
-                    className="font-mono text-indigo-400 hover:text-indigo-300 underline cursor-pointer"
+                    onClick={() => setActiveTab("redeem")}
+                    className="self-start sm:self-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors cursor-pointer shadow-md shadow-indigo-600/30"
                   >
-                    DEVASSETS-DEMO-2026
+                    + Redeem License Key
                   </button>
                 </div>
 
-                {redeemFeedback && (
-                  <div
-                    className={`p-3.5 rounded-xl text-xs font-medium border flex items-center gap-2.5 animate-fadeIn ${
-                      redeemFeedback.type === "success"
-                        ? "bg-emerald-950/60 border-emerald-500/40 text-emerald-300"
-                        : "bg-rose-950/60 border-rose-500/40 text-rose-300"
-                    }`}
-                  >
-                    <span>{redeemFeedback.type === "success" ? "✓" : "⚠️"}</span>
-                    <span>{redeemFeedback.message}</span>
+                {isLoadingPurchases ? (
+                  <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-3">
+                    <div className="w-8 h-8 mx-auto border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-xs text-slate-400">Loading your digital assets...</p>
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Launch Free Tools Grid */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-white">Free Browser Utilities</h3>
-                  <p className="text-xs text-slate-400">
-                    High-performance client-side tools processed 100% inside your browser memory.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setActiveTab("tools")}
-                  className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
-                >
-                  View All &rarr;
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {DASHBOARD_TOOLS.map((tool) => (
-                  <Link
-                    key={tool.id}
-                    href={tool.route}
-                    className="group p-5 rounded-2xl bg-slate-900/60 hover:bg-slate-900/90 border border-white/10 hover:border-indigo-500/40 backdrop-blur-md transition-all flex flex-col justify-between space-y-4"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl p-2 rounded-xl bg-white/[0.04] border border-white/10 group-hover:scale-110 transition-transform">
-                          {tool.icon}
-                        </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${tool.badgeColor}`}>
-                          {tool.badge}
-                        </span>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-white text-sm group-hover:text-indigo-300 transition-colors">
-                          {tool.title}
-                        </h4>
-                        <p className="text-xs text-slate-400 mt-1 line-clamp-2">
-                          {tool.desc}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs text-indigo-400 font-semibold group-hover:translate-x-0.5 transition-transform">
-                      <span>Launch Tool</span>
-                      <span>&rarr;</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            TAB 2: MY DIGITAL ASSETS & DOWNLOADS
-           ══════════════════════════════════════════════════════════════ */}
-        {activeTab === "assets" && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-xl font-bold text-white">My Unlocked Digital Kits</h3>
-                <p className="text-xs sm:text-sm text-slate-400">
-                  Direct access to your licensed developer prompt libraries, boilerplates, and deliverables.
-                </p>
-              </div>
-              <button
-                onClick={() => {
-                  const el = document.getElementById("redeem-input-card");
-                  el?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-300 hover:text-white transition-colors self-start sm:self-auto cursor-pointer"
-              >
-                + Redeem Another Key
-              </button>
-            </div>
-
-            {isLoadingPurchases ? (
-              <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-3">
-                <div className="w-8 h-8 mx-auto border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-                <p className="text-xs text-slate-400">Loading your licensed assets...</p>
-              </div>
-            ) : purchases.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {purchases.map((item, idx) => (
-                  <div
-                    key={item.id || idx}
-                    className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-slate-900/80 via-slate-950 to-slate-900/60 border border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between space-y-6 relative overflow-hidden"
-                  >
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-full text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                          {item.status} &bull; {item.version}
-                        </span>
-                        <span className="text-xs font-mono text-slate-500">
-                          {item.format}
-                        </span>
-                      </div>
-
-                      <div>
-                        <h4 className="text-lg sm:text-xl font-bold text-white">
-                          {item.productTitle}
-                        </h4>
-                        <p className="text-xs text-slate-400 mt-1">
-                          200+ System Architecture Directives, Server Action Matrix, and Vector Cheatsheets.
-                        </p>
-                      </div>
-
-                      {/* License Key Pill with Copy Button */}
-                      <div className="p-3 rounded-xl bg-slate-950/80 border border-white/[0.08] flex items-center justify-between gap-2 font-mono text-xs">
-                        <div className="flex items-center gap-2 truncate">
-                          <span className="text-slate-500">Key:</span>
-                          <span className="text-indigo-300 font-semibold truncate">
-                            {item.licenseKey}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => copyToClipboard(item.licenseKey, "key", item.licenseKey)}
-                          className="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white transition-colors shrink-0 text-[11px]"
-                        >
-                          {copiedKey === item.licenseKey ? "Copied!" : "Copy"}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center gap-3">
-                      <a
-                        href={item.downloadUrl}
-                        download
-                        className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:opacity-95 text-white font-semibold text-xs sm:text-sm text-center shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+                ) : purchases.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-5">
+                    {purchases.map((item, idx) => (
+                      <div
+                        key={item.id || idx}
+                        className="p-6 sm:p-7 rounded-3xl bg-slate-900/70 border border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between space-y-5"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        <span>Download ZIP Package</span>
-                      </a>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="px-3 py-1 rounded-full text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              {item.status} &bull; {item.version}
+                            </span>
+                            <span className="text-xs font-mono text-slate-400">
+                              {item.format}
+                            </span>
+                          </div>
+
+                          <h3 className="text-lg sm:text-xl font-bold text-white">
+                            {item.productTitle}
+                          </h3>
+                          <p className="text-xs text-slate-400">
+                            Includes 200+ Architecture Directives, Server Action Matrix, and Vector Cheatsheets.
+                          </p>
+
+                          {/* License Key with Copy Button */}
+                          <div className="p-3 rounded-xl bg-slate-950/80 border border-white/[0.08] flex items-center justify-between gap-2 font-mono text-xs">
+                            <div className="flex items-center gap-2 truncate">
+                              <span className="text-slate-500">License Key:</span>
+                              <span className="text-indigo-300 font-semibold truncate">
+                                {item.licenseKey}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(item.licenseKey, "key", item.licenseKey)}
+                              className="px-3 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.15] text-slate-200 text-xs font-semibold transition-colors shrink-0 cursor-pointer"
+                            >
+                              {copiedKey === item.licenseKey ? "✓ Copied!" : "Copy"}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center gap-3">
+                          <a
+                            href={item.downloadUrl}
+                            download
+                            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:opacity-95 text-white font-semibold text-xs sm:text-sm text-center shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span>Download Full ZIP Package</span>
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("prompts")}
+                            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
+                          >
+                            Explore Prompts &rarr;
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 sm:p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-4">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-3xl">
+                      📦
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-bold text-white">No Digital Assets Unlocked Yet</h4>
+                      <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+                        You can redeem your FastSpring purchase key or instantly test with our demo license key!
+                      </p>
+                    </div>
+                    <div className="pt-2">
                       <button
                         type="button"
-                        onClick={() => setActiveTab("prompts")}
-                        className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors"
+                        onClick={() => {
+                          setLicenseKeyInput("DEVASSETS-DEMO-2026");
+                          setActiveTab("redeem");
+                        }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
                       >
-                        Browse Prompts &rarr;
+                        <span>⚡</span>
+                        <span>Unlock with Demo Key (DEVASSETS-DEMO-2026)</span>
                       </button>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-            ) : (
-              <div className="p-8 sm:p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-4">
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-3xl">
-                  📦
-                </div>
-                <div className="space-y-1">
-                  <h4 className="text-lg font-bold text-white">No Assets Unlocked Yet</h4>
-                  <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-                    You haven&apos;t redeemed any digital kits on this account yet. You can activate one below using your FastSpring purchase key or test with our demo key!
+            )}
+
+            {/* ──────────────────────────────────────────────────────────
+                TAB 3: FREE BROWSER TOOLS PREVIEW
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "tools" && (
+              <div className="space-y-6 animate-fadeIn">
+                <div className="pb-2 border-b border-white/10">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">
+                    Free Browser Tools Studio
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    4 native browser tools running 100% in local memory with zero server uploads.
                   </p>
                 </div>
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      setLicenseKeyInput("DEVASSETS-DEMO-2026");
-                      const el = document.getElementById("redeem-input-card");
-                      el?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
-                  >
-                    <span>⚡</span>
-                    <span>Unlock with Demo Key (DEVASSETS-DEMO-2026)</span>
-                  </button>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {DASHBOARD_TOOLS.map((tool) => (
+                    <div
+                      key={tool.id}
+                      className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl flex flex-col justify-between space-y-5 hover:border-indigo-500/40 transition-colors shadow-lg"
+                    >
+                      <div className="space-y-3.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-3xl p-3 rounded-2xl bg-white/[0.04] border border-white/10">
+                            {tool.icon}
+                          </span>
+                          <span className={`text-[11px] font-bold px-3 py-1 rounded-full border ${tool.badgeColor}`}>
+                            {tool.badge}
+                          </span>
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-bold text-white">{tool.title}</h3>
+                          <p className="text-xs font-semibold text-indigo-400 mt-0.5">{tool.tagline}</p>
+                          <p className="text-xs text-slate-300 mt-2 leading-relaxed">{tool.desc}</p>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          {tool.features.map((feat, i) => (
+                            <span
+                              key={i}
+                              className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-slate-950/80 border border-white/[0.06] text-slate-300"
+                            >
+                              ✓ {feat}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                        <span className="text-[11px] text-slate-500 font-mono">
+                          0 Bytes Uploaded &bull; Offline
+                        </span>
+                        <Link
+                          href={tool.route}
+                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white font-semibold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <span>Open Tool</span>
+                          <span>&rarr;</span>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* Redeem Input Card */}
-            <div
-              id="redeem-input-card"
-              className="p-6 rounded-2xl bg-slate-900/60 border border-white/10 space-y-4"
-            >
-              <h4 className="font-bold text-white text-sm">Activate a New License Key</h4>
-              <form onSubmit={handleRedeem} className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="text"
-                  value={licenseKeyInput}
-                  onChange={(e) => setLicenseKeyInput(e.target.value)}
-                  placeholder="Enter FastSpring license key..."
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-slate-950/80 border border-white/10 text-white text-sm font-mono placeholder-slate-500 focus:outline-none focus:border-indigo-400 uppercase"
-                />
-                <button
-                  type="submit"
-                  disabled={isRedeeming || !licenseKeyInput.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold text-xs transition-colors cursor-pointer"
-                >
-                  {isRedeeming ? "Verifying..." : "Redeem Key"}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            TAB 3: FREE BROWSER TOOLS STUDIO
-           ══════════════════════════════════════════════════════════════ */}
-        {activeTab === "tools" && (
-          <div className="space-y-6 animate-fadeIn">
-            <div>
-              <h3 className="text-xl font-bold text-white">Free Browser Tools Studio</h3>
-              <p className="text-xs sm:text-sm text-slate-400">
-                100% Client-Side. Powered by HTML5 Web APIs, Canvas, and WebAssembly. Your files are never transmitted to any external server.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {DASHBOARD_TOOLS.map((tool) => (
-                <div
-                  key={tool.id}
-                  className="p-6 sm:p-7 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl flex flex-col justify-between space-y-6 hover:border-indigo-500/40 transition-colors shadow-lg"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-3xl p-3 rounded-2xl bg-white/[0.04] border border-white/10">
-                        {tool.icon}
-                      </span>
-                      <span className={`text-[11px] font-bold px-3 py-1 rounded-full border ${tool.badgeColor}`}>
-                        {tool.badge}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-bold text-white">{tool.title}</h4>
-                      <p className="text-xs font-medium text-indigo-400 mt-0.5">{tool.tagline}</p>
-                      <p className="text-xs text-slate-300 mt-2 leading-relaxed">{tool.desc}</p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {tool.features.map((feat, i) => (
-                        <span
-                          key={i}
-                          className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-slate-950/80 border border-white/[0.06] text-slate-300"
-                        >
-                          ✓ {feat}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                    <span className="text-[11px] text-slate-500 font-mono">
-                      0 Bytes Uploaded &bull; In-Memory
-                    </span>
-                    <Link
-                      href={tool.route}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white font-semibold text-xs shadow-md transition-all flex items-center gap-1.5"
-                    >
-                      <span>Open Tool</span>
-                      <span>&rarr;</span>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            TAB 4: AI PROMPT VAULT & CODE DIRECTIVES
-           ══════════════════════════════════════════════════════════════ */}
-        {activeTab === "prompts" && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-xl font-bold text-white">AI Architecture Prompts Vault</h3>
-                <p className="text-xs sm:text-sm text-slate-400">
-                  Battle-tested directives calibrated for Claude 3.7 Sonnet, GPT-4o, and DeepSeek-V3.
-                </p>
-              </div>
-            </div>
-
-            {/* Search & Category Filter Pills */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search prompts by keyword, directive, or architecture..."
-                  className="w-full px-4 py-2.5 pl-10 rounded-xl bg-slate-900/80 border border-white/10 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-400"
-                />
-                <svg
-                  className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                {["All", "Next.js", "Database", "TypeScript", "Microservices"].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
-                      selectedCategory === cat
-                        ? "bg-indigo-600 text-white"
-                        : "bg-white/[0.04] text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Prompt Cards List */}
-            <div className="space-y-4">
-              {filteredPrompts.map((prompt) => (
-                <div
-                  key={prompt.id}
-                  className="p-5 sm:p-6 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-md space-y-4 hover:border-indigo-500/30 transition-colors"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/[0.06]">
-                    <div>
-                      <span className="text-[11px] font-mono text-indigo-400 uppercase tracking-wider">
-                        {prompt.category}
-                      </span>
-                      <h4 className="text-base font-bold text-white mt-0.5">{prompt.title}</h4>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1">
-                        {prompt.targetAi.map((ai, idx) => (
-                          <span
-                            key={idx}
-                            className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-950/80 border border-white/10 text-slate-300"
-                          >
-                            {ai}
-                          </span>
-                        ))}
-                      </div>
-                      <button
-                        onClick={() => copyToClipboard(prompt.content, "prompt", prompt.id)}
-                        className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-                      >
-                        {copiedPromptId === prompt.id ? (
-                          <>
-                            <span>✓</span>
-                            <span>Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>📋</span>
-                            <span>Copy Prompt</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/[0.06] text-xs font-mono text-slate-300 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
-                    {prompt.content}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════════
-            TAB 5: ACCOUNT & SECURITY SETTINGS
-           ══════════════════════════════════════════════════════════════ */}
-        {activeTab === "account" && (
-          <div className="space-y-6 max-w-3xl animate-fadeIn">
-            <div>
-              <h3 className="text-xl font-bold text-white">Account &amp; Security</h3>
-              <p className="text-xs sm:text-sm text-slate-400">
-                Manage your profile identity, active sessions, and purchase lookup.
-              </p>
-            </div>
-
-            {/* Profile Overview Card */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-5">
-              <h4 className="font-bold text-white text-base">Profile Details</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                  <span className="text-slate-500 font-mono">Full Name</span>
-                  <p className="font-semibold text-white">{user.name || "Developer"}</p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                  <span className="text-slate-500 font-mono">Email Address</span>
-                  <p className="font-semibold text-white">{user.email}</p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                  <span className="text-slate-500 font-mono">Account ID</span>
-                  <p className="font-mono text-slate-300 truncate">{user.id}</p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                  <span className="text-slate-500 font-mono">Role Access</span>
-                  <p className="font-semibold text-emerald-400 uppercase">
-                    {(user as any).role || "user"}
+            {/* ──────────────────────────────────────────────────────────
+                TAB 4: AI PROMPT VAULT PREVIEW
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "prompts" && (
+              <div className="space-y-6 animate-fadeIn">
+                <div className="pb-2 border-b border-white/10">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">
+                    AI Architecture Prompt Vault
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Production directives calibrated for Claude 3.7 Sonnet, GPT-4o, and DeepSeek-V3.
                   </p>
                 </div>
-              </div>
-            </div>
 
-            {/* Security & FastSpring Purchase Lookup */}
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
-              <h4 className="font-bold text-white text-base">Order &amp; License Support</h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                If you made a purchase on FastSpring with a different email or need your license key resent, FastSpring handles automated receipt lookups.
-              </p>
-              <div className="pt-1 flex flex-col sm:flex-row gap-3">
-                <a
-                  href="https://devassets.test.onfastspring.com/popup-devassets"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition-colors text-center"
-                >
-                  FastSpring Order Portal &rarr;
-                </a>
-                <a
-                  href="mailto:support@devassets.online"
-                  className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition-colors text-center"
-                >
-                  Contact Support &rarr;
-                </a>
-              </div>
-            </div>
+                {/* Search & Category Filter Pills */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search prompts by keyword, directive, or architecture..."
+                      className="w-full px-4 py-2.5 pl-10 rounded-xl bg-slate-900/80 border border-white/10 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-400"
+                    />
+                    <svg
+                      className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
 
-            {/* Sign Out Card */}
-            <div className="p-6 rounded-3xl bg-rose-950/20 border border-rose-500/20 backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-rose-300 text-sm">Session Sign Out</h4>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Securely terminate your authentication token and return to the home page.
-                </p>
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                    {["All", "Next.js", "Database", "TypeScript", "Microservices"].map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
+                          selectedCategory === cat
+                            ? "bg-indigo-600 text-white"
+                            : "bg-white/[0.04] text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Prompt Cards */}
+                <div className="space-y-4">
+                  {filteredPrompts.map((prompt) => (
+                    <div
+                      key={prompt.id}
+                      className="p-5 sm:p-6 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-md space-y-4 hover:border-indigo-500/30 transition-colors"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/[0.06]">
+                        <div>
+                          <span className="text-[11px] font-mono text-indigo-400 uppercase tracking-wider">
+                            {prompt.category}
+                          </span>
+                          <h4 className="text-base font-bold text-white mt-0.5">{prompt.title}</h4>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
+                            {prompt.targetAi.map((ai, idx) => (
+                              <span
+                                key={idx}
+                                className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-950/80 border border-white/10 text-slate-300"
+                              >
+                                {ai}
+                              </span>
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard(prompt.content, "prompt", prompt.id)}
+                            className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
+                          >
+                            {copiedPromptId === prompt.id ? (
+                              <>
+                                <span>✓</span>
+                                <span>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>📋</span>
+                                <span>Copy Prompt</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/[0.06] text-xs font-mono text-slate-300 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                        {prompt.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition-colors shrink-0 cursor-pointer shadow-lg shadow-rose-600/20"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        )}
+            )}
+
+            {/* ──────────────────────────────────────────────────────────
+                TAB 5: REDEEM LICENSE PREVIEW
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "redeem" && (
+              <div className="space-y-6 animate-fadeIn max-w-2xl">
+                <div className="pb-2 border-b border-white/10">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">
+                    Redeem License Key
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Activate and link your purchased kits directly to your account.
+                  </p>
+                </div>
+
+                <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl space-y-5">
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-white text-base">Enter Your Product License</h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Check your email receipt from FastSpring to find your activation license key.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleRedeem} className="space-y-3">
+                    <input
+                      type="text"
+                      value={licenseKeyInput}
+                      onChange={(e) => setLicenseKeyInput(e.target.value)}
+                      placeholder="e.g. DEVASSETS-DEMO-2026"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-white/10 text-white text-sm font-mono placeholder-slate-500 focus:outline-none focus:border-indigo-400 uppercase"
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                      <button
+                        type="submit"
+                        disabled={isRedeeming || !licenseKeyInput.trim()}
+                        className="py-3 px-6 rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 hover:opacity-90 disabled:opacity-50 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30"
+                      >
+                        {isRedeeming ? "Verifying License..." : "Activate & Unlock Product"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setLicenseKeyInput("DEVASSETS-DEMO-2026")}
+                        className="py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs text-slate-300 hover:text-white transition-colors cursor-pointer"
+                      >
+                        ⚡ Insert Demo Key
+                      </button>
+                    </div>
+                  </form>
+
+                  {redeemFeedback && (
+                    <div
+                      className={`p-3.5 rounded-xl text-xs font-medium border flex items-center gap-2.5 animate-fadeIn ${
+                        redeemFeedback.type === "success"
+                          ? "bg-emerald-950/60 border-emerald-500/40 text-emerald-300"
+                          : "bg-rose-950/60 border-rose-500/40 text-rose-300"
+                      }`}
+                    >
+                      <span>{redeemFeedback.type === "success" ? "✓" : "⚠️"}</span>
+                      <span>{redeemFeedback.message}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ──────────────────────────────────────────────────────────
+                TAB 6: ACCOUNT & SETTINGS PREVIEW
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "account" && (
+              <div className="space-y-6 max-w-3xl animate-fadeIn">
+                <div className="pb-2 border-b border-white/10">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">
+                    Account &amp; Security Settings
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Review your account identity, active sessions, and purchase portal.
+                  </p>
+                </div>
+
+                {/* Profile Details */}
+                <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
+                  <h3 className="font-bold text-white text-base">Profile Details</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
+                      <span className="text-slate-500 font-mono">Full Name</span>
+                      <p className="font-semibold text-white">{user.name || "Developer"}</p>
+                    </div>
+                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
+                      <span className="text-slate-500 font-mono">Email Address</span>
+                      <p className="font-semibold text-white">{user.email}</p>
+                    </div>
+                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
+                      <span className="text-slate-500 font-mono">Account ID</span>
+                      <p className="font-mono text-slate-300 truncate">{user.id}</p>
+                    </div>
+                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
+                      <span className="text-slate-500 font-mono">Role Access</span>
+                      <p className="font-semibold text-emerald-400 uppercase">
+                        {(user as any).role || "user"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* FastSpring Support */}
+                <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-3">
+                  <h3 className="font-bold text-white text-base">Order &amp; Billing Lookup</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    FastSpring is our Merchant of Record. For invoice receipts, charge lookups, or VAT exemptions, visit the FastSpring consumer portal.
+                  </p>
+                  <div className="pt-1 flex flex-col sm:flex-row gap-3">
+                    <a
+                      href="https://devassets.test.onfastspring.com/popup-devassets"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition-colors text-center"
+                    >
+                      FastSpring Order Portal &rarr;
+                    </a>
+                    <a
+                      href="mailto:support@devassets.online"
+                      className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition-colors text-center"
+                    >
+                      Contact Support &rarr;
+                    </a>
+                  </div>
+                </div>
+
+                {/* Sign Out Card */}
+                <div className="p-6 rounded-3xl bg-rose-950/20 border border-rose-500/20 backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-bold text-rose-300 text-sm">Session Sign Out</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Securely terminate your authentication token and return to the home page.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition-colors shrink-0 cursor-pointer shadow-lg shadow-rose-600/20"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );
 }
-
