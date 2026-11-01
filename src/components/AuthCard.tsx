@@ -154,10 +154,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
   const isLoginReady = !isRegister && email.trim().length > 0 && password.length > 0;
 
-  const isSubmitDisabled =
-    isLoading ||
-    Boolean(socialLoading) ||
-    (isRegister ? !isRegistrationReady : !isLoginReady);
+  const isSubmitDisabled = isLoading || Boolean(socialLoading);
 
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -177,7 +174,20 @@ export default function AuthCard({ mode }: AuthCardProps) {
     setErrorMessage(null);
     setSuccessMessage(null);
 
+    if (!email.trim()) {
+      setErrorMessage("Please enter your email address.");
+      return;
+    }
+    if (!password) {
+      setErrorMessage("Please enter your password.");
+      return;
+    }
+
     if (isRegister) {
+      if (!firstName.trim()) {
+        setErrorMessage("Please enter your first name.");
+        return;
+      }
       if (password.length < 8) {
         setErrorMessage("Password must be at least 8 characters long.");
         return;
@@ -187,7 +197,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
         return;
       }
       if (!agreeTerms) {
-        setErrorMessage("Please agree to the Terms & Conditions and Privacy Policy to continue.");
+        setErrorMessage("Please agree to the Terms and Conditions and Privacy Policy to continue.");
         return;
       }
     }
@@ -198,42 +208,50 @@ export default function AuthCard({ mode }: AuthCardProps) {
       if (isRegister) {
         const fullName = `${firstName.trim()} ${lastName.trim()}`.trim() || email.split("@")[0];
         const res = await authClient.signUp.email({
-          email,
+          email: email.trim().toLowerCase(),
           password,
           name: fullName,
           callbackURL: "/",
         });
 
         if (res.error) {
-          setErrorMessage(res.error.message || "Failed to create account. Please check your credentials.");
+          if (res.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
+            setErrorMessage("An account with this email already exists. Please log in instead.");
+          } else {
+            setErrorMessage(res.error.message || "Failed to create account. Please check your credentials.");
+          }
           setIsLoading(false);
           return;
         }
 
         setSuccessMessage("Account created successfully! Redirecting...");
         setTimeout(() => {
-          router.push("/");
-          router.refresh();
-        }, 800);
+          const target = new URLSearchParams(window.location.search).get("callbackURL") || "/dashboard";
+          window.location.href = target;
+        }, 600);
       } else {
         const res = await authClient.signIn.email({
-          email,
+          email: email.trim().toLowerCase(),
           password,
           callbackURL: "/",
           rememberMe,
         });
 
         if (res.error) {
-          setErrorMessage(res.error.message || "Invalid email or password. Please try again.");
+          if (res.error.code === "INVALID_EMAIL_OR_PASSWORD") {
+            setErrorMessage("Invalid email or password. If you don't have an account yet, please sign up first.");
+          } else {
+            setErrorMessage(res.error.message || "Invalid email or password. Please try again.");
+          }
           setIsLoading(false);
           return;
         }
 
         setSuccessMessage("Welcome back! Redirecting...");
         setTimeout(() => {
-          router.push("/");
-          router.refresh();
-        }, 800);
+          const target = new URLSearchParams(window.location.search).get("callbackURL") || "/dashboard";
+          window.location.href = target;
+        }, 600);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "An unexpected error occurred. Please try again.";
@@ -254,7 +272,14 @@ export default function AuthCard({ mode }: AuthCardProps) {
       });
 
       if (res?.error) {
-        setErrorMessage(res.error.message || `Failed to sign in with ${provider}.`);
+        const isNotConfigured =
+          res.error.code === "PROVIDER_NOT_FOUND" ||
+          res.error.message?.toLowerCase().includes("not found");
+        setErrorMessage(
+          isNotConfigured
+            ? `${provider === "google" ? "Google" : "GitHub"} sign-in is not yet configured. Please sign in or register with email and password.`
+            : res.error.message || `Failed to sign in with ${provider}.`
+        );
         setSocialLoading(null);
       }
     } catch (err: unknown) {
@@ -521,10 +546,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
                   <label className="block text-xs font-medium text-slate-300 mb-1.5">
                     Last name
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={lastName}
+                  <input type="text" value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Hossain"
                     className="w-full bg-white/[0.04] border border-white/10 focus:border-indigo-400/60 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"

@@ -1,15 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setIsOpen(false);
+    setIsProfileOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -28,6 +52,7 @@ export default function Navbar() {
   ) => {
     e.preventDefault();
     setIsOpen(false);
+    setIsProfileOpen(false);
 
     if (pathname !== "/") {
       window.location.href = `/#${sectionId}`;
@@ -121,34 +146,110 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Action CTA: User Session Awareness */}
+        {/* Action CTA: User Profile with Floating Dropdown */}
         <div className="hidden md:flex items-center gap-3">
           {session?.user ? (
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 backdrop-blur-md">
+            <div className="relative" ref={profileRef}>
+              {/* Profile Pill Trigger Button */}
+              <button
+                type="button"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                aria-expanded={isProfileOpen}
+                aria-haspopup="true"
+                className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-indigo-500/40 backdrop-blur-md transition-all cursor-pointer group"
+              >
                 {session.user.image ? (
                   <img
                     src={session.user.image}
                     alt={session.user.name || "User"}
-                    className="w-6 h-6 rounded-full object-cover border border-indigo-400/50"
+                    className="w-7 h-7 rounded-full object-cover border border-indigo-400/50"
                   />
                 ) : (
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white uppercase shadow-sm">
                     {(session.user.name || session.user.email || "U")[0]}
                   </div>
                 )}
-                <span className="text-xs font-medium text-slate-200 max-w-[120px] truncate">
+                <span className="text-xs font-semibold text-slate-200 max-w-[120px] truncate group-hover:text-white">
                   {session.user.name || session.user.email?.split("@")[0]}
                 </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                disabled={isSigningOut}
-                className="text-xs sm:text-sm font-semibold text-slate-400 hover:text-rose-400 px-3 py-2 rounded-xl hover:bg-white/[0.05] transition-colors disabled:opacity-50 cursor-pointer"
-              >
-                {isSigningOut ? "Signing out..." : "Sign Out"}
+                <svg
+                  className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-200 transition-transform duration-200 ${
+                    isProfileOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
+
+              {/* Glassmorphic Profile Dropdown Menu */}
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl p-2 z-50 animate-fadeIn space-y-1">
+                  {/* Dropdown User Info Header */}
+                  <div className="px-3 py-2.5 border-b border-white/[0.08] space-y-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-white truncate">
+                        {session.user.name || "Developer"}
+                      </p>
+                      <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 px-1.5 py-0.5 rounded">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {session.user.email}
+                    </p>
+                  </div>
+
+                  {/* Dropdown Links */}
+                  <div className="pt-1 space-y-0.5">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    >
+                      <span className="text-sm">📊</span>
+                      <span>User Dashboard</span>
+                    </Link>
+
+                    <Link
+                      href="/access"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    >
+                      <span className="text-sm">🔑</span>
+                      <span>Redeem License Key</span>
+                    </Link>
+
+                    <a
+                      href="#tools"
+                      onClick={(e) => scrollToSection(e, "tools")}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    >
+                      <span className="text-sm">⚡</span>
+                      <span>Free Browser Tools</span>
+                    </a>
+                  </div>
+
+                  {/* Divider & Sign Out Button */}
+                  <div className="pt-1 border-t border-white/[0.08]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        handleSignOut();
+                      }}
+                      disabled={isSigningOut}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      <span className="text-sm">🚪</span>
+                      <span>{isSigningOut ? "Signing out..." : "Sign Out"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -184,7 +285,7 @@ export default function Navbar() {
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none"
+          className="flex lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none cursor-pointer"
         >
           <svg
             className="h-6 w-6"
@@ -257,15 +358,16 @@ export default function Navbar() {
           <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
             {session?.user ? (
               <>
+                {/* Mobile User Info Card */}
                 <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10">
                   {session.user.image ? (
                     <img
                       src={session.user.image}
                       alt={session.user.name || "User"}
-                      className="w-7 h-7 rounded-full object-cover border border-indigo-400/50"
+                      className="w-8 h-8 rounded-full object-cover border border-indigo-400/50"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white uppercase">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white uppercase">
                       {(session.user.name || session.user.email || "U")[0]}
                     </div>
                   )}
@@ -278,6 +380,18 @@ export default function Navbar() {
                     </p>
                   </div>
                 </div>
+
+                {/* Mobile Dashboard Button */}
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2"
+                >
+                  <span>📊</span>
+                  <span>User Dashboard</span>
+                </Link>
+
+                {/* Mobile Sign Out Button */}
                 <button
                   type="button"
                   onClick={() => {
@@ -285,7 +399,7 @@ export default function Navbar() {
                     handleSignOut();
                   }}
                   disabled={isSigningOut}
-                  className="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-400 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/30 transition-colors"
+                  className="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-400 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/30 transition-colors cursor-pointer"
                 >
                   {isSigningOut ? "Signing out..." : "Sign Out"}
                 </button>

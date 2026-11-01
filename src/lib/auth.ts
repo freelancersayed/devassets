@@ -3,7 +3,7 @@ import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { admin } from "better-auth/plugins";
 import client from "./mongodb";
 
-const db = client.db(process.env.DB_NAME || "DevAssests");
+const db = client.db(process.env.DB_NAME || "DevAssets");
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),
@@ -13,9 +13,12 @@ export const auth = betterAuth({
     process.env.NEXT_PUBLIC_APP_URL ||
     "http://localhost:3000",
   trustedOrigins: [
+    "http://localhost:*",
+    "http://127.0.0.1:*",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://devassets.online",
+    "https://*.devassets.online",
     "https://*.vercel.app",
   ],
   emailAndPassword: {
