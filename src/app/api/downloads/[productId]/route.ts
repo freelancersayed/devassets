@@ -34,8 +34,11 @@ export async function GET(
       );
     }
 
-    // Locate the zip file
-    const zipFilename = "fullstack-system-architecture-prompts-v2026.zip";
+    // Locate the corresponding zip file for the product
+    let zipFilename = "fullstack-system-architecture-prompts-v2026.zip";
+    if (productId === "prod_pro_utility_suite" || productId === "pro-utility-suite" || verification.license?.productId === "prod_pro_utility_suite") {
+      zipFilename = "devassets-pro-utility-suite-v3.1.zip";
+    }
     const filePath = path.join(process.cwd(), "public", "downloads", zipFilename);
 
     if (!fs.existsSync(filePath)) {

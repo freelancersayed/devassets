@@ -15,7 +15,8 @@ export default function ProductPageClient({ product }: { product: Product }) {
   const [unlockedLicense, setUnlockedLicense] = useState<any>(null);
   const { data: session } = useSession();
 
-  const DEMO_KEY = "DEVASSETS-DEMO-2026";
+  const isProSuite = product.slug === "pro-utility-suite" || product.id === 101;
+  const DEMO_KEY = isProSuite ? "PRO-SUITE-COMMERCIAL-2026" : "DEVASSETS-DEMO-2026";
 
   useEffect(() => {
     // Check saved license
@@ -79,12 +80,21 @@ export default function ProductPageClient({ product }: { product: Product }) {
             📥 Download Full Package (.ZIP)
           </a>
 
-          <Link
-            href="/access"
-            className="block w-full rounded-xl bg-slate-950 border border-slate-700 py-2.5 text-center text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
-          >
-            ⚡ Open Live Prompt Playbook & Explorer
-          </Link>
+          {isProSuite ? (
+            <Link
+              href="/tools/pro-utility-suite"
+              className="block w-full rounded-xl bg-slate-950 border border-amber-500/50 py-2.5 text-center text-xs font-semibold text-amber-300 hover:text-white hover:border-amber-400 transition-colors shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+            >
+              🛠️ Open Pro Batch & CLI Workbench
+            </Link>
+          ) : (
+            <Link
+              href="/access"
+              className="block w-full rounded-xl bg-slate-950 border border-slate-700 py-2.5 text-center text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
+            >
+              ⚡ Open Live Prompt Playbook & Explorer
+            </Link>
+          )}
         </div>
       ) : (
         /* Standard Purchase CTA */
@@ -94,8 +104,17 @@ export default function ProductPageClient({ product }: { product: Product }) {
             onClick={() => setShowModal(true)}
             className="block w-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 py-3.5 text-center text-sm font-semibold text-white shadow-[0_0_25px_rgba(99,102,241,0.5)] hover:shadow-[0_0_35px_rgba(99,102,241,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden before:absolute before:inset-0 before:bg-white/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity"
           >
-            Buy Now
+            Buy Now ${product.price} USD
           </button>
+
+          {isProSuite && (
+            <Link
+              href="/tools/pro-utility-suite"
+              className="block w-full rounded-full bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 py-2.5 text-center text-xs font-semibold text-amber-300 hover:text-amber-200 transition-all hover:bg-amber-950/20"
+            >
+              ⚡ Launch Interactive Pro Workbench & CLI Demo
+            </Link>
+          )}
 
           {/* License Key Quick Unlock */}
           {!showLicenseInput ? (

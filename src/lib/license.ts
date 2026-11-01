@@ -23,6 +23,13 @@ export const DEMO_LICENSE_KEYS = [
   "FULLSTACK-DEMO-ACCESS-2026",
 ];
 
+export const PRO_SUITE_DEMO_KEYS = [
+  "PRO-SUITE-COMMERCIAL-2026",
+  "DEVASSETS-PRO-SUITE-2026",
+  "PRO-UTILITY-2026",
+  "DEVASSETS-PRO-2026",
+];
+
 /**
  * Validates a license key against demo keys or MongoDB licenses collection
  */
@@ -39,7 +46,55 @@ export async function verifyLicenseKey(
     };
   }
 
-  // Check demo license keys
+  // Check pro suite demo keys
+  const isProDemo = PRO_SUITE_DEMO_KEYS.includes(normalizedKey);
+  if (isProDemo) {
+    if (userId) {
+      try {
+        const { userPurchases } = await getCollections();
+        await userPurchases.updateOne(
+          { userId, productId: "prod_pro_utility_suite" },
+          {
+            $set: {
+              status: "ACTIVE",
+              purchasedAt: new Date(),
+              updatedAt: new Date(),
+              licenseKey: normalizedKey,
+            },
+            $setOnInsert: {
+              userId,
+              productId: "prod_pro_utility_suite",
+              createdAt: new Date(),
+            },
+          },
+          { upsert: true }
+        );
+      } catch (e) {
+        console.warn("[License] Pro Suite Demo key DB provisioning note:", e);
+      }
+    }
+
+    return {
+      valid: true,
+      message: "DevAssets Pro Utility Suite Commercial License Verified!",
+      license: {
+        key: normalizedKey,
+        productId: "prod_pro_utility_suite",
+        productSlug: "pro-utility-suite",
+        productTitle: "DevAssets Pro Utility Suite (Commercial License)",
+        licenseType: "Unrestricted Multi-Client Commercial License (v3.1)",
+        version: "v3.1 Enterprise Edition",
+        status: "ACTIVE",
+        issuedAt: new Date().toISOString(),
+        isDemo: true,
+        downloadUrl: `/api/downloads/prod_pro_utility_suite?key=${encodeURIComponent(
+          normalizedKey
+        )}`,
+      },
+    };
+  }
+
+  // Check general demo license keys
   const isDemo = DEMO_LICENSE_KEYS.includes(normalizedKey);
 
   if (isDemo) {

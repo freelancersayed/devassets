@@ -731,6 +731,41 @@ export default function DashboardClient() {
                   </p>
                 </div>
 
+                {/* Pro Utility Suite Commercial Banner */}
+                <div className="p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-950/30 via-slate-900/90 to-slate-950 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_40px_rgba(245,158,11,0.08)]">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        🛠️ Enterprise Suite ($39)
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        Commercial Batch Pipelines &amp; Desktop Runners
+                      </span>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white">
+                      DevAssets Pro Utility Suite (Commercial License)
+                    </h3>
+                    <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+                      Need multi-file batch processing, offline native .EXE &amp; .DMG desktop runners, or headless command-line automation? Launch the Pro Workbench.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <Link
+                      href="/tools/pro-utility-suite"
+                      className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:scale-105 transition-all text-center"
+                    >
+                      ⚡ Open Pro Workbench
+                    </Link>
+                    <Link
+                      href="/products/pro-utility-suite"
+                      className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+                    >
+                      Product Info
+                    </Link>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {DASHBOARD_TOOLS.map((tool) => (
                     <div
@@ -935,7 +970,15 @@ export default function DashboardClient() {
                         onClick={() => setLicenseKeyInput("DEVASSETS-DEMO-2026")}
                         className="py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs text-slate-300 hover:text-white transition-colors cursor-pointer"
                       >
-                        ⚡ Insert Demo Key
+                        ⚡ Prompts Demo
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setLicenseKeyInput("PRO-SUITE-COMMERCIAL-2026")}
+                        className="py-3 px-4 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-xs text-amber-300 transition-colors cursor-pointer"
+                      >
+                        🛠️ Pro Suite Demo
                       </button>
                     </div>
                   </form>
