@@ -16,6 +16,9 @@ export interface UserPurchaseDoc {
   productId: string;
   purchasedAt: Date;
   status: "ACTIVE" | "EXPIRED";
+  licenseKey?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface UserCreditDoc {

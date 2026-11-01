@@ -257,7 +257,11 @@ export default function Navbar() {
           <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
             {session?.user ? (
               <>
-                <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/10">
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10"
+                >
                   {session.user.image ? (
                     <img
                       src={session.user.image}
@@ -277,7 +281,16 @@ export default function Navbar() {
                       {session.user.email}
                     </p>
                   </div>
-                </div>
+                  <span className="text-xs text-indigo-400 font-semibold">&rarr;</span>
+                </Link>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2"
+                >
+                  <span>📊</span>
+                  <span>Open Dashboard</span>
+                </Link>
                 <button
                   type="button"
                   onClick={() => {

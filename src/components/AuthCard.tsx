@@ -226,7 +226,8 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
         setSuccessMessage("Account created successfully! Redirecting...");
         setTimeout(() => {
-          window.location.href = "/";
+          const target = new URLSearchParams(window.location.search).get("callbackURL") || "/dashboard";
+          window.location.href = target;
         }, 600);
       } else {
         const res = await authClient.signIn.email({
@@ -248,7 +249,8 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
         setSuccessMessage("Welcome back! Redirecting...");
         setTimeout(() => {
-          window.location.href = "/";
+          const target = new URLSearchParams(window.location.search).get("callbackURL") || "/dashboard";
+          window.location.href = target;
         }, 600);
       }
     } catch (err: unknown) {
