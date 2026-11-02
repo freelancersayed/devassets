@@ -14,11 +14,26 @@ interface CheckoutModalProps {
  * Maps catalog product slugs/identifiers to FastSpring product paths
  */
 function getFastSpringProductId(product: Product): string {
+  if (product.fastspringProductId) {
+    return product.fastspringProductId;
+  }
   if (
     product.slug === "fullstack-system-architecture-prompts" ||
     product.id === 201
   ) {
     return "prod_fullstack_arch_prompts";
+  }
+  if (
+    product.slug === "ui-ux-product-design-prompts" ||
+    product.id === 202
+  ) {
+    return "prod_ui_ux_design_prompts";
+  }
+  if (
+    product.slug === "pro-utility-suite" ||
+    product.id === 101
+  ) {
+    return "prod_pro_utility_suite";
   }
   return product.slug;
 }

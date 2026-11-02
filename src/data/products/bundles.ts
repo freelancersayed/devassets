@@ -1,0 +1,147 @@
+import { CatalogProduct } from "./types";
+
+export const starterSingleAssetProduct: CatalogProduct = {
+  id: 400,
+  slug: "starter-single-asset",
+  title: "Starter / Single Asset Pass",
+  category: "bundle",
+  categoryLabel: "Starter Pass",
+  description:
+    "Ideal for developers seeking a single production-ready toolkit or prompt system. Unlock instant access to any 1 code kit, AI prompt library, or PDF masterclass with lifetime updates.",
+  price: "29.00",
+  originalPrice: "59.00",
+  emoji: "💎",
+  badgeColor: "text-cyan-400",
+  badgeBg: "bg-cyan-400/10",
+  deliverables: [
+    "Any 1 Full Codekit or Prompt Library of Choice",
+    "Single-Developer Commercial License",
+    "Immediate Multi-Format Download (.ZIP, JSON, PDF)",
+    "Lifetime Updates for Selected Asset",
+  ],
+  features: [
+    "Choose any single asset across the entire store",
+    "Commercial usage rights included",
+    "One-time payment — zero recurring fees",
+  ],
+  fileTree: [
+    "devassets-single-asset/",
+    "├── asset-license-key.txt",
+    "├── download-instructions.pdf",
+    "├── selected-asset.zip",
+    "└── README.md",
+  ],
+  modules: [
+    "Feature 1: Instant Download of Selected Codekit or Prompts",
+    "Feature 2: Full Source Code / Markdown / PDF Access",
+    "Feature 3: Single-Developer Commercial License",
+  ],
+  specs: {
+    format: "Instant Digital Download (.ZIP + PDF)",
+    version: "v2026.1",
+    license: "Single-Developer Commercial License",
+    support: "support@devassets.online",
+  },
+  fastspringProductId: "prod_starter_single_asset",
+};
+
+export const allAccessPass30DayProduct: CatalogProduct = {
+  id: 401,
+  slug: "all-access-pass-30-day",
+  title: "30-Day All-Access Pass (Prepaid One-Time)",
+  category: "bundle",
+  categoryLabel: "Prepaid Access Pass",
+  description:
+    "A flexible, non-recurring prepaid 30-day pass for developers and agencies. Enjoy unlimited client-side tool processing plus your choice of any 3 premium codekits, prompt libraries, or PDF masterclasses with instant delivery.",
+  price: "29.00",
+  originalPrice: "59.00",
+  emoji: "⚡",
+  badgeColor: "text-amber-400",
+  badgeBg: "bg-amber-400/10",
+  deliverables: [
+    "30 Days Unlimited Client-Side Tool Processing",
+    "Choice of Any 3 Premium Code/Prompt/PDF Downloads",
+    "Non-Recurring One-Time Charge (Zero Subscription Traps)",
+    "Direct Priority Email Support Access",
+  ],
+  features: [
+    "Zero auto-renewal — strictly one-time payment",
+    "Instant token delivery for any 3 product downloads",
+    "Full 30-day commercial usage rights",
+  ],
+  fileTree: [
+    "devassets-30day-pass/",
+    "├── pass-token.key",
+    "├── download-portal-instructions.pdf",
+    "├── commercial-terms.txt",
+    "└── support-contact.txt",
+  ],
+  modules: [
+    "Benefit 1: Unlimited Web Tool Execution (PDF, OCR, Video, Image)",
+    "Benefit 2: Instant Unlock of 3 Premium Digital Packages",
+    "Benefit 3: Direct Developer Email Support",
+    "Benefit 4: Full Commercial Rights for Client Projects",
+  ],
+  specs: {
+    format: "Prepaid Digital Key + Portal Access",
+    version: "v2026.1",
+    license: "Single-Developer 30-Day Commercial Rights",
+    support: "support@devassets.online",
+  },
+  fastspringProductId: "prod_all_access_pass_30_day",
+};
+
+export const allInOneLifetimeBundleProduct: CatalogProduct = {
+  id: 402,
+  slug: "all-in-one-lifetime-bundle",
+  title: "All-in-One DevAssets Lifetime Bundle",
+  category: "bundle",
+  categoryLabel: "Ultimate Lifetime Access",
+  description:
+    "The definitive digital asset library for developers, consultants, and tech founders. Unlock permanent, lifetime access to all current and upcoming web utilities, prompt libraries, and complete PDF architecture masterclasses with zero recurring fees.",
+  price: "69.00",
+  originalPrice: "149.00",
+  emoji: "👑",
+  badgeColor: "text-indigo-400",
+  badgeBg: "bg-indigo-400/10",
+  deliverables: [
+    "Lifetime Access to All Current & Future Web Tools",
+    "All AI Prompt Libraries (Full-Stack, UI/UX, SEO)",
+    "All PDF Masterclasses & Starter Codebases",
+    "Commercial Developer License & Lifetime Free Updates",
+  ],
+  features: [
+    "Single payment, lifetime updates",
+    "Includes all 3 starter codekits and all 3 prompt libraries",
+    "Commercial license for unlimited personal and client projects",
+  ],
+  fileTree: [
+    "devassets-lifetime-bundle/",
+    "├── codekits/",
+    "│   ├── javascript-patterns-toolkit.zip",
+    "│   ├── react-enterprise-starter-kit.zip",
+    "│   └── technical-seo-cwv-toolkit.zip",
+    "├── prompts/",
+    "│   ├── fullstack-architecture-prompts.zip",
+    "│   ├── ui-ux-design-prompts.zip",
+    "│   └── seo-cwv-prompts.zip",
+    "├── tools-pro/",
+    "│   └── pro-utility-suite.zip",
+    "├── master-license.pdf",
+    "└── README.md",
+  ],
+  modules: [
+    "Vault 1: Full-Stack Code Kits & Starter Applications",
+    "Vault 2: Complete Prompt Engineering Systems",
+    "Vault 3: PDF Architecture Manuals & Benchmarks",
+    "Vault 4: Pro Utility Batch Runners",
+    "Vault 5: Lifetime Free Updates & Support",
+  ],
+  specs: {
+    format: "Complete Master Vault (.ZIP) + Future Updates",
+    version: "v2026.LIFETIME",
+    license: "Lifetime Multi-Project Commercial License",
+    support: "support@devassets.online",
+  },
+  fastspringProductId: "prod_all_in_one_lifetime_bundle",
+};

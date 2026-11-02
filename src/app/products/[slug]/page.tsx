@@ -253,6 +253,71 @@ export default async function ProductPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            {/* UI/UX & Product Design Prompt Library Value & Features Breakdown */}
+            {product.slug === "ui-ux-product-design-prompts" && (
+              <div className="rounded-2xl border border-pink-500/30 bg-gradient-to-b from-pink-950/20 via-slate-900/60 to-slate-900/80 p-6 space-y-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-pink-500/20 pb-4">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/10 text-pink-400 border border-pink-500/30">
+                      🎨 Design System & Token Playbook
+                    </span>
+                    <h3 className="text-xl font-bold text-white mt-1">
+                      Professional Design System Engineering at $15
+                    </h3>
+                  </div>
+                  <Link
+                    href="/access/ui-ux-product-design-prompts"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-xs shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:scale-105 transition-all shrink-0"
+                  >
+                    <span>⚡ Try Interactive Playbook &rarr;</span>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                    <span className="text-2xl">📐</span>
+                    <h4 className="text-sm font-bold text-slate-100">Figma Auto-Layout to Clean Code</h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Transform complex Figma component hierarchies and nested auto-layouts directly into production Tailwind CSS v4 and React JSX with strict token mapping.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                    <span className="text-2xl">♿</span>
+                    <h4 className="text-sm font-bold text-slate-100">WCAG 2.2 AA Contrast &amp; Audits</h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Evaluate color contrast ratios, focus rings, keyboard navigability, and ARIA attributes before writing a single line of client UI code.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                    <span className="text-2xl">🎨</span>
+                    <h4 className="text-sm font-bold text-slate-100">OKLCH &amp; HSL Semantic Tokens</h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Generate mathematically cohesive 12-step color palettes with harmonious dark/light mode surface elevations and accessible text contrast.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                    <span className="text-2xl">✨</span>
+                    <h4 className="text-sm font-bold text-slate-100">Micro-Interaction Physics</h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Create fluid spring animations, skeleton loading sequences, and hover states with copy-paste Framer Motion and Tailwind transition directives.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-950 border border-pink-500/20 flex flex-wrap items-center justify-between gap-4">
+                  <div className="text-xs text-slate-300">
+                    <strong className="text-white">FastSpring Instant Delivery:</strong> Includes .ZIP file with JSON token scales, Markdown playbooks, printable PDF, and interactive online studio access.
+                  </div>
+                  <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2.5 py-1 rounded-lg">
+                    100% Client-Side Privacy
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right column: Specs + Buy */}

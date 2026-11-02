@@ -16,6 +16,7 @@ interface UserPurchase {
   category: string;
   purchasedAt: string;
   downloadUrl: string;
+  accessUrl?: string;
 }
 
 type TabType = "overview" | "assets" | "tools" | "prompts" | "redeem" | "account";
@@ -677,13 +678,20 @@ export default function DashboardClient() {
                             </svg>
                             <span>Download Full ZIP Package</span>
                           </a>
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("prompts")}
-                            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
+                          <Link
+                            href={
+                              item.accessUrl ||
+                              (item.productSlug === "pro-utility-suite"
+                                ? "/tools/pro-utility-suite"
+                                : item.productSlug === "ui-ux-product-design-prompts"
+                                ? "/access/ui-ux-product-design-prompts"
+                                : "/access")
+                            }
+                            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                           >
-                            Explore Prompts &rarr;
-                          </button>
+                            <span>Open Studio / Playbook</span>
+                            <span>&rarr;</span>
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -970,7 +978,15 @@ export default function DashboardClient() {
                         onClick={() => setLicenseKeyInput("DEVASSETS-DEMO-2026")}
                         className="py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs text-slate-300 hover:text-white transition-colors cursor-pointer"
                       >
-                        ⚡ Prompts Demo
+                        ⚡ Architecture Prompts Demo
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setLicenseKeyInput("DESIGN-UIUX-2026")}
+                        className="py-3 px-4 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/30 text-xs text-pink-300 transition-colors cursor-pointer"
+                      >
+                        🎨 UI/UX Design Demo
                       </button>
 
                       <button

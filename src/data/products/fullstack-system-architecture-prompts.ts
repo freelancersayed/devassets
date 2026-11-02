@@ -1,0 +1,57 @@
+import { CatalogProduct } from "./types";
+
+export const fullstackArchitecturePromptsProduct: CatalogProduct = {
+  id: 201,
+  slug: "fullstack-system-architecture-prompts",
+  title: "Full-Stack Dev & System Architecture Prompts",
+  category: "prompts",
+  categoryLabel: "AI Engineering Prompts",
+  description:
+    "200+ battle-tested prompts engineered for Claude 3.7/Sonnet, GPT-4o, and DeepSeek. Accelerate Next.js App Router architecture, automate API refactoring, build resilient database schemas, and generate complete unit test suites.",
+  price: "19.00",
+  originalPrice: "39.00",
+  emoji: "🤖",
+  badgeColor: "text-purple-400",
+  badgeBg: "bg-purple-400/10",
+  deliverables: [
+    "200+ Curated Prompts for Next.js, React & Node.js",
+    "API Refactoring, Security & Database Optimization",
+    "Automated Unit & E2E Test Suite Generators",
+    "Delivered in JSON + Markdown + Printable PDF",
+  ],
+  features: [
+    "200+ system architecture prompts",
+    "Ready-to-use prompt matrices in JSON & Markdown",
+    "Tested with Claude, GPT-4, and DeepSeek",
+  ],
+  fileTree: [
+    "fullstack-architecture-prompts/",
+    "├── prompts/",
+    "│   ├── nextjs-app-router/",
+    "│   ├── microservices-api/",
+    "│   ├── database-indexing/",
+    "│   ├── unit-testing-jest/",
+    "│   └── security-hardening/",
+    "├── catalog.json",
+    "├── prompt-playbook.md",
+    "├── docs/",
+    "│   └── architecture-prompts-guide.pdf",
+    "├── LICENSE",
+    "└── README.md",
+  ],
+  modules: [
+    "Section 1: Next.js 15 & Server Action Engineering Prompts",
+    "Section 2: High-Concurrency PostgreSQL & Prisma Optimization",
+    "Section 3: Defensive TypeScript Types & Strict Schema Validators",
+    "Section 4: Microservices Event Bus & Redis Caching Directives",
+    "Section 5: Automated Jest & Playwright Test Generators",
+  ],
+  specs: {
+    format: "JSON + Markdown + PDF Guide",
+    version: "v2026.1",
+    license: "Single-Developer Commercial & Personal Use",
+    support: "support@devassets.online",
+  },
+  fastspringProductId: "prod_fullstack_arch_prompts",
+  accessUrl: "/access",
+};

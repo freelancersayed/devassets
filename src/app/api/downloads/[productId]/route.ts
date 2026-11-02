@@ -36,16 +36,27 @@ export async function GET(
 
     // Locate the corresponding zip file for the product
     let zipFilename = "fullstack-system-architecture-prompts-v2026.zip";
-    if (productId === "prod_pro_utility_suite" || productId === "pro-utility-suite" || verification.license?.productId === "prod_pro_utility_suite") {
+    const resolvedPid = verification.license?.productId || productId;
+
+    if (
+      resolvedPid === "prod_pro_utility_suite" ||
+      resolvedPid === "pro-utility-suite"
+    ) {
       zipFilename = "devassets-pro-utility-suite-v3.1.zip";
+    } else if (
+      resolvedPid === "prod_ui_ux_design_prompts" ||
+      resolvedPid === "ui-ux-product-design-prompts"
+    ) {
+      zipFilename = "ui-ux-product-design-prompt-library-v2026.zip";
     }
+
     const filePath = path.join(process.cwd(), "public", "downloads", zipFilename);
 
     if (!fs.existsSync(filePath)) {
       return NextResponse.json(
         {
           error: "Asset Not Found",
-          message: "The requested asset package is being rebuilt. Please try again in a few moments.",
+          message: `The requested asset package (${zipFilename}) is being rebuilt. Please try again in a few moments.`,
         },
         { status: 404 }
       );
@@ -73,4 +84,3 @@ export async function GET(
     );
   }
 }
-

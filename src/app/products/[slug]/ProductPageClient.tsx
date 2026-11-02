@@ -16,7 +16,12 @@ export default function ProductPageClient({ product }: { product: Product }) {
   const { data: session } = useSession();
 
   const isProSuite = product.slug === "pro-utility-suite" || product.id === 101;
-  const DEMO_KEY = isProSuite ? "PRO-SUITE-COMMERCIAL-2026" : "DEVASSETS-DEMO-2026";
+  const isUiUxPrompts = product.slug === "ui-ux-product-design-prompts" || product.id === 202;
+  const DEMO_KEY = isProSuite
+    ? "PRO-SUITE-COMMERCIAL-2026"
+    : isUiUxPrompts
+    ? "DESIGN-UIUX-2026"
+    : "DEVASSETS-DEMO-2026";
 
   useEffect(() => {
     // Check saved license
@@ -87,6 +92,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
             >
               🛠️ Open Pro Batch & CLI Workbench
             </Link>
+          ) : isUiUxPrompts ? (
+            <Link
+              href="/access/ui-ux-product-design-prompts"
+              className="block w-full rounded-xl bg-slate-950 border border-pink-500/50 py-2.5 text-center text-xs font-semibold text-pink-300 hover:text-white hover:border-pink-400 transition-colors shadow-[0_0_15px_rgba(236,72,153,0.2)]"
+            >
+              🎨 Open UI/UX Design System Playbook
+            </Link>
           ) : (
             <Link
               href="/access"
@@ -113,6 +125,15 @@ export default function ProductPageClient({ product }: { product: Product }) {
               className="block w-full rounded-full bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 py-2.5 text-center text-xs font-semibold text-amber-300 hover:text-amber-200 transition-all hover:bg-amber-950/20"
             >
               ⚡ Launch Interactive Pro Workbench & CLI Demo
+            </Link>
+          )}
+
+          {isUiUxPrompts && (
+            <Link
+              href="/access/ui-ux-product-design-prompts"
+              className="block w-full rounded-full bg-slate-900/90 border border-pink-500/40 hover:border-pink-400 py-2.5 text-center text-xs font-semibold text-pink-300 hover:text-pink-200 transition-all hover:bg-pink-950/20"
+            >
+              🎨 Launch Interactive Design Playbook & Token Explorer
             </Link>
           )}
 
