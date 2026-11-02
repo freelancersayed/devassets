@@ -29,26 +29,57 @@ export async function GET() {
     // Map each purchase with catalog info
     const enriched = purchases.map((p) => {
       const catalogMatch = productsData.find(
-        (c) => c.slug === "fullstack-system-architecture-prompts"
+        (c) =>
+          c.slug === p.productSlug ||
+          c.slug === p.productId ||
+          c.fastspringProductId === p.productId ||
+          (p.productId === "prod_fullstack_arch_prompts" &&
+            c.slug === "fullstack-system-architecture-prompts") ||
+          (p.productId === "prod_pro_utility_suite" &&
+            c.slug === "pro-utility-suite") ||
+          (p.productId === "prod_ui_ux_design_prompts" &&
+            c.slug === "ui-ux-product-design-prompts")
       );
+
+      const resolvedSlug =
+        catalogMatch?.slug ||
+        p.productSlug ||
+        "fullstack-system-architecture-prompts";
+      const resolvedTitle =
+        catalogMatch?.title || p.productTitle || "DevAssets Digital Toolkit";
+
+      let accessUrl = "/access";
+      if (resolvedSlug === "pro-utility-suite") {
+        accessUrl = "/tools/pro-utility-suite";
+      } else if (resolvedSlug === "ui-ux-product-design-prompts") {
+        accessUrl = "/access/ui-ux-product-design-prompts";
+      } else if (catalogMatch?.accessUrl) {
+        accessUrl = catalogMatch.accessUrl;
+      }
+
       return {
         id: p._id?.toString(),
         productId: p.productId,
-        productTitle:
-          p.productId === "prod_fullstack_arch_prompts"
-            ? "Full-Stack Dev & System Architecture Prompts"
-            : "DevAssets Digital Toolkit",
-        productSlug:
-          catalogMatch?.slug || "fullstack-system-architecture-prompts",
+        productTitle: resolvedTitle,
+        productSlug: resolvedSlug,
+        description:
+          catalogMatch?.description ||
+          "High-performance digital asset package with full commercial licensing.",
+        emoji: catalogMatch?.emoji || "📦",
+        badgeColor: catalogMatch?.badgeColor || "text-emerald-400",
+        badgeBg: catalogMatch?.badgeBg || "bg-emerald-400/10",
+        price: catalogMatch?.price || "",
         licenseKey: p.licenseKey || "ACTIVE-LICENSE",
         status: p.status || "ACTIVE",
-        version: "v2026.2.0",
-        format: "ZIP + Markdown + JSON",
-        category: catalogMatch?.categoryLabel || "AI Engineering Prompts",
+        version: catalogMatch?.specs.version || "v2.0",
+        format: catalogMatch?.specs.format || "ZIP + Markdown + JSON",
+        category: catalogMatch?.categoryLabel || "Digital Assets",
+        deliverables: catalogMatch?.deliverables?.slice(0, 3) || [],
         purchasedAt: p.purchasedAt || new Date(),
         downloadUrl: `/api/downloads/${p.productId}?key=${encodeURIComponent(
-          p.licenseKey || "DEVASSETS-DEMO-2026"
+          p.licenseKey || "ACTIVE-KEY"
         )}`,
+        accessUrl,
       };
     });
 
@@ -98,9 +129,12 @@ export async function POST(req: Request) {
 
     const result = await verifyLicenseKey(licenseKey, session.user.id);
 
-    if (!result.valid) {
+    if (!result.valid || !result.license) {
       return NextResponse.json(
-        { success: false, message: result.message },
+        {
+          success: false,
+          message: result.message || "Invalid license key.",
+        },
         { status: 400 }
       );
     }
@@ -111,11 +145,10 @@ export async function POST(req: Request) {
       license: result.license,
     });
   } catch (error: any) {
-    console.error("[User Redeem API Error]", error);
+    console.error("[Redeem Purchase API Error]", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to redeem license" },
       { status: 500 }
     );
   }
 }
-

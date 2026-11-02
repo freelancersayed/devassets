@@ -221,6 +221,90 @@ export async function POST(req) {
         });
       }
 
+      // a2) If prod_ui_ux_design_prompts is purchased
+      const isUiUxPurchased =
+        purchasedProductIds.has("prod_ui_ux_design_prompts") ||
+        purchasedProductIds.has("ui-ux-product-design-prompts");
+
+      if (isUiUxPurchased) {
+        const generatedKey = `DEV-UIUX-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        const purchaseFilter = {
+          userId: targetUserId,
+          productId: "prod_ui_ux_design_prompts",
+        };
+
+        const purchaseUpdate = {
+          $set: {
+            status: "ACTIVE",
+            purchasedAt: new Date(),
+            updatedAt: new Date(),
+            productSlug: "ui-ux-product-design-prompts",
+            productTitle: "UI/UX & Product Design Prompt Library",
+          },
+          $setOnInsert: {
+            userId: targetUserId,
+            productId: "prod_ui_ux_design_prompts",
+            licenseKey: generatedKey,
+            createdAt: new Date(),
+          },
+        };
+
+        const purchaseResult = await userPurchases.updateOne(
+          purchaseFilter,
+          purchaseUpdate,
+          { upsert: true }
+        );
+
+        updates.push({
+          type: "mongodb_user_purchase_provisioned",
+          productId: "prod_ui_ux_design_prompts",
+          matchedCount: purchaseResult.matchedCount,
+          upsertedId: purchaseResult.upsertedId,
+        });
+      }
+
+      // a3) If prod_pro_utility_suite is purchased
+      const isProSuitePurchased =
+        purchasedProductIds.has("prod_pro_utility_suite") ||
+        purchasedProductIds.has("pro-utility-suite");
+
+      if (isProSuitePurchased) {
+        const generatedKey = `DEV-PRO-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        const purchaseFilter = {
+          userId: targetUserId,
+          productId: "prod_pro_utility_suite",
+        };
+
+        const purchaseUpdate = {
+          $set: {
+            status: "ACTIVE",
+            purchasedAt: new Date(),
+            updatedAt: new Date(),
+            productSlug: "pro-utility-suite",
+            productTitle: "DevAssets Pro Utility Suite (Commercial License)",
+          },
+          $setOnInsert: {
+            userId: targetUserId,
+            productId: "prod_pro_utility_suite",
+            licenseKey: generatedKey,
+            createdAt: new Date(),
+          },
+        };
+
+        const purchaseResult = await userPurchases.updateOne(
+          purchaseFilter,
+          purchaseUpdate,
+          { upsert: true }
+        );
+
+        updates.push({
+          type: "mongodb_user_purchase_provisioned",
+          productId: "prod_pro_utility_suite",
+          matchedCount: purchaseResult.matchedCount,
+          upsertedId: purchaseResult.upsertedId,
+        });
+      }
+
       // b) If 30-Day All-Access Pass (30_day_all_access) is purchased, upsert user_credits
       // setting remainingDownloads = 3 and expiresAt to 30 days from now
       const isAllAccessPurchased =

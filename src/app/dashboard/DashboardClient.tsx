@@ -9,16 +9,23 @@ interface UserPurchase {
   productId: string;
   productTitle: string;
   productSlug: string;
+  description?: string;
+  emoji?: string;
+  badgeColor?: string;
+  badgeBg?: string;
+  price?: string;
   licenseKey: string;
   status: string;
   version: string;
   format: string;
   category: string;
-  purchasedAt: string;
+  deliverables?: string[];
+  purchasedAt: string | Date;
   downloadUrl: string;
+  accessUrl?: string;
 }
 
-type TabType = "overview" | "assets" | "tools" | "prompts" | "redeem" | "account";
+type TabType = "assets" | "overview" | "tools" | "redeem" | "account";
 
 const DASHBOARD_TOOLS = [
   {
@@ -28,7 +35,7 @@ const DASHBOARD_TOOLS = [
     desc: "100% client-side bulk image compressor, aspect ratio resizer (16:9, 1:1, 4:5), and multi-format converter (WebP, PNG, JPEG) with ZIP export.",
     icon: "🖼️",
     route: "/tools/image-studio",
-    badge: "New Tool",
+    badge: "Free Tool",
     badgeColor: "text-cyan-400 bg-cyan-950/60 border-cyan-800/50",
     features: ["Zero Telemetry", "Bulk Canvas Engine", "Instant ZIP Export"],
   },
@@ -39,7 +46,7 @@ const DASHBOARD_TOOLS = [
     desc: "Detach audio tracks from MP4, WebM, and MOV videos locally in your browser memory via Web Audio API without uploading a single byte.",
     icon: "🎵",
     route: "/tools/video-to-audio",
-    badge: "Web Audio API",
+    badge: "Free Tool",
     badgeColor: "text-emerald-400 bg-emerald-950/60 border-emerald-800/50",
     features: ["Lossless 48kHz WAV", "Offline In-Memory", "No File Size Limit"],
   },
@@ -50,7 +57,7 @@ const DASHBOARD_TOOLS = [
     desc: "Extract clean formatted text from PDF files directly inside your browser and export genuine Microsoft Word (.docx) and TXT documents.",
     icon: "📄",
     route: "/tools/pdf-to-word",
-    badge: "Private Parser",
+    badge: "Free Tool",
     badgeColor: "text-indigo-400 bg-indigo-950/60 border-indigo-800/50",
     features: ["Native .docx Export", "No Server Upload", "Layout Preserving"],
   },
@@ -61,95 +68,17 @@ const DASHBOARD_TOOLS = [
     desc: "Extract text from screenshots and photos using client-side OCR engine. Includes Unicode to Bijoy SutonnyMJ conversion toggle.",
     icon: "📝",
     route: "/tools/image-to-text",
-    badge: "Wasm OCR",
+    badge: "Free Tool",
     badgeColor: "text-purple-400 bg-purple-950/60 border-purple-800/50",
     features: ["Bijoy & Unicode", "One-Click Copy", "Instant Docx Download"],
-  },
-];
-
-const CURATED_PROMPTS = [
-  {
-    id: "p1",
-    category: "Next.js 15 & Server Actions",
-    title: "Enterprise Server Action Mutation Pipeline",
-    targetAi: ["Claude 3.7", "GPT-4o", "DeepSeek-V3"],
-    content: `You are designing a high-concurrency Server Action in Next.js 15 (App Router).
-
-Apply the following architectural constraints:
-1. Type Safety & Validation:
-   - Use Zod schemas with .safeParseAsync().
-   - Never accept untyped FormData directly without schema coercion.
-   - Return a Discriminated Union response object:
-     { success: true, data: T } | { success: false, error: { code: string, message: string, fieldErrors?: Record<string, string[]> } }
-2. Security & Authentication:
-   - Verify caller session using Better Auth / NextAuth before DB access.
-   - Guard against CSRF with native Server Action origin verification.
-   - Enforce rate-limiting using Upstash Redis token bucket per IP/User ID.
-3. Database & Cache Invalidation:
-   - Wrap operations inside an atomic transaction (Prisma / MongoDB withTransaction).
-   - Call revalidateTag() instead of revalidatePath() for surgical cache invalidation.
-4. Optimistic Updates:
-   - Provide client hook utilizing React 19 useActionState and useOptimistic.
-
-Generate: schema.ts, actions.ts, and ClientForm.tsx.`,
-  },
-  {
-    id: "p2",
-    category: "Next.js 15 & Server Actions",
-    title: "Streaming SSR & Nested Suspense Topologies",
-    targetAi: ["Claude 3.7", "GPT-4o"],
-    content: `You are a Principal Frontend Architect optimizing Next.js 15 App Router pages for sub-200ms TTFB and Zero Cumulative Layout Shift (CLS).
-
-Generate a nested Suspense streaming topology for a complex dashboard page:
-1. Critical Path: Render page skeleton and static chrome immediately from edge.
-2. Streaming Boundaries: Deconstruct UI into independent async Server Components:
-   a) Fast dynamic data (Profile, Notifications: <50ms)
-   b) Heavy aggregated metrics (Analytics, Revenue chart: 300-800ms)
-   c) Third-party external API feeds (Live webhook feed: 1000ms+)
-3. Skeleton Fallbacks: Tailwind CSS skeletons matching exact layout.
-4. Error Boundaries: Localized error.tsx wrappers to prevent cascade crashes.`,
-  },
-  {
-    id: "p3",
-    category: "Database & Indexing",
-    title: "Prisma & MongoDB Compound Indexing ESR Optimization",
-    targetAi: ["Claude 3.7", "DeepSeek-R1"],
-    content: `You are a Principal Database Administrator specializing in MongoDB Atlas and Prisma ORM.
-
-Optimize a collection with 5,000,000+ documents handling 1,500 requests/second:
-1. Compound index strategy strictly following Equality-Sort-Range (ESR) rule.
-2. Prevent in-memory sorting (SORT_KEY_GENERATOR) and full collection scans (COLLSCAN).
-3. Construct Prisma schema definition with @@index and @@unique directives.
-4. Build a high-performance MongoDB Aggregation Pipeline utilizing $facet, $bucketAuto, and $project projections.`,
-  },
-  {
-    id: "p4",
-    category: "TypeScript & Security",
-    title: "Branded Types & Discriminated Union Event Bus",
-    targetAi: ["Claude 3.7", "GPT-4o"],
-    content: `You are a Principal TypeScript Systems Engineer. Create bulletproof defensive types and runtime validators:
-1. Branded / Nominal primitive types: type UserId = string & { readonly __brand: unique symbol }.
-2. Discriminated union domain events with exhaustive switch pattern matching using 'never'.
-3. Zero-runtime-overhead TypeScript type guards with (arg is Type).
-4. Zod schema transformation pipeline with sanitization (trim, lowercasing, XSS strip).`,
-  },
-  {
-    id: "p5",
-    category: "Cloud & Microservices",
-    title: "Idempotent Webhook Processing with Redis Leases",
-    targetAi: ["Claude 3.7", "GPT-4o", "DeepSeek-V3"],
-    content: `You are designing a zero-data-loss Webhook consumer for FastSpring/Stripe payments:
-1. Signature Verification: Validate HMAC-SHA256 signature against raw request body before parsing JSON.
-2. Distributed Lock: Acquire Redis SET NX EX lock with 60s lease per webhook ID.
-3. Outbox Pattern: Insert audit log into MongoDB before executing fulfillment business logic.
-4. Dead-Letter Queue: Retry with exponential backoff up to 5 attempts, then send to dead-letter queue.`,
   },
 ];
 
 export default function DashboardClient() {
   const { data: session, isPending } = useSession();
 
-  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  // Primary tab is "assets" so purchased products are immediately visible
+  const [activeTab, setActiveTab] = useState<TabType>("assets");
 
   // Purchases / Licenses state
   const [purchases, setPurchases] = useState<UserPurchase[]>([]);
@@ -165,11 +94,6 @@ export default function DashboardClient() {
 
   // Clipboard copy state
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
-
-  // Prompt search & filter
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Fetch user purchases from API
   const fetchPurchases = async () => {
@@ -223,6 +147,8 @@ export default function DashboardClient() {
         });
         setLicenseKeyInput("");
         await fetchPurchases();
+        // Automatically switch to assets tab so user sees the newly unlocked product
+        setTimeout(() => setActiveTab("assets"), 800);
       }
     } catch (err: any) {
       setRedeemFeedback({
@@ -234,15 +160,10 @@ export default function DashboardClient() {
     }
   };
 
-  const copyToClipboard = (text: string, type: "key" | "prompt", id: string) => {
+  const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
-    if (type === "key") {
-      setCopiedKey(id);
-      setTimeout(() => setCopiedKey(null), 2000);
-    } else {
-      setCopiedPromptId(id);
-      setTimeout(() => setCopiedPromptId(null), 2000);
-    }
+    setCopiedKey(id);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
   const handleSignOut = async () => {
@@ -282,7 +203,7 @@ export default function DashboardClient() {
           <div className="space-y-2">
             <h2 className="text-2xl font-bold text-white">Sign In Required</h2>
             <p className="text-sm text-slate-400">
-              Please sign in to access your developer kits, license keys, and personalized dashboard.
+              Please sign in to access your digital products, license keys, and personal dashboard.
             </p>
           </div>
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
@@ -305,15 +226,6 @@ export default function DashboardClient() {
   }
 
   const user = session.user;
-  const filteredPrompts = CURATED_PROMPTS.filter((p) => {
-    const matchesCategory =
-      selectedCategory === "All" || p.category.includes(selectedCategory);
-    const matchesSearch =
-      searchQuery.trim() === "" ||
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.content.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
 
   const SIDEBAR_ITEMS: {
     id: TabType;
@@ -322,7 +234,6 @@ export default function DashboardClient() {
     badge?: string | number;
     badgeColor?: string;
   }[] = [
-    { id: "overview", label: "Overview", icon: "📊" },
     {
       id: "assets",
       label: "My Digital Assets",
@@ -330,6 +241,7 @@ export default function DashboardClient() {
       badge: purchases.length > 0 ? purchases.length : undefined,
       badgeColor: "bg-emerald-950 text-emerald-400 border border-emerald-800/60",
     },
+    { id: "overview", label: "Overview", icon: "📊" },
     {
       id: "tools",
       label: "Free Browser Tools",
@@ -337,14 +249,7 @@ export default function DashboardClient() {
       badge: "4",
       badgeColor: "bg-cyan-950 text-cyan-400 border border-cyan-800/60",
     },
-    {
-      id: "prompts",
-      label: "AI Prompt Vault",
-      icon: "🤖",
-      badge: "5",
-      badgeColor: "bg-purple-950 text-purple-300 border border-purple-800/60",
-    },
-    { id: "redeem", label: "Redeem License", icon: "🔑" },
+    { id: "redeem", label: "Redeem License Key", icon: "🔑" },
     { id: "account", label: "Account & Settings", icon: "⚙️" },
   ];
 
@@ -355,13 +260,9 @@ export default function DashboardClient() {
       <div className="absolute top-40 right-1/4 w-96 h-96 bg-purple-600/10 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* ══════════════════════════════════════════════════════════════
-            DESKTOP & MOBILE SIDEBAR + PREVIEW LAYOUT CONTAINER
-           ══════════════════════════════════════════════════════════════ */}
+        {/* DESKTOP & MOBILE SIDEBAR + PREVIEW LAYOUT */}
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
-          {/* ══════════════════════════════════════════════════════════════
-              LEFT SIDEBAR: মেনু গুলো বাম সাইডে
-             ══════════════════════════════════════════════════════════════ */}
+          {/* LEFT SIDEBAR */}
           <aside className="w-full lg:w-72 shrink-0 space-y-4 lg:sticky lg:top-24">
             {/* User Profile Summary Card */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/70 border border-white/10 backdrop-blur-xl shadow-xl flex items-center gap-3.5">
@@ -377,11 +278,9 @@ export default function DashboardClient() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="font-bold text-white text-sm truncate">
-                    {user.name || "Developer"}
-                  </h3>
-                </div>
+                <h3 className="font-bold text-white text-sm truncate">
+                  {user.name || "Developer"}
+                </h3>
                 <p className="text-[11px] text-slate-400 truncate mt-0.5">
                   {user.email}
                 </p>
@@ -397,7 +296,7 @@ export default function DashboardClient() {
             {/* Sidebar Navigation Items Menu */}
             <div className="p-2 sm:p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl">
               <div className="px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold hidden lg:block">
-                Dashboard Navigation
+                Dashboard Menu
               </div>
 
               {/* Mobile Horizontal Scroll vs Desktop Vertical Menu */}
@@ -439,63 +338,231 @@ export default function DashboardClient() {
               <div className="pt-3 mt-2 border-t border-white/[0.08] hidden lg:block space-y-2">
                 <div className="p-3 rounded-xl bg-slate-950/80 border border-white/[0.06] space-y-1">
                   <div className="flex items-center justify-between text-[11px] font-medium text-slate-300">
-                    <span>Privacy Engine</span>
-                    <span className="text-emerald-400 font-bold">100% Native</span>
+                    <span>FastSpring Fulfillment</span>
+                    <span className="text-emerald-400 font-bold">Connected</span>
                   </div>
                   <p className="text-[10px] text-slate-500">
-                    Client WebAssembly &amp; Web Audio memory execution.
+                    Purchases sync automatically to your account.
                   </p>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-950/30 border border-transparent hover:border-rose-800/40 transition-colors cursor-pointer"
                 >
-                  <span>🚪</span>
                   <span>Sign Out</span>
                 </button>
               </div>
             </div>
           </aside>
 
-          {/* ══════════════════════════════════════════════════════════════
-              RIGHT PREVIEW & CONTENT AREA: ডানপাশে প্রিভিউ
-             ══════════════════════════════════════════════════════════════ */}
-          <main className="flex-1 w-full min-w-0 space-y-6">
+          {/* RIGHT PREVIEW CONTENT CONTAINER */}
+          <main className="flex-1 w-full min-w-0">
             {/* ──────────────────────────────────────────────────────────
-                TAB 1: OVERVIEW PREVIEW
+                TAB 1: MY DIGITAL ASSETS / MY DIGITAL PRODUCTS (DYNAMIC)
+               ────────────────────────────────────────────────────────── */}
+            {activeTab === "assets" && (
+              <div className="space-y-6 animate-fadeIn">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                  <div>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                      <span>📦</span> My Digital Products &amp; Assets
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      All your purchased items, unlocked licenses, and download packages.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("redeem")}
+                    className="self-start sm:self-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors cursor-pointer shadow-md shadow-indigo-600/30 flex items-center gap-1.5"
+                  >
+                    <span>+</span>
+                    <span>Redeem Product Key</span>
+                  </button>
+                </div>
+
+                {isLoadingPurchases ? (
+                  <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-3">
+                    <div className="w-8 h-8 mx-auto border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-xs text-slate-400">Loading your unlocked digital products...</p>
+                  </div>
+                ) : purchases.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-5">
+                    {purchases.map((item, idx) => (
+                      <div
+                        key={item.id || idx}
+                        className="p-6 sm:p-7 rounded-3xl bg-slate-900/70 border border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between space-y-5 hover:border-indigo-500/30 transition-all"
+                      >
+                        <div className="space-y-3">
+                          {/* Card Header: Category & Badges */}
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl">{item.emoji || "📦"}</span>
+                              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-white/[0.06] border border-white/10 text-slate-300">
+                                {item.category}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                {item.status} &bull; {item.version}
+                              </span>
+                              <span className="text-xs font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-white/[0.06]">
+                                {item.format}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Dynamic Product Title & Description */}
+                          <div>
+                            <h3 className="text-lg sm:text-xl font-bold text-white">
+                              {item.productTitle}
+                            </h3>
+                            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                              {item.description}
+                            </p>
+                          </div>
+
+                          {/* Deliverables Highlights (if available) */}
+                          {item.deliverables && item.deliverables.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                              {item.deliverables.map((deliv, dIdx) => (
+                                <span
+                                  key={dIdx}
+                                  className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-950/80 border border-white/[0.06] text-slate-400"
+                                >
+                                  ✓ {deliv}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* License Key Box with Copy Button */}
+                          <div className="p-3 rounded-xl bg-slate-950/90 border border-white/[0.08] flex items-center justify-between gap-2 font-mono text-xs">
+                            <div className="flex items-center gap-2 truncate">
+                              <span className="text-slate-500">License Key:</span>
+                              <span className="text-indigo-300 font-semibold truncate uppercase">
+                                {item.licenseKey}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(item.licenseKey, item.licenseKey)}
+                              className="px-3 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.15] text-slate-200 text-xs font-semibold transition-colors shrink-0 cursor-pointer"
+                            >
+                              {copiedKey === item.licenseKey ? "✓ Copied!" : "Copy Key"}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons: Direct Download + Dedicated Studio Access */}
+                        <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center gap-3">
+                          <a
+                            href={item.downloadUrl}
+                            download
+                            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:opacity-95 text-white font-bold text-xs sm:text-sm text-center shadow-lg shadow-emerald-900/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span>Download Full ZIP Package</span>
+                          </a>
+
+                          <Link
+                            href={
+                              item.accessUrl ||
+                              (item.productSlug === "pro-utility-suite"
+                                ? "/tools/pro-utility-suite"
+                                : item.productSlug === "ui-ux-product-design-prompts"
+                                ? "/access/ui-ux-product-design-prompts"
+                                : "/access")
+                            }
+                            className="w-full sm:w-auto py-3 px-5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 hover:text-white text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          >
+                            <span>Open Studio / Playbook</span>
+                            <span>&rarr;</span>
+                          </Link>
+
+                          <Link
+                            href={`/products/${item.productSlug}`}
+                            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs sm:text-sm font-medium text-slate-400 hover:text-white transition-colors text-center"
+                          >
+                            Specs
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Empty State */
+                  <div className="p-8 sm:p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-4">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-3xl">
+                      📦
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-bold text-white">No Digital Products Purchased Yet</h4>
+                      <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+                        Products purchased through FastSpring or redeemed with an activation key will be displayed here dynamically.
+                      </p>
+                    </div>
+                    <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("redeem")}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+                      >
+                        <span>🔑</span>
+                        <span>Redeem License Key</span>
+                      </button>
+
+                      <Link
+                        href="/#products"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-slate-300 hover:text-white text-xs font-semibold transition-all"
+                      >
+                        <span>🛒</span>
+                        <span>Explore Product Catalog</span>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ──────────────────────────────────────────────────────────
+                TAB 2: OVERVIEW
                ────────────────────────────────────────────────────────── */}
             {activeTab === "overview" && (
               <div className="space-y-6 animate-fadeIn">
-                {/* Overview Banner */}
                 <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-indigo-950/70 via-slate-900/80 to-purple-950/50 border border-indigo-500/30 shadow-xl backdrop-blur-xl relative overflow-hidden">
                   <div className="max-w-2xl space-y-3 relative z-10">
                     <span className="px-3 py-1 rounded-full text-[11px] font-bold text-indigo-300 bg-indigo-950/80 border border-indigo-800/60 inline-flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      Client-Side Workspace Active
+                      Client Workspace Active
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                      Welcome to your Developer Hub
+                      Developer Dashboard
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      Instant access to your purchased system architecture directives, offline browser utilities, and fast license key management.
+                      Manage your unlocked digital products, run offline browser utilities, and verify your FastSpring licenses in one clean interface.
                     </p>
                   </div>
                 </div>
 
-                {/* 4 Stat Metric Cards */}
+                {/* 4 Metric Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
                     <div className="flex items-center justify-between text-xs text-slate-400">
-                      <span>Digital Assets</span>
+                      <span>Purchased Products</span>
                       <span>📦</span>
                     </div>
                     <div className="text-2xl sm:text-3xl font-black text-white">
                       {purchases.length}
                     </div>
                     <p className="text-[11px] text-slate-400 truncate">
-                      {purchases.length > 0 ? "Full access active" : "No keys active"}
+                      {purchases.length > 0 ? "Lifetime active" : "None unlocked"}
                     </p>
                   </div>
 
@@ -514,24 +581,24 @@ export default function DashboardClient() {
 
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
                     <div className="flex items-center justify-between text-xs text-slate-400">
-                      <span>AI Prompts</span>
-                      <span>🤖</span>
+                      <span>FastSpring Security</span>
+                      <span>🔒</span>
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-purple-400">
-                      450+
+                    <div className="text-2xl sm:text-3xl font-black text-emerald-400">
+                      256-Bit
                     </div>
                     <p className="text-[11px] text-slate-400 truncate">
-                      Claude 3.7 &bull; GPT-4o
+                      SSL Webhook Verified
                     </p>
                   </div>
 
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/[0.08] backdrop-blur-md space-y-1.5">
                     <div className="flex items-center justify-between text-xs text-slate-400">
-                      <span>Telemetry</span>
+                      <span>Privacy Status</span>
                       <span>🛡️</span>
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-emerald-400">
-                      0 KB
+                    <div className="text-2xl sm:text-3xl font-black text-purple-400">
+                      Local
                     </div>
                     <p className="text-[11px] text-slate-400 truncate">
                       Zero Server Uploads
@@ -539,7 +606,7 @@ export default function DashboardClient() {
                   </div>
                 </div>
 
-                {/* Quick Launch Free Tools Grid Preview */}
+                {/* Quick Free Tools Grid */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -596,129 +663,7 @@ export default function DashboardClient() {
             )}
 
             {/* ──────────────────────────────────────────────────────────
-                TAB 2: MY DIGITAL ASSETS & DOWNLOADS PREVIEW
-               ────────────────────────────────────────────────────────── */}
-            {activeTab === "assets" && (
-              <div className="space-y-6 animate-fadeIn">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/10">
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-white">
-                      My Unlocked Digital Kits
-                    </h2>
-                    <p className="text-xs text-slate-400">
-                      Download packages and copy license keys for your purchased kits.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("redeem")}
-                    className="self-start sm:self-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors cursor-pointer shadow-md shadow-indigo-600/30"
-                  >
-                    + Redeem License Key
-                  </button>
-                </div>
-
-                {isLoadingPurchases ? (
-                  <div className="p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-3">
-                    <div className="w-8 h-8 mx-auto border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-xs text-slate-400">Loading your digital assets...</p>
-                  </div>
-                ) : purchases.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-5">
-                    {purchases.map((item, idx) => (
-                      <div
-                        key={item.id || idx}
-                        className="p-6 sm:p-7 rounded-3xl bg-slate-900/70 border border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between space-y-5"
-                      >
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="px-3 py-1 rounded-full text-[11px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              {item.status} &bull; {item.version}
-                            </span>
-                            <span className="text-xs font-mono text-slate-400">
-                              {item.format}
-                            </span>
-                          </div>
-
-                          <h3 className="text-lg sm:text-xl font-bold text-white">
-                            {item.productTitle}
-                          </h3>
-                          <p className="text-xs text-slate-400">
-                            Includes 200+ Architecture Directives, Server Action Matrix, and Vector Cheatsheets.
-                          </p>
-
-                          {/* License Key with Copy Button */}
-                          <div className="p-3 rounded-xl bg-slate-950/80 border border-white/[0.08] flex items-center justify-between gap-2 font-mono text-xs">
-                            <div className="flex items-center gap-2 truncate">
-                              <span className="text-slate-500">License Key:</span>
-                              <span className="text-indigo-300 font-semibold truncate">
-                                {item.licenseKey}
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => copyToClipboard(item.licenseKey, "key", item.licenseKey)}
-                              className="px-3 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.15] text-slate-200 text-xs font-semibold transition-colors shrink-0 cursor-pointer"
-                            >
-                              {copiedKey === item.licenseKey ? "✓ Copied!" : "Copy"}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center gap-3">
-                          <a
-                            href={item.downloadUrl}
-                            download
-                            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:opacity-95 text-white font-semibold text-xs sm:text-sm text-center shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
-                          >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            <span>Download Full ZIP Package</span>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("prompts")}
-                            className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
-                          >
-                            Explore Prompts &rarr;
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-8 sm:p-12 text-center rounded-3xl bg-slate-900/40 border border-white/10 space-y-4">
-                    <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-3xl">
-                      📦
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="text-lg font-bold text-white">No Digital Assets Unlocked Yet</h4>
-                      <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-                        You can redeem your FastSpring purchase key or instantly test with our demo license key!
-                      </p>
-                    </div>
-                    <div className="pt-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setLicenseKeyInput("DEVASSETS-DEMO-2026");
-                          setActiveTab("redeem");
-                        }}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
-                      >
-                        <span>⚡</span>
-                        <span>Unlock with Demo Key (DEVASSETS-DEMO-2026)</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ──────────────────────────────────────────────────────────
-                TAB 3: FREE BROWSER TOOLS PREVIEW
+                TAB 3: FREE BROWSER TOOLS STUDIO
                ────────────────────────────────────────────────────────── */}
             {activeTab === "tools" && (
               <div className="space-y-6 animate-fadeIn">
@@ -784,114 +729,7 @@ export default function DashboardClient() {
             )}
 
             {/* ──────────────────────────────────────────────────────────
-                TAB 4: AI PROMPT VAULT PREVIEW
-               ────────────────────────────────────────────────────────── */}
-            {activeTab === "prompts" && (
-              <div className="space-y-6 animate-fadeIn">
-                <div className="pb-2 border-b border-white/10">
-                  <h2 className="text-xl sm:text-2xl font-bold text-white">
-                    AI Architecture Prompt Vault
-                  </h2>
-                  <p className="text-xs text-slate-400">
-                    Production directives calibrated for Claude 3.7 Sonnet, GPT-4o, and DeepSeek-V3.
-                  </p>
-                </div>
-
-                {/* Search & Category Filter Pills */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search prompts by keyword, directive, or architecture..."
-                      className="w-full px-4 py-2.5 pl-10 rounded-xl bg-slate-900/80 border border-white/10 text-white text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-400"
-                    />
-                    <svg
-                      className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                    {["All", "Next.js", "Database", "TypeScript", "Microservices"].map((cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
-                          selectedCategory === cat
-                            ? "bg-indigo-600 text-white"
-                            : "bg-white/[0.04] text-slate-400 hover:text-white"
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Prompt Cards */}
-                <div className="space-y-4">
-                  {filteredPrompts.map((prompt) => (
-                    <div
-                      key={prompt.id}
-                      className="p-5 sm:p-6 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-md space-y-4 hover:border-indigo-500/30 transition-colors"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/[0.06]">
-                        <div>
-                          <span className="text-[11px] font-mono text-indigo-400 uppercase tracking-wider">
-                            {prompt.category}
-                          </span>
-                          <h4 className="text-base font-bold text-white mt-0.5">{prompt.title}</h4>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1">
-                            {prompt.targetAi.map((ai, idx) => (
-                              <span
-                                key={idx}
-                                className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-950/80 border border-white/10 text-slate-300"
-                              >
-                                {ai}
-                              </span>
-                            ))}
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => copyToClipboard(prompt.content, "prompt", prompt.id)}
-                            className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-                          >
-                            {copiedPromptId === prompt.id ? (
-                              <>
-                                <span>✓</span>
-                                <span>Copied!</span>
-                              </>
-                            ) : (
-                              <>
-                                <span>📋</span>
-                                <span>Copy Prompt</span>
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="p-3.5 rounded-xl bg-slate-950/80 border border-white/[0.06] text-xs font-mono text-slate-300 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
-                        {prompt.content}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* ──────────────────────────────────────────────────────────
-                TAB 5: REDEEM LICENSE PREVIEW
+                TAB 4: REDEEM LICENSE KEY
                ────────────────────────────────────────────────────────── */}
             {activeTab === "redeem" && (
               <div className="space-y-6 animate-fadeIn max-w-2xl">
@@ -900,7 +738,7 @@ export default function DashboardClient() {
                     Redeem License Key
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Activate and link your purchased kits directly to your account.
+                    Activate and link your purchased products directly to your account.
                   </p>
                 </div>
 
@@ -917,7 +755,7 @@ export default function DashboardClient() {
                       type="text"
                       value={licenseKeyInput}
                       onChange={(e) => setLicenseKeyInput(e.target.value)}
-                      placeholder="e.g. DEVASSETS-DEMO-2026"
+                      placeholder="e.g. DESIGN-UIUX-2026 or DEVASSETS-DEMO-2026"
                       className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-white/10 text-white text-sm font-mono placeholder-slate-500 focus:outline-none focus:border-indigo-400 uppercase"
                     />
 
@@ -929,14 +767,36 @@ export default function DashboardClient() {
                       >
                         {isRedeeming ? "Verifying License..." : "Activate & Unlock Product"}
                       </button>
+                    </div>
 
-                      <button
-                        type="button"
-                        onClick={() => setLicenseKeyInput("DEVASSETS-DEMO-2026")}
-                        className="py-3 px-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs text-slate-300 hover:text-white transition-colors cursor-pointer"
-                      >
-                        ⚡ Insert Demo Key
-                      </button>
+                    {/* Quick Demo Test Buttons */}
+                    <div className="pt-2 border-t border-white/[0.08] space-y-2">
+                      <p className="text-[11px] text-slate-400">Quick Test Demo Keys:</p>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setLicenseKeyInput("DESIGN-UIUX-2026")}
+                          className="py-1.5 px-3 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/30 text-xs text-pink-300 transition-colors cursor-pointer"
+                        >
+                          🎨 UI/UX Design Demo
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setLicenseKeyInput("DEVASSETS-DEMO-2026")}
+                          className="py-1.5 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs text-slate-300 hover:text-white transition-colors cursor-pointer"
+                        >
+                          ⚡ Architecture Prompts Demo
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setLicenseKeyInput("PRO-SUITE-COMMERCIAL-2026")}
+                          className="py-1.5 px-3 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-xs text-amber-300 transition-colors cursor-pointer"
+                        >
+                          🛠️ Pro Suite Demo
+                        </button>
+                      </div>
                     </div>
                   </form>
 
@@ -957,83 +817,72 @@ export default function DashboardClient() {
             )}
 
             {/* ──────────────────────────────────────────────────────────
-                TAB 6: ACCOUNT & SETTINGS PREVIEW
+                TAB 5: ACCOUNT & SETTINGS
                ────────────────────────────────────────────────────────── */}
             {activeTab === "account" && (
-              <div className="space-y-6 max-w-3xl animate-fadeIn">
+              <div className="space-y-6 animate-fadeIn max-w-2xl">
                 <div className="pb-2 border-b border-white/10">
                   <h2 className="text-xl sm:text-2xl font-bold text-white">
                     Account &amp; Security Settings
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Review your account identity, active sessions, and purchase portal.
+                    Manage your developer profile and active authentication sessions.
                   </p>
                 </div>
 
-                {/* Profile Details */}
-                <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
-                  <h3 className="font-bold text-white text-base">Profile Details</h3>
+                <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl space-y-6">
+                  <div className="flex items-center gap-4 pb-6 border-b border-white/10">
+                    {user.image ? (
+                      <img
+                        src={user.image}
+                        alt={user.name || "User Avatar"}
+                        className="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500/50"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-2xl font-black text-white uppercase">
+                        {(user.name || user.email || "U")[0]}
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-lg font-bold text-white">
+                        {user.name || "Developer"}
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">{user.email}</p>
+                      <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/80 border border-emerald-800 text-emerald-400">
+                        Authenticated
+                      </span>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                      <span className="text-slate-500 font-mono">Full Name</span>
-                      <p className="font-semibold text-white">{user.name || "Developer"}</p>
-                    </div>
-                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                      <span className="text-slate-500 font-mono">Email Address</span>
-                      <p className="font-semibold text-white">{user.email}</p>
-                    </div>
-                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                      <span className="text-slate-500 font-mono">Account ID</span>
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-white/[0.06] space-y-1">
+                      <span className="text-slate-500 font-semibold uppercase text-[10px]">
+                        Account ID
+                      </span>
                       <p className="font-mono text-slate-300 truncate">{user.id}</p>
                     </div>
-                    <div className="p-3.5 rounded-xl bg-slate-950/70 border border-white/[0.06] space-y-1">
-                      <span className="text-slate-500 font-mono">Role Access</span>
-                      <p className="font-semibold text-emerald-400 uppercase">
-                        {(user as any).role || "user"}
-                      </p>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-white/[0.06] space-y-1">
+                      <span className="text-slate-500 font-semibold uppercase text-[10px]">
+                        Unlocked Packages
+                      </span>
+                      <p className="font-bold text-indigo-400">{purchases.length} Active</p>
                     </div>
                   </div>
-                </div>
 
-                {/* FastSpring Support */}
-                <div className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-3">
-                  <h3 className="font-bold text-white text-base">Order &amp; Billing Lookup</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    FastSpring is our Merchant of Record. For invoice receipts, charge lookups, or VAT exemptions, visit the FastSpring consumer portal.
-                  </p>
-                  <div className="pt-1 flex flex-col sm:flex-row gap-3">
-                    <a
-                      href="https://devassets.test.onfastspring.com/popup-devassets"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition-colors text-center"
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-semibold text-white">Sign Out</h4>
+                      <p className="text-xs text-slate-400">End your active session securely</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="px-4 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 border border-rose-800/60 text-rose-300 text-xs font-bold transition-all cursor-pointer"
                     >
-                      FastSpring Order Portal &rarr;
-                    </a>
-                    <a
-                      href="mailto:support@devassets.online"
-                      className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition-colors text-center"
-                    >
-                      Contact Support &rarr;
-                    </a>
+                      Sign Out
+                    </button>
                   </div>
-                </div>
-
-                {/* Sign Out Card */}
-                <div className="p-6 rounded-3xl bg-rose-950/20 border border-rose-500/20 backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="font-bold text-rose-300 text-sm">Session Sign Out</h3>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Securely terminate your authentication token and return to the home page.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleSignOut}
-                    className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition-colors shrink-0 cursor-pointer shadow-lg shadow-rose-600/20"
-                  >
-                    Sign Out
-                  </button>
                 </div>
               </div>
             )}

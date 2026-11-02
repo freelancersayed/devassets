@@ -251,6 +251,41 @@ export default function ToolsSection() {
             </StaggerItem>
           ))}
         </StaggerContainer>
+
+        {/* Enterprise Pro Utility Suite Spotlight Card */}
+        <div className="mt-12 rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-950/20 via-slate-900/90 to-slate-950 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_40px_rgba(245,158,11,0.08)]">
+          <div className="space-y-2 text-center md:text-left">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                🛠️ Commercial Tier ($39)
+              </span>
+              <span className="text-xs font-semibold text-slate-400">
+                Offline Desktop Runners (.EXE &amp; .DMG) + Headless CLI
+              </span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-white">
+              Need Unrestricted Batch Processing &amp; Commercial Rights?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
+              Process 10,000+ files locally without browser limits, automate CLI batch pipelines, access 100% unminified engine source code, and get a perpetual multi-client redistribution license.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
+            <Link
+              href="/tools/pro-utility-suite"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs sm:text-sm text-center shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all"
+            >
+              ⚡ Open Pro Workbench &amp; CLI Builder
+            </Link>
+            <Link
+              href="/products/pro-utility-suite"
+              className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 text-slate-300 text-center text-xs sm:text-sm font-semibold transition-colors"
+            >
+              View License Details ($39)
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* Interactive Tool Modal Launcher with AnimatePresence */}

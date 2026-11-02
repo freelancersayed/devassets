@@ -17,6 +17,8 @@ export interface UserPurchaseDoc {
   purchasedAt: Date;
   status: "ACTIVE" | "EXPIRED";
   licenseKey?: string;
+  productSlug?: string;
+  productTitle?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -56,15 +58,13 @@ export async function getCollections() {
 export async function ensureMongoIndexes() {
   try {
     const { users, userPurchases, userCredits } = await getCollections();
-    await Promise.allSettled([
-      users.createIndex({ email: 1 }, { unique: true }),
-      userPurchases.createIndex({ userId: 1, productId: 1 }, { unique: true }),
-      userPurchases.createIndex({ userId: 1 }),
-      userCredits.createIndex({ userId: 1 }, { unique: true }),
-    ]);
-  } catch (error) {
-    console.error("[MongoDB] Index initialization warning:", error);
+    await users.createIndex({ email: 1 }, { unique: true, sparse: true });
+    await userPurchases.createIndex(
+      { userId: 1, productId: 1 },
+      { unique: true }
+    );
+    await userCredits.createIndex({ userId: 1 }, { unique: true });
+  } catch (err) {
+    console.warn("[MongoDB] Index initialization notice:", err);
   }
 }
-
-export default getDb;
