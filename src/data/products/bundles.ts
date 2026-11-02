@@ -145,3 +145,4 @@ export const allInOneLifetimeBundleProduct: CatalogProduct = {
   },
   fastspringProductId: "prod_all_in_one_lifetime_bundle",
 };
+

@@ -59,3 +59,4 @@ export const technicalSeoToolkitProduct: CatalogProduct = {
   },
   fastspringProductId: "prod_technical_seo_cwv_toolkit",
 };
+

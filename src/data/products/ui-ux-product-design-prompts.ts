@@ -76,3 +76,4 @@ export const uiUxProductDesignPromptsProduct: CatalogProduct = {
   fastspringProductId: "prod_ui_ux_design_prompts",
   accessUrl: "/access/ui-ux-product-design-prompts",
 };
+

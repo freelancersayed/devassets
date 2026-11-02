@@ -23,3 +23,4 @@ export interface CatalogProduct {
   fastspringProductId?: string;
   accessUrl?: string;
 }
+

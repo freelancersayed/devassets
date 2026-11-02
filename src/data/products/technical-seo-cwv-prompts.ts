@@ -51,3 +51,4 @@ export const technicalSeoPromptsProduct: CatalogProduct = {
   fastspringProductId: "prod_seo_cwv_prompts",
   accessUrl: "/access",
 };
+

@@ -64,3 +64,4 @@ export function getCatalogProductBySlug(slug: string): CatalogProduct | undefine
 export function getAllCatalogSlugs(): string[] {
   return productsData.map((p) => p.slug);
 }
+

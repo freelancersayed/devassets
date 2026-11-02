@@ -57,3 +57,4 @@ export const reactEnterpriseProduct: CatalogProduct = {
   },
   fastspringProductId: "prod_react_enterprise_starter_kit",
 };
+

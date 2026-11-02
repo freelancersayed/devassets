@@ -58,3 +58,4 @@ export const javascriptPatternsProduct: CatalogProduct = {
   },
   fastspringProductId: "prod_javascript_patterns_toolkit",
 };
+

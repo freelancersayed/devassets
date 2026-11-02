@@ -62,11 +62,19 @@ export async function GET() {
         productId: p.productId,
         productTitle: resolvedTitle,
         productSlug: resolvedSlug,
+        description:
+          catalogMatch?.description ||
+          "High-performance digital asset package with full commercial licensing.",
+        emoji: catalogMatch?.emoji || "📦",
+        badgeColor: catalogMatch?.badgeColor || "text-emerald-400",
+        badgeBg: catalogMatch?.badgeBg || "bg-emerald-400/10",
+        price: catalogMatch?.price || "",
         licenseKey: p.licenseKey || "ACTIVE-LICENSE",
         status: p.status || "ACTIVE",
         version: catalogMatch?.specs.version || "v2.0",
         format: catalogMatch?.specs.format || "ZIP + Markdown + JSON",
         category: catalogMatch?.categoryLabel || "Digital Assets",
+        deliverables: catalogMatch?.deliverables?.slice(0, 3) || [],
         purchasedAt: p.purchasedAt || new Date(),
         downloadUrl: `/api/downloads/${p.productId}?key=${encodeURIComponent(
           p.licenseKey || "ACTIVE-KEY"

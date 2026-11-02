@@ -55,3 +55,4 @@ export const fullstackArchitecturePromptsProduct: CatalogProduct = {
   fastspringProductId: "prod_fullstack_arch_prompts",
   accessUrl: "/access",
 };
+
