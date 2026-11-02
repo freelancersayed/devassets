@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   reactStrictMode: true,
   compress: true,
   poweredByHeader: false,
@@ -16,6 +17,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "i.ibb.co.com",
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
   },

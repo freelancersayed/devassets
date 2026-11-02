@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { productsData, getCatalogProductBySlug, type CatalogProduct } from "@/data/catalog";
@@ -32,6 +32,38 @@ const filterTabs: FilterTab[] = [
 export default function ProductCatalog() {
   const [activeTab, setActiveTab] = useState<CategoryFilter>("all");
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
+
+  useEffect(() => {
+    const applyCategoryFromHashOrEvent = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === "#prompts") {
+        setActiveTab("prompts");
+        const el = document.getElementById("catalog-filter") || document.getElementById("products");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      } else if (hash === "#guides" || hash === "#pdf") {
+        setActiveTab("pdf");
+        const el = document.getElementById("catalog-filter") || document.getElementById("products");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    applyCategoryFromHashOrEvent();
+
+    const handleCustomFilter = (e: Event) => {
+      const customEvent = e as CustomEvent<{ category?: CategoryFilter }>;
+      if (customEvent.detail?.category) {
+        setActiveTab(customEvent.detail.category);
+      }
+    };
+
+    window.addEventListener("hashchange", applyCategoryFromHashOrEvent);
+    window.addEventListener("filter-catalog", handleCustomFilter);
+
+    return () => {
+      window.removeEventListener("hashchange", applyCategoryFromHashOrEvent);
+      window.removeEventListener("filter-catalog", handleCustomFilter);
+    };
+  }, []);
 
   // Products for the 3 main pricing tiers
   const starterProduct = useMemo(
@@ -371,7 +403,7 @@ export default function ProductCatalog() {
           {/* ══════════════════════════════════════════════════════════════
               2. FILTERABLE CATALOG OF ALL INDIVIDUAL ASSETS & TOOLS
              ══════════════════════════════════════════════════════════════ */}
-          <div className="mt-20 pt-16 border-t border-slate-800/80">
+          <div id="catalog-filter" className="mt-20 pt-16 border-t border-slate-800/80 scroll-mt-24">
             <FadeInView y={20} className="text-center max-w-2xl mx-auto mb-10 space-y-3">
               <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1 text-xs font-semibold tracking-wide uppercase bg-slate-800/80 text-slate-300 border border-slate-700/60 backdrop-blur-md">
                 📦 Individual Assets Catalog
