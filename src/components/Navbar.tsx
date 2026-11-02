@@ -100,50 +100,27 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
           <Link
             href="/"
-            className="hover:text-indigo-400 transition-colors"
+            className={`hover:text-indigo-400 transition-colors ${
+              pathname === "/" ? "text-indigo-400 font-semibold" : ""
+            }`}
           >
             Home
           </Link>
+          <Link
+            href="/products"
+            className={`hover:text-indigo-400 transition-colors ${
+              pathname.startsWith("/products") ? "text-indigo-400 font-semibold" : ""
+            }`}
+          >
+            All Products
+          </Link>
           <a
-            href="#tools"
+            href="/#tools"
             onClick={(e) => scrollToSection(e, "tools")}
             className="hover:text-indigo-400 transition-colors"
           >
             Free Tools
           </a>
-          <a
-            href="#products"
-            onClick={(e) => scrollToSection(e, "products")}
-            className="hover:text-indigo-400 transition-colors"
-          >
-            Store
-          </a>
-          <a
-            href="#features"
-            onClick={(e) => scrollToSection(e, "features")}
-            className="hover:text-indigo-400 transition-colors"
-          >
-            Why Us
-          </a>
-          <a
-            href="#faq"
-            onClick={(e) => scrollToSection(e, "faq")}
-            className="hover:text-indigo-400 transition-colors"
-          >
-            FAQ
-          </a>
-          <Link
-            href="/about"
-            className="hover:text-indigo-400 transition-colors"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/access"
-            className="text-indigo-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800/60 hover:bg-indigo-900/60 text-xs font-semibold"
-          >
-            <span>🔑</span> Redeem License
-          </Link>
         </div>
 
         {/* Action CTA: User Profile with Floating Dropdown */}
@@ -308,52 +285,28 @@ export default function Navbar() {
           <Link
             href="/"
             onClick={() => setIsOpen(false)}
-            className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
+            className={`block px-4 py-2.5 text-sm font-medium rounded-xl hover:bg-slate-800/80 ${
+              pathname === "/" ? "text-indigo-400 font-semibold bg-slate-800/40" : "text-slate-200"
+            }`}
           >
             Home
           </Link>
+          <Link
+            href="/products"
+            onClick={() => setIsOpen(false)}
+            className={`block px-4 py-2.5 text-sm font-medium rounded-xl hover:bg-slate-800/80 ${
+              pathname.startsWith("/products") ? "text-indigo-400 font-semibold bg-slate-800/40" : "text-slate-200"
+            }`}
+          >
+            All Products
+          </Link>
           <a
-            href="#tools"
+            href="/#tools"
             onClick={(e) => scrollToSection(e, "tools")}
             className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
           >
             Free Tools
           </a>
-          <a
-            href="#products"
-            onClick={(e) => scrollToSection(e, "products")}
-            className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
-          >
-            Store
-          </a>
-          <a
-            href="#features"
-            onClick={(e) => scrollToSection(e, "features")}
-            className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
-          >
-            Why Us
-          </a>
-          <a
-            href="#faq"
-            onClick={(e) => scrollToSection(e, "faq")}
-            className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
-          >
-            FAQ
-          </a>
-          <Link
-            href="/about"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2.5 text-sm font-medium text-slate-200 rounded-xl hover:bg-slate-800/80"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/access"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2.5 text-sm font-semibold text-indigo-300 rounded-xl hover:bg-slate-800/80"
-          >
-            🔑 Redeem License
-          </Link>
 
           <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
             {session?.user ? (
@@ -389,6 +342,16 @@ export default function Navbar() {
                 >
                   <span>📊</span>
                   <span>User Dashboard</span>
+                </Link>
+
+                {/* Mobile Redeem License Button */}
+                <Link
+                  href="/access"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full text-center px-4 py-2 rounded-xl text-xs font-semibold text-indigo-300 bg-indigo-950/40 hover:bg-indigo-900/40 border border-indigo-800/40 transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <span>🔑</span>
+                  <span>Redeem License Key</span>
                 </Link>
 
                 {/* Mobile Sign Out Button */}
