@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import { Document, Packer, Paragraph, TextRun } from "docx";
 
 declare global {
   interface Window {
@@ -21,12 +22,16 @@ export default function PdfToWordClient() {
   const [pageCount, setPageCount] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [libReady, setLibReady] = useState(false);
+  const [isGeneratingDocx, setIsGeneratingDocx] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load PDF.js from CDN
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (window.pdfjsLib) { setLibReady(true); return; }
+    if (window.pdfjsLib) {
+      setLibReady(true);
+      return;
+    }
     setStatus("loading-lib");
     setStatusMsg("Loading PDF engine...");
     const script = document.createElement("script");
@@ -131,35 +136,142 @@ export default function PdfToWordClient() {
     URL.revokeObjectURL(url);
   };
 
-  const downloadDocx = () => {
-    const htmlContent = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:w="urn:schemas-microsoft-com:office:word"
-            xmlns="http://www.w3.org/TR/REC-html40">
-      <head>
-        <meta charset="utf-8">
-        <title>${fileName || "Converted PDF"}</title>
-        <style>
-          body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.6; margin: 2cm; }
-          p { margin: 0 0 8pt 0; }
-        </style>
-      </head>
-      <body>
-        ${extractedText
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/\n/g, "</p><p>")}
-      </body>
-      </html>
-    `;
-    const blob = new Blob(["\ufeff" + htmlContent], { type: "application/msword" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${fileName || "converted"}.docx`;
-    a.click();
-    URL.revokeObjectURL(url);
+  /**
+   * Generates a 100% Genuine Native OpenXML Microsoft Word (.docx) file.
+   * Fully compatible with MS Word 2007, 2010, 2013, 2016, 2019, 2021, Office 365,
+   * Word Online, Word for Mac, Google Docs, and WPS Office without corrupt warnings.
+   */
+  const downloadDocx = async () => {
+    if (!extractedText) return;
+    setIsGeneratingDocx(true);
+
+    try {
+      const rawParagraphs = extractedText
+        .split(/\n\s*\n/)
+        .map((p) => p.trim())
+        .filter(Boolean);
+
+      const docChildren: Paragraph[] = [];
+
+      rawParagraphs.forEach((paraText) => {
+        // Check if paragraph is a page marker (e.g. "--- Page 1 ---")
+        const pageMatch = paraText.match(/^---\s*Page\s+(\d+)\s*---$/i);
+        if (pageMatch) {
+          const pageNum = parseInt(pageMatch[1], 10);
+          docChildren.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `Page ${pageNum}`,
+                  font: "Calibri",
+                  size: 20, // 10pt
+                  color: "64748b",
+                  bold: true,
+                }),
+              ],
+              pageBreakBefore: pageNum > 1, // Automatic real page break in Microsoft Word
+              spacing: {
+                before: pageNum > 1 ? 0 : 120,
+                after: 140,
+              },
+            })
+          );
+          return;
+        }
+
+        // Standard paragraph
+        const lines = paraText.split("\n");
+        const runs: TextRun[] = [];
+
+        lines.forEach((line, lIdx) => {
+          runs.push(
+            new TextRun({
+              text: line,
+              font: "Calibri",
+              size: 24, // 12pt standard readable font
+              color: "1e293b",
+            })
+          );
+          if (lIdx < lines.length - 1) {
+            runs.push(new TextRun({ break: 1 }));
+          }
+        });
+
+        docChildren.push(
+          new Paragraph({
+            children: runs,
+            spacing: {
+              after: 160, // 8pt after spacing
+              line: 320,  // 1.33x line height
+            },
+          })
+        );
+      });
+
+      if (docChildren.length === 0) {
+        docChildren.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: extractedText,
+                font: "Calibri",
+                size: 24,
+              }),
+            ],
+          })
+        );
+      }
+
+      const doc = new Document({
+        creator: "DevAssets PDF Converter",
+        title: fileName || "Converted Document",
+        description: "Standard Microsoft Word Document (.docx)",
+        styles: {
+          default: {
+            document: {
+              run: {
+                font: "Calibri",
+                size: 24,
+                color: "1e293b",
+              },
+              paragraph: {
+                spacing: { after: 160, line: 320 },
+              },
+            },
+          },
+        },
+        sections: [
+          {
+            properties: {
+              page: {
+                margin: {
+                  top: 1440,    // 1 inch standard margin
+                  right: 1440,
+                  bottom: 1440,
+                  left: 1440,
+                },
+              },
+            },
+            children: docChildren,
+          },
+        ],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${fileName || "converted"}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      console.error("[DOCX Generation Error]", err);
+      alert("Failed to build Word document. Please try again.");
+    } finally {
+      setIsGeneratingDocx(false);
+    }
   };
 
   const reset = () => {
@@ -206,13 +318,18 @@ export default function PdfToWordClient() {
             </span>
           </h1>
           <p className="text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Extract formatted text and generate clean Word/TXT files directly in your browser.
-            Files never leave your device — 100% private, zero server uploads.
+            Extract formatted text and generate genuine OpenXML Word (.docx) &amp; TXT files directly in your browser.
+            100% compatible with all Microsoft Word versions (2007–2024, Office 365, Word Online, Mac).
           </p>
 
           {/* Privacy Badges */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            {["No Server Upload", "Format Preserving", "Instant .DOCX & .TXT", "Zero Size Limit"].map((b) => (
+            {[
+              "All MS Word Versions Compatible",
+              "100% Client-Side Private",
+              "Genuine OpenXML (.DOCX)",
+              "Zero File Size Limits",
+            ].map((b) => (
               <span
                 key={b}
                 className="flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-950/50 border border-emerald-800/40 px-3 py-1.5 rounded-full"
@@ -232,7 +349,7 @@ export default function PdfToWordClient() {
           <div className="flex items-center justify-between mb-6 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs">
             <span className="flex items-center gap-2 text-slate-400">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Client-Side PDF.js Engine Active
+              Client-Side PDF.js + OpenXML Engine Active
             </span>
             <span className="text-emerald-400 font-semibold">🔒 0 KB Uploaded</span>
           </div>
@@ -240,7 +357,10 @@ export default function PdfToWordClient() {
           {/* Drop Zone */}
           {status === "idle" || status === "loading-lib" ? (
             <div
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
@@ -281,7 +401,7 @@ export default function PdfToWordClient() {
                     Choose PDF File
                   </span>
                   <p className="text-[11px] text-slate-600 mt-4">
-                    Processed locally via PDF.js Web API • No size limits • No upload
+                    Processed locally via PDF.js Web API • Standard OpenXML .DOCX output • No upload
                   </p>
                 </>
               )}
@@ -344,7 +464,9 @@ export default function PdfToWordClient() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-emerald-400">Extraction Complete!</p>
-                  <p className="text-xs text-slate-400">{pageCount} pages processed • {extractedText.length.toLocaleString()} characters extracted</p>
+                  <p className="text-xs text-slate-400">
+                    {pageCount} pages processed • {extractedText.length.toLocaleString()} characters extracted
+                  </p>
                 </div>
                 <button
                   onClick={reset}
@@ -368,6 +490,14 @@ export default function PdfToWordClient() {
                 />
               </div>
 
+              {/* Compatibility Notice */}
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-950/40 border border-indigo-900/60 text-xs text-indigo-300">
+                <span className="text-sm">✨</span>
+                <span>
+                  <strong>All-Version Word Compatibility:</strong> Generates genuine OpenXML (.docx) with 1-inch margins and standard typography. Guaranteed to open in MS Word 2007–2024, Office 365, Word Online, Google Docs &amp; Mac.
+                </span>
+              </div>
+
               {/* Download Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
@@ -379,14 +509,28 @@ export default function PdfToWordClient() {
                   </svg>
                   Download as .TXT
                 </button>
+
                 <button
                   onClick={downloadDocx}
-                  className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-all duration-200 active:scale-[0.98] shadow-lg shadow-cyan-900/30 cursor-pointer"
+                  disabled={isGeneratingDocx}
+                  className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-semibold text-sm transition-all duration-200 active:scale-[0.98] shadow-lg shadow-cyan-900/30 cursor-pointer disabled:opacity-50"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Download as .DOCX
+                  {isGeneratingDocx ? (
+                    <>
+                      <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                      <span>Packaging Word Document...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      <span>Download OpenXML Word (.DOCX)</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -398,7 +542,7 @@ export default function PdfToWordClient() {
           {[
             { icon: "📄", step: "1", title: "Upload PDF", desc: "Drag & drop or click to choose your PDF file. No size restrictions." },
             { icon: "⚡", step: "2", title: "Browser Processes", desc: "PDF.js extracts text locally in your browser. Zero data sent to any server." },
-            { icon: "⬇️", step: "3", title: "Download", desc: "Save your file as a clean .TXT or Word-compatible .DOCX instantly." },
+            { icon: "⬇️", step: "3", title: "OpenXML Packaging", desc: "Saves as genuine OpenXML .DOCX compatible with all Microsoft Word versions." },
           ].map((item) => (
             <div
               key={item.step}
@@ -418,13 +562,13 @@ export default function PdfToWordClient() {
         <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-slate-200">Explore all free browser tools</p>
-            <p className="text-xs text-slate-500">Image OCR, Video Audio Extractor, Smart Image Studio & more</p>
+            <p className="text-xs text-slate-500">Image OCR, Video Audio Extractor, Smart Image Studio &amp; more</p>
           </div>
           <Link
             href="/#tools"
             className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white text-sm font-semibold transition-all duration-200 border border-slate-700 hover:border-indigo-500"
           >
-            View All Tools →
+            View All Tools &rarr;
           </Link>
         </div>
       </div>

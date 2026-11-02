@@ -14,20 +14,20 @@ interface FadeInViewProps {
   viewportMargin?: string;
 }
 
-const customEase = [0.22, 1, 0.36, 1] as const;
+const customEase = [0.16, 1, 0.3, 1] as const;
 
 /**
- * 1. FadeInView: Smooth reveal on scroll or load
+ * 1. FadeInView: Fast, hardware-accelerated reveal on scroll or load
  */
 export function FadeInView({
   children,
   delay = 0,
-  duration = 0.6,
+  duration = 0.35,
   className = "",
-  y = 30,
+  y = 15,
   x = 0,
   scale = 1,
-  viewportMargin = "-60px",
+  viewportMargin = "0px",
 }: FadeInViewProps) {
   return (
     <motion.div
@@ -39,7 +39,7 @@ export function FadeInView({
         delay,
         ease: customEase,
       }}
-      className={className}
+      className={`transform-gpu ${className}`}
     >
       {children}
     </motion.div>
@@ -54,20 +54,20 @@ export const staggerContainerVariants: Variants = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.1,
+      staggerChildren: 0.06,
+      delayChildren: 0.05,
     },
   },
 };
 
 export const staggerItemVariants: Variants = {
-  hidden: { opacity: 0, y: 25 },
+  hidden: { opacity: 0, y: 15 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.35,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
@@ -83,7 +83,7 @@ export function StaggerContainer({
   children,
   className = "",
   delay = 0,
-  viewportMargin = "-60px",
+  viewportMargin = "0px",
 }: StaggerContainerProps) {
   return (
     <motion.div
@@ -92,15 +92,15 @@ export function StaggerContainer({
         show: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.12,
-            delayChildren: delay || 0.1,
+            staggerChildren: 0.06,
+            delayChildren: delay || 0.05,
           },
         },
       }}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: viewportMargin }}
-      className={className}
+      className={`transform-gpu ${className}`}
     >
       {children}
     </motion.div>
@@ -114,7 +114,7 @@ interface StaggerItemProps {
 
 export function StaggerItem({ children, className = "" }: StaggerItemProps) {
   return (
-    <motion.div variants={staggerItemVariants} className={className}>
+    <motion.div variants={staggerItemVariants} className={`transform-gpu ${className}`}>
       {children}
     </motion.div>
   );
@@ -132,10 +132,10 @@ export function InteractiveCard({ children, className = "" }: InteractiveCardPro
   return (
     <motion.div
       whileHover={{
-        y: -6,
-        transition: { duration: 0.25, ease: "easeOut" },
+        y: -4,
+        transition: { duration: 0.2, ease: "easeOut" },
       }}
-      className={className}
+      className={`transform-gpu ${className}`}
     >
       {children}
     </motion.div>
@@ -157,15 +157,15 @@ export function MagneticButton({
   children,
   className = "",
   onClick,
-  scaleHover = 1.03,
-  scaleTap = 0.97,
+  scaleHover = 1.02,
+  scaleTap = 0.98,
 }: MagneticButtonProps) {
   return (
     <motion.div
       whileHover={{ scale: scaleHover }}
       whileTap={{ scale: scaleTap }}
-      transition={{ duration: 0.15, ease: "easeOut" }}
-      className={`inline-block ${className}`}
+      transition={{ duration: 0.12, ease: "easeOut" }}
+      className={`inline-block transform-gpu ${className}`}
       onClick={onClick}
     >
       {children}
@@ -187,7 +187,7 @@ export function FloatingElement({
   children,
   className = "",
   duration = 6,
-  yOffset = 8,
+  yOffset = 6,
 }: FloatingElementProps) {
   return (
     <motion.div
@@ -200,7 +200,7 @@ export function FloatingElement({
         repeatType: "loop",
         ease: "easeInOut",
       }}
-      className={className}
+      className={`transform-gpu ${className}`}
     >
       {children}
     </motion.div>
@@ -218,8 +218,8 @@ export function PulseGlow({ className = "" }: PulseGlowProps) {
   return (
     <motion.div
       animate={{
-        opacity: [0.35, 0.7, 0.35],
-        scale: [0.99, 1.015, 0.99],
+        opacity: [0.35, 0.65, 0.35],
+        scale: [0.99, 1.01, 0.99],
       }}
       transition={{
         duration: 4,
@@ -227,7 +227,7 @@ export function PulseGlow({ className = "" }: PulseGlowProps) {
         repeatType: "loop",
         ease: "easeInOut",
       }}
-      className={className}
+      className={`transform-gpu ${className}`}
     />
   );
 }

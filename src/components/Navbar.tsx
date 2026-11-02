@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth-client";
@@ -22,10 +22,34 @@ const navItems: NavItem[] = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [activeItem, setActiveItem] = useState<string>("home");
   const pathname = usePathname();
   const { data: session } = useSession();
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setIsOpen(false);
+    setIsProfileOpen(false);
+  }, [pathname]);
 
   // Synchronize active navigation link based on current path and hash
   useEffect(() => {
@@ -100,13 +124,14 @@ export default function Navbar() {
     item: NavItem
   ) => {
     setIsOpen(false);
+    setIsProfileOpen(false);
 
     if (item.id === "about" || item.id === "contact" || item.id === "prompts") {
       setActiveItem(item.id);
       return;
     }
 
-    // Home, Tools, Prompts, Learning Guides
+    // Home, Tools, Learning Guides on homepage
     if (pathname === "/") {
       e.preventDefault();
 
@@ -132,6 +157,24 @@ export default function Navbar() {
       }
     } else {
       setActiveItem(item.id);
+    }
+  };
+
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    sectionId: string
+  ) => {
+    e.preventDefault();
+    setIsOpen(false);
+    setIsProfileOpen(false);
+
+    if (pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -189,48 +232,119 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Side Actions: Better Auth Session Awareness */}
-        <div className="hidden md:flex items-center gap-2.5">
+        {/* Right Side Actions: License Redeem, Better Auth Session Awareness */}
+        <div className="hidden md:flex items-center gap-3">
+          {/* Redeem License Key Button */}
+          <Link
+            href="/access"
+            className="text-indigo-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-950/50 border border-indigo-800/50 hover:bg-indigo-900/50 text-xs font-semibold"
+          >
+            <span>🔑</span>
+            <span>Redeem Key</span>
+          </Link>
+
           {session?.user ? (
-            <div className="flex items-center gap-2.5">
-              {/* User Avatar & Name Badge */}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md">
+            <div className="relative" ref={profileRef}>
+              {/* Profile Pill Trigger Button */}
+              <button
+                type="button"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                aria-expanded={isProfileOpen}
+                aria-haspopup="true"
+                className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-indigo-500/40 backdrop-blur-md transition-all cursor-pointer group"
+              >
                 {session.user.image ? (
                   <img
                     src={session.user.image}
                     alt={session.user.name || "User"}
-                    className="w-5 h-5 rounded-full object-cover border border-indigo-400/50"
+                    className="w-6 h-6 rounded-full object-cover border border-indigo-400/50"
                   />
                 ) : (
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-sm">
                     {(session.user.name || session.user.email || "U")[0]}
                   </div>
                 )}
-                <span className="text-xs font-medium text-slate-200 max-w-[110px] truncate">
+                <span className="text-xs font-semibold text-slate-200 max-w-[110px] truncate group-hover:text-white">
                   {session.user.name || session.user.email?.split("@")[0]}
                 </span>
-              </div>
-
-              {/* Dashboard Link */}
-              <Link
-                href="/dashboard"
-                className="text-xs sm:text-sm font-medium text-slate-300 hover:text-white px-3.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 transition-all flex items-center gap-1.5"
-              >
-                <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                <svg
+                  className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-200 transition-transform duration-200 ${
+                    isProfileOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
-                <span>Dashboard</span>
-              </Link>
-
-              {/* Sign Out Button */}
-              <button
-                type="button"
-                onClick={handleSignOut}
-                disabled={isSigningOut}
-                className="text-xs sm:text-sm font-medium text-slate-400 hover:text-rose-400 px-3 py-1.5 rounded-full hover:bg-rose-950/20 hover:border-rose-800/30 border border-transparent transition-all cursor-pointer disabled:opacity-50"
-              >
-                {isSigningOut ? "Signing out..." : "Sign Out"}
               </button>
+
+              {/* Glassmorphic Profile Dropdown Menu */}
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl p-2 z-50 animate-fade-in space-y-1">
+                  {/* Dropdown User Info Header */}
+                  <div className="px-3 py-2.5 border-b border-white/[0.08] space-y-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-white truncate">
+                        {session.user.name || "Developer"}
+                      </p>
+                      <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 px-1.5 py-0.5 rounded">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {session.user.email}
+                    </p>
+                  </div>
+
+                  {/* Dropdown Links */}
+                  <div className="pt-1 space-y-0.5">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    >
+                      <span className="text-sm">📊</span>
+                      <span>User Dashboard</span>
+                    </Link>
+
+                    <Link
+                      href="/access"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    >
+                      <span className="text-sm">🔑</span>
+                      <span>Redeem License Key</span>
+                    </Link>
+
+                    <a
+                      href="/#tools"
+                      onClick={(e) => scrollToSection(e, "tools")}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
+                    >
+                      <span className="text-sm">⚡</span>
+                      <span>Free Browser Tools</span>
+                    </a>
+                  </div>
+
+                  {/* Divider & Sign Out Button */}
+                  <div className="pt-1 border-t border-white/[0.08]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        handleSignOut();
+                      }}
+                      disabled={isSigningOut}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      <span className="text-sm">🚪</span>
+                      <span>{isSigningOut ? "Signing out..." : "Sign Out"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -266,7 +380,7 @@ export default function Navbar() {
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] border border-white/5 transition-colors focus:outline-none"
+          className="flex md:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] border border-white/5 transition-colors focus:outline-none cursor-pointer"
         >
           <svg
             className="h-6 w-6"
@@ -304,6 +418,14 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            <Link
+              href="/access"
+              onClick={() => setIsOpen(false)}
+              className="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-indigo-300 hover:bg-white/[0.04] transition-all flex items-center gap-2"
+            >
+              <span>🔑</span>
+              <span>Redeem License Key</span>
+            </Link>
           </div>
 
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2.5">
@@ -334,12 +456,10 @@ export default function Navbar() {
                 <Link
                   href="/dashboard"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-medium text-slate-200 bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 transition-all"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors"
                 >
-                  <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
-                  <span>Dashboard</span>
+                  <span>📊</span>
+                  <span>User Dashboard</span>
                 </Link>
 
                 <button
@@ -349,7 +469,7 @@ export default function Navbar() {
                     handleSignOut();
                   }}
                   disabled={isSigningOut}
-                  className="w-full text-center py-2.5 rounded-xl text-sm font-medium text-rose-300 bg-rose-950/30 hover:bg-rose-950/50 border border-rose-800/40 transition-colors disabled:opacity-50"
+                  className="w-full text-center py-2.5 rounded-xl text-sm font-medium text-rose-300 bg-rose-950/30 hover:bg-rose-950/50 border border-rose-800/40 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {isSigningOut ? "Signing out..." : "Sign Out"}
                 </button>

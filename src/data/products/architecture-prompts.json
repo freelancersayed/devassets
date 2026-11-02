@@ -1,0 +1,95 @@
+{
+  "productId": "prod_fullstack_arch_prompts",
+  "sku": "DEV-ARCH-PROMPTS-V2",
+  "title": "Full-Stack Dev & System Architecture Prompts",
+  "category": "AI Prompts",
+  "version": "2026.2.0",
+  "price": 19.00,
+  "currency": "USD",
+  "badge": "AI Engineering Prompts",
+  "status": "published",
+  "description": "Production-tested system architecture and engineering prompts specifically calibrated for Claude 3.7 Sonnet, GPT-4o, and DeepSeek-V3. Covers Next.js App Router performance, high-throughput microservice boundaries, resilient database schema modeling, distributed caching, and automated end-to-end testing.",
+  "deliverables": [
+    "200+ Production-Ready System Architecture Prompts (JSON + Markdown)",
+    "High-Performance Next.js 15 App Router & Server Action Architecture Matrix",
+    "Prisma & MongoDB High-Throughput Sharding & Indexing Playbook",
+    "Microservice Event Bus & Distributed Caching Implementation Directives",
+    "Enterprise Security Hardening, OWASP Compliance & API Gateways",
+    "Printable High-Resolution Architecture Cheatsheets (Vector PDF)"
+  ],
+  "features": [
+    "Strict JSON Schema validation for automated AI code generation",
+    "Optimized context-window prompt engineering for zero hallucination",
+    "Direct compatibility with Cursor, GitHub Copilot, Claude Code, and ChatGPT",
+    "Lifetime minor version updates and quarterly prompt refreshes",
+    "Commercial single-developer & agency project distribution rights"
+  ],
+  "specs": {
+    "format": "JSON, Markdown (.md), Printable Vector PDF (.pdf)",
+    "fileCount": 18,
+    "archiveSize": "14.2 MB",
+    "license": "Commercial Developer License (Royalty-Free)",
+    "support": "support@devassets.online"
+  },
+  "modules": [
+    {
+      "id": "mod_01",
+      "title": "Section 1: Next.js App Router & Server Component Topologies",
+      "promptCount": 42,
+      "description": "Deep architectural patterns for Server vs Client Component boundaries, streaming SSR with Suspense, and resilient optimistic mutation patterns."
+    },
+    {
+      "id": "mod_02",
+      "title": "Section 2: Database Schema Modeling & High-Throughput Indexing",
+      "promptCount": 38,
+      "description": "Prisma ORM and MongoDB compound indexing schemas, aggregation pipeline optimization, and multi-region read replicas."
+    },
+    {
+      "id": "mod_03",
+      "title": "Section 3: Microservice Resiliency & Event-Driven Patterns",
+      "promptCount": 45,
+      "description": "Idempotent webhook handlers, message queues (Redis/Kafka), dead-letter queue architectures, and distributed locking."
+    },
+    {
+      "id": "mod_04",
+      "title": "Section 4: Defensive TypeScript & Automated Test Generation",
+      "promptCount": 40,
+      "description": "Strict type-safe API contracts with Zod, Jest unit test suites, and Playwright end-to-end critical journey test templates."
+    },
+    {
+      "id": "mod_05",
+      "title": "Section 5: Enterprise Security & Rate Limiting Hardening",
+      "promptCount": 35,
+      "description": "HMAC signature verification, token bucket rate limiters, session protection, and OWASP top 10 prevention rules."
+    }
+  ],
+  "secureAssets": [
+    {
+      "assetId": "asset_arch_prompts_bundle_zip",
+      "filename": "fullstack-system-architecture-prompts-v2026.zip",
+      "mimeType": "application/zip",
+      "sizeBytes": 14889728,
+      "checksumSha256": "8f48b11c7d23a19e8c4604e76a6cfb9a30488219c0b1689408bf9368819ef01a",
+      "storagePath": "secure-vault/products/prod_fullstack_arch_prompts/fullstack-system-architecture-prompts-v2026.zip",
+      "accessType": "direct_secure_download"
+    },
+    {
+      "assetId": "asset_arch_prompts_matrix_json",
+      "filename": "devassets-architecture-prompts-matrix.json",
+      "mimeType": "application/json",
+      "sizeBytes": 2457600,
+      "checksumSha256": "4b5d27839ec51a82fcae872c0c1694f2910795493b8214fa3f6ce4a480a4279b",
+      "storagePath": "secure-vault/products/prod_fullstack_arch_prompts/devassets-architecture-prompts-matrix.json",
+      "accessType": "direct_secure_download"
+    },
+    {
+      "assetId": "asset_arch_prompts_guide_pdf",
+      "filename": "fullstack-architecture-implementation-guide.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 6144000,
+      "checksumSha256": "c8e235a9f2420dcfa72591605bc935ef7d212bbcd3d8063a56cf982e01df3321",
+      "storagePath": "secure-vault/products/prod_fullstack_arch_prompts/fullstack-architecture-implementation-guide.pdf",
+      "accessType": "direct_secure_download"
+    }
+  ]
+}

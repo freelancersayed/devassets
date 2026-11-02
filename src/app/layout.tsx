@@ -1,17 +1,19 @@
-import dns from 'node:dns'
-dns.setServers(['8.8.8.8', '8.8.4.4'])
-
 import type { Metadata } from "next";
+import Script from "next/script";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AiChatWidget from "@/components/AiChatWidget";
+
+// Dynamic import for client components to reduce initial SSR payload
+const AiChatWidget = dynamic(() => import("@/components/AiChatWidget"));
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -96,6 +98,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} scroll-smooth dark`}>
       <head>
+        <link rel="preconnect" href="https://d1f8f9xcsvx3ha.cloudfront.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://d1f8f9xcsvx3ha.cloudfront.net" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -156,6 +160,16 @@ export default function RootLayout({
           <Footer />
         </div>
         <AiChatWidget />
+        <Script
+          id="fsc-api"
+          src="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/0.8.5/fastspring-builder.min.js"
+          type="text/javascript"
+          data-storefront={
+            process.env.NEXT_PUBLIC_FASTSPRING_STOREFRONT ||
+            "devassets.test.onfastspring.com/popup-devassets"
+          }
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

@@ -1,0 +1,60 @@
+import { CatalogProduct } from "./types";
+
+export const reactEnterpriseProduct: CatalogProduct = {
+  id: 302,
+  slug: "react-enterprise-starter-kit",
+  title: "Advanced React Enterprise Starter Kit",
+  category: "pdf",
+  categoryLabel: "React Enterprise Codebase + Manual",
+  description:
+    "A production-grade React + TypeScript starter kit featuring 2 complete reference applications (E-Commerce Admin Dashboard & Real-Time Chat), a reusable component library with custom hooks, performance profiling setup, and a 30-page architecture manual.",
+  price: "49.00",
+  originalPrice: "79.00",
+  emoji: "💚",
+  badgeColor: "text-emerald-400",
+  badgeBg: "bg-emerald-400/10",
+  deliverables: [
+    "2 Complete Reference App Codebases (Dashboard & Chat)",
+    "Reusable Custom Hooks & Component Library",
+    "Performance Profiling Setup & Benchmarks",
+    "30-Page Architecture Manual (PDF)",
+  ],
+  features: [
+    "2 production reference applications",
+    "Reusable hooks & component library",
+    "30-page architecture manual",
+  ],
+  fileTree: [
+    "react-enterprise-starter-kit/",
+    "├── apps/",
+    "│   ├── ecommerce-dashboard/",
+    "│   └── realtime-chat/",
+    "├── packages/",
+    "│   ├── ui-components/",
+    "│   └── hooks/",
+    "├── profiling/",
+    "│   └── react-profiler-config.ts",
+    "├── docs/",
+    "│   └── architecture-manual.pdf",
+    "├── package.json",
+    "├── tsconfig.json",
+    "├── LICENSE",
+    "└── README.md",
+  ],
+  modules: [
+    "Chapter 1: Project Architecture & Monorepo Setup",
+    "Chapter 2: Reusable Component Library with TypeScript",
+    "Chapter 3: Custom Hooks — State, Data Fetching & Auth",
+    "Chapter 4: E-Commerce Admin Dashboard (Full Build)",
+    "Chapter 5: Real-Time Chat Application (WebSocket Integration)",
+    "Chapter 6: Performance Profiling & Optimization Strategies",
+  ],
+  specs: {
+    format: ".ZIP Archive + PDF Manual",
+    version: "v2.4",
+    license: "Single-Developer Commercial & Personal Use",
+    support: "support@devassets.online",
+  },
+  fastspringProductId: "prod_react_enterprise_starter_kit",
+};
+

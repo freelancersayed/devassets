@@ -9,12 +9,13 @@ try {
 
 const uri =
   process.env.MONGODB_URI ||
+  process.env.DATABASE_URL ||
   process.env.MONOGO_DB_URI ||
   "mongodb://127.0.0.1:27017/DevAssets";
 
-if (!process.env.MONGODB_URI && !process.env.MONOGO_DB_URI) {
+if (!process.env.MONGODB_URI && !process.env.DATABASE_URL && !process.env.MONOGO_DB_URI) {
   console.warn(
-    "Warning: MongoDB connection string (MONGODB_URI) is missing in environment variables. Using placeholder connection string for static build."
+    "Warning: MongoDB connection string (MONGODB_URI / DATABASE_URL) is missing in environment variables. Using placeholder connection string for static build."
   );
 }
 
