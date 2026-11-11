@@ -1,58 +1,48 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth-client";
 import ThemeToggle from "./ThemeToggle";
 
 interface NavItem {
-  id: "home" | "tools" | "prompts" | "guides" | "about" | "contact";
+  id: string;
   label: string;
   href: string;
 }
 
-const navItems: NavItem[] = [
+// Core 4-item navigation menu for centered desktop navbar
+const centerNavItems: NavItem[] = [
   { id: "home", label: "Home", href: "/" },
-  { id: "tools", label: "Tools", href: "/#tools" },
+  { id: "tools", label: "Tools", href: "/tools" },
   { id: "prompts", label: "Prompts", href: "/prompts" },
-  { id: "guides", label: "Learning Guides", href: "/#guides" },
+  { id: "guides", label: "Learning Guides", href: "/guides" },
+];
+
+// Expanded navigation menu for mobile drawer (including About and Contact)
+const mobileNavItems: NavItem[] = [
+  { id: "home", label: "Home", href: "/" },
+  { id: "tools", label: "Tools", href: "/tools" },
+  { id: "prompts", label: "Prompts", href: "/prompts" },
+  { id: "guides", label: "Learning Guides", href: "/guides" },
   { id: "about", label: "About", href: "/about" },
   { id: "contact", label: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [activeItem, setActiveItem] = useState<string>("home");
   const pathname = usePathname();
   const { data: session } = useSession();
-  const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close profile dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
-        setIsProfileOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // Close menus on route change
+  // Close mobile drawer on route change
   useEffect(() => {
     setIsOpen(false);
-    setIsProfileOpen(false);
   }, [pathname]);
 
-  // Synchronize active navigation link based on current path and hash
+  // Synchronize active navigation item based on path and hash
   useEffect(() => {
     if (pathname === "/about") {
       setActiveItem("about");
@@ -64,6 +54,14 @@ export default function Navbar() {
     }
     if (pathname?.startsWith("/prompts")) {
       setActiveItem("prompts");
+      return;
+    }
+    if (pathname?.startsWith("/tools")) {
+      setActiveItem("tools");
+      return;
+    }
+    if (pathname?.startsWith("/guides")) {
+      setActiveItem("guides");
       return;
     }
 
@@ -83,7 +81,6 @@ export default function Navbar() {
           return;
         }
 
-        // Check scroll position if at the very top
         if (window.scrollY < 250) {
           setActiveItem("home");
         }
@@ -121,18 +118,17 @@ export default function Navbar() {
   };
 
   const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+    e: React.MouseEvent<HTMLAnchorElement>,
     item: NavItem
   ) => {
     setIsOpen(false);
-    setIsProfileOpen(false);
 
     if (item.id === "about" || item.id === "contact" || item.id === "prompts") {
       setActiveItem(item.id);
       return;
     }
 
-    // Home, Tools, Learning Guides on homepage
+    // Smooth section scrolling if on homepage
     if (pathname === "/") {
       e.preventDefault();
 
@@ -161,60 +157,54 @@ export default function Navbar() {
     }
   };
 
-  const scrollToSection = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    sectionId: string
-  ) => {
-    e.preventDefault();
-    setIsOpen(false);
-    setIsProfileOpen(false);
-
-    if (pathname !== "/") {
-      window.location.href = `/#${sectionId}`;
-    } else {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/85 dark:bg-[#070B14]/80 border-b border-slate-200/80 dark:border-white/10 shadow-xs dark:shadow-none transition-colors">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Left Side: DevAssets Brand Logo with Glowing Code/Terminal Icon */}
-        <Link
-          href="/"
-          onClick={(e) => handleNavClick(e, navItems[0])}
-          aria-label="DevAssets Homepage"
-          className="flex items-center gap-2.5 group shrink-0"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-600/30 group-hover:scale-105 group-hover:shadow-indigo-500/50 transition-all duration-200">
-            <svg
-              className="w-5 h-5 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-          <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-            Dev<span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 dark:from-indigo-400 dark:via-purple-300 dark:to-purple-400 bg-clip-text text-transparent">Assets</span>
-          </span>
-        </Link>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
+        {/* ══════════════════════════════════════════════════════════════════
+            COLUMN 1: BRAND LOGO (FAR LEFT)
+           ══════════════════════════════════════════════════════════════════ */}
+        <div className="flex items-center shrink-0">
+          <Link
+            href="/"
+            onClick={(e) => handleNavClick(e, centerNavItems[0])}
+            aria-label="DevAssets Homepage"
+            className="flex items-center gap-2.5 group"
+          >
+            {/* Glowing purple/indigo square icon with terminal symbol (>_) */}
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-600/30 group-hover:scale-105 group-hover:shadow-indigo-500/50 transition-all duration-200 shrink-0">
+              <svg
+                className="w-5 h-5 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            {/* Text: DevAssets with Assets part in cyan/purple gradient text */}
+            <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+              Dev
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 dark:from-indigo-400 dark:via-purple-300 dark:to-cyan-400 bg-clip-text text-transparent">
+                Assets
+              </span>
+            </span>
+          </Link>
+        </div>
 
-        {/* Center Navigation Menu: Desktop */}
+        {/* ══════════════════════════════════════════════════════════════════
+            COLUMN 2: CORE 4-ITEM NAVIGATION MENU (CENTERED)
+           ══════════════════════════════════════════════════════════════════ */}
         <nav
           aria-label="Main Navigation"
-          className="hidden md:flex items-center gap-1 lg:gap-2"
+          className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 bg-slate-100/80 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 rounded-full px-2 py-1 backdrop-blur-md shadow-xs"
         >
-          {navItems.map((item) => {
+          {centerNavItems.map((item) => {
             const isActive = activeItem === item.id;
             return (
               <Link
@@ -223,8 +213,8 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, item)}
                 className={
                   isActive
-                    ? "bg-slate-100 text-slate-900 border border-slate-200/80 dark:bg-white/[0.08] dark:text-white dark:border-white/10 rounded-full px-4 py-1.5 text-sm font-medium shadow-xs dark:shadow-none"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/[0.04] rounded-full px-4 py-1.5 text-sm font-medium transition-all"
+                    ? "bg-white text-slate-900 shadow-sm font-semibold dark:bg-white/[0.1] dark:text-white rounded-full px-4 py-1.5 text-sm transition-all"
+                    : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white rounded-full px-4 py-1.5 text-sm font-medium transition-all"
                 }
               >
                 {item.label}
@@ -233,179 +223,101 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Right Side Actions: Theme Toggle, License Redeem, Better Auth Session Awareness */}
-        <div className="hidden md:flex items-center gap-2.5 sm:gap-3">
-          {/* Animated Light/Dark Mode Switch */}
+        {/* ══════════════════════════════════════════════════════════════════
+            COLUMN 3: THEME TOGGLE & AUTH ACTIONS (FAR RIGHT)
+           ══════════════════════════════════════════════════════════════════ */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          {/* Theme Toggle Pill Switch */}
           <ThemeToggle />
 
-          {/* Redeem License Key Button */}
-          <Link
-            href="/access"
-            className="text-indigo-600 dark:text-indigo-300 hover:text-indigo-700 dark:hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 hover:bg-indigo-100/80 dark:bg-indigo-950/50 dark:border-indigo-800/50 dark:hover:bg-indigo-900/50 text-xs font-semibold shadow-xs"
-          >
-            <span>🔑</span>
-            <span>Redeem Key</span>
-          </Link>
-
+          {/* Desktop Authentication Controls */}
           {session?.user ? (
-            <div className="relative" ref={profileRef}>
-              {/* Profile Pill Trigger Button */}
-              <button
-                type="button"
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                aria-expanded={isProfileOpen}
-                aria-haspopup="true"
-                className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] dark:border-white/10 hover:border-indigo-500/40 backdrop-blur-md transition-all cursor-pointer group"
+            <div className="hidden md:flex items-center gap-3">
+              {/* User Avatar Badge & Dashboard Link */}
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-all hover:border-indigo-400/50"
               >
                 {session.user.image ? (
                   <img
                     src={session.user.image}
-                    alt={session.user.name || "User"}
+                    alt={session.user.name || "User Avatar"}
                     className="w-6 h-6 rounded-full object-cover border border-indigo-400/50"
                   />
                 ) : (
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-sm">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white uppercase shadow-xs">
                     {(session.user.name || session.user.email || "U")[0]}
                   </div>
                 )}
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[110px] truncate group-hover:text-slate-900 dark:group-hover:text-white">
-                  {session.user.name || session.user.email?.split("@")[0]}
+                <span className="max-w-[110px] truncate">
+                  {session.user.name || "Dashboard"}
                 </span>
-                <svg
-                  className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-transform duration-200 ${
-                    isProfileOpen ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
+              </Link>
+
+              {/* Sign Out Button */}
+              <button
+                type="button"
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                className="text-xs font-medium text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 px-3 py-1.5 rounded-full border border-rose-200 dark:border-rose-900/40 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {isSigningOut ? "Signing out..." : "Sign Out"}
               </button>
-
-              {/* Glassmorphic Profile Dropdown Menu */}
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl p-2 z-50 animate-fade-in space-y-1">
-                  {/* Dropdown User Info Header */}
-                  <div className="px-3 py-2.5 border-b border-slate-100 dark:border-white/[0.08] space-y-1">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                        {session.user.name || "Developer"}
-                      </p>
-                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800/60 px-1.5 py-0.5 rounded">
-                        Active
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                      {session.user.email}
-                    </p>
-                  </div>
-
-                  {/* Dropdown Links */}
-                  <div className="pt-1 space-y-0.5">
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
-                    >
-                      <span className="text-sm">📊</span>
-                      <span>User Dashboard</span>
-                    </Link>
-
-                    <Link
-                      href="/access"
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
-                    >
-                      <span className="text-sm">🔑</span>
-                      <span>Redeem License Key</span>
-                    </Link>
-
-                    <a
-                      href="/#tools"
-                      onClick={(e) => scrollToSection(e, "tools")}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
-                    >
-                      <span className="text-sm">⚡</span>
-                      <span>Free Browser Tools</span>
-                    </a>
-                  </div>
-
-                  {/* Divider & Sign Out Button */}
-                  <div className="pt-1 border-t border-slate-100 dark:border-white/[0.08]">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsProfileOpen(false);
-                        handleSignOut();
-                      }}
-                      disabled={isSigningOut}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer disabled:opacity-50"
-                    >
-                      <span className="text-sm">🚪</span>
-                      <span>{isSigningOut ? "Signing out..." : "Sign Out"}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 sm:gap-3">
+              {/* Log in Button */}
               <Link
                 href="/login"
-                className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white px-3.5 py-1.5 rounded-full text-sm font-medium transition-all hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+                className="text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white text-sm font-medium px-3 py-2 rounded-lg transition-colors"
               >
                 Log in
               </Link>
+
+              {/* Register Button (Primary CTA) */}
               <Link
                 href="/register"
-                aria-label="Get started with free tools and resources"
-                className="inline-flex items-center gap-1.5 px-4.5 py-1.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md shadow-indigo-600/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:opacity-95 text-white text-sm font-medium px-5 py-2 rounded-full shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all flex items-center gap-1.5 active:scale-[0.98]"
               >
                 <span>Get Started</span>
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>
           )}
-        </div>
 
-        {/* Mobile Hamburger Button (md:hidden) */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="flex md:hidden p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-slate-200 dark:border-white/5 transition-colors focus:outline-none cursor-pointer"
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          {/* Mobile Hamburger Button (md:hidden) */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+            className="flex md:hidden p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-slate-200 dark:border-white/10 transition-colors focus:outline-none cursor-pointer"
           >
-            {isOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              {isOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Responsive Drawer (md:hidden) */}
+      {/* ══════════════════════════════════════════════════════════════════
+          MOBILE RESPONSIVE DRAWER (md:hidden)
+         ══════════════════════════════════════════════════════════════════ */}
       {isOpen && (
         <div className="md:hidden border-t border-slate-200 dark:border-white/10 bg-white/95 dark:bg-[#070B14]/95 backdrop-blur-2xl px-4 py-5 space-y-4 shadow-2xl animate-fade-in">
+          {/* Navigation links: Home, Tools, Prompts, Learning Guides, plus About and Contact */}
           <div className="flex flex-col space-y-1">
-            {navItems.map((item) => {
+            {mobileNavItems.map((item) => {
               const isActive = activeItem === item.id;
               return (
                 <Link
@@ -414,7 +326,7 @@ export default function Navbar() {
                   onClick={(e) => handleNavClick(e, item)}
                   className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-slate-100 text-slate-900 border border-slate-200/80 dark:bg-white/[0.08] dark:text-white dark:border-white/10"
+                      ? "bg-slate-100 text-slate-900 border border-slate-200/80 dark:bg-white/[0.08] dark:text-white dark:border-white/10 font-semibold"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/[0.04]"
                   }`}
                 >
@@ -422,14 +334,6 @@ export default function Navbar() {
                 </Link>
               );
             })}
-            <Link
-              href="/access"
-              onClick={() => setIsOpen(false)}
-              className="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-white/[0.04] transition-all flex items-center gap-2"
-            >
-              <span>🔑</span>
-              <span>Redeem License Key</span>
-            </Link>
           </div>
 
           {/* Mobile Theme Toggle Row */}
@@ -440,6 +344,7 @@ export default function Navbar() {
             <ThemeToggle />
           </div>
 
+          {/* Mobile Auth Actions */}
           <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex flex-col gap-2.5">
             {session?.user ? (
               <>
@@ -457,7 +362,7 @@ export default function Navbar() {
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
-                      {session.user.name || "User"}
+                      {session.user.name || "Developer"}
                     </p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                       {session.user.email}
@@ -468,7 +373,7 @@ export default function Navbar() {
                 <Link
                   href="/dashboard"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors shadow-sm"
                 >
                   <span>📊</span>
                   <span>User Dashboard</span>
@@ -498,12 +403,10 @@ export default function Navbar() {
                 <Link
                   href="/register"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white text-sm font-semibold rounded-xl shadow-md shadow-indigo-600/25 active:scale-[0.99] transition-all"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:opacity-95 text-white text-sm font-medium rounded-full shadow-md shadow-indigo-600/25 active:scale-[0.99] transition-all"
                 >
                   <span>Get Started</span>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
+                  <span aria-hidden="true">&rarr;</span>
                 </Link>
               </>
             )}
