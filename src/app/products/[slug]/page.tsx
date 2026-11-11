@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { products, getProductBySlug, getAllSlugs } from "@/data/products";
+import { getProductBySlug, getAllSlugs } from "@/data/products";
 import ProductPageClient from "./ProductPageClient";
 
 interface Props {

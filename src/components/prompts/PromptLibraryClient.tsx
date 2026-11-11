@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { Prompt, PromptApiResponse } from "@/types/prompt";
+import { PromptApiResponse } from "@/types/prompt";
 import PromptCard from "./PromptCard";
 import PromptSearch from "./PromptSearch";
 import PromptCategoryFilter from "./PromptCategoryFilter";

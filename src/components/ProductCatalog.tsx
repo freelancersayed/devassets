@@ -2,14 +2,13 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { productsData, getCatalogProductBySlug, type CatalogProduct } from "@/data/catalog";
 import CheckoutModal from "./CheckoutModal";
 import {
   FadeInView,
   StaggerContainer,
   StaggerItem,
-  InteractiveCard,
   MagneticButton,
   PulseGlow,
 } from "@/components/motion/MotionContainers";
@@ -448,7 +447,6 @@ export default function ProductCatalog() {
                 // Tier accent color mapping
                 const isCyan = product.category === "tools" || product.slug.includes("seo");
                 const isPurple = product.category === "prompts";
-                const isIndigo = product.category === "pdf" || product.category === "bundle";
 
                 const glowClass = isCyan
                   ? "from-cyan-500/20 to-blue-600/10"

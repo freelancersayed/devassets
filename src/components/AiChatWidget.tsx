@@ -145,7 +145,6 @@ export default function AiChatWidget() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [hasUnread, setHasUnread] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -158,7 +157,6 @@ export default function AiChatWidget() {
     if (isOpen) {
       scrollToBottom();
       inputRef.current?.focus();
-      setHasUnread(false);
     }
   }, [isOpen, messages, isTyping]);
 

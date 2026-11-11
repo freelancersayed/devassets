@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 interface AuthCardProps {
@@ -119,7 +118,6 @@ const slides = [
 ];
 
 export default function AuthCard({ mode }: AuthCardProps) {
-  const router = useRouter();
   const isRegister = mode === "register";
 
   // Form states
@@ -143,16 +141,6 @@ export default function AuthCard({ mode }: AuthCardProps) {
   const isLengthValid = password.length >= 8;
   const hasMixedChars = /[0-9]/.test(password) && /[a-zA-Z]/.test(password);
   const doPasswordsMatch = Boolean(confirmPassword && password === confirmPassword);
-
-  const isRegistrationReady =
-    isRegister &&
-    firstName.trim().length > 0 &&
-    email.trim().length > 0 &&
-    isLengthValid &&
-    doPasswordsMatch &&
-    agreeTerms;
-
-  const isLoginReady = !isRegister && email.trim().length > 0 && password.length > 0;
 
   const isSubmitDisabled = isLoading || Boolean(socialLoading);
 

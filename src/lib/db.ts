@@ -1,5 +1,5 @@
 import client from "./mongodb";
-import { Db, Collection, ObjectId } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 
 export interface UserDoc {
   _id?: ObjectId | string;
