@@ -54,22 +54,23 @@ export default function FAQ() {
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="py-20 sm:py-24 bg-[#FAFAFA] dark:bg-[#0B0C0E] transition-colors scroll-mt-20 border-b border-neutral-200/80 dark:border-neutral-850"
+      className="py-20 sm:py-24 bg-[#09090B] transition-colors scroll-mt-20 border-b border-[#27272A]"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* SECTION HEADER */}
         <FadeInView y={16} className="max-w-2xl mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1 text-xs font-mono text-neutral-600 dark:text-neutral-400">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#27272A] bg-[#18181B] px-3 py-1 text-xs font-mono text-[#10B981]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
             <span>frequently asked questions</span>
           </div>
 
           <h2
             id="faq-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-neutral-900 dark:text-neutral-50 leading-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-[#FAFAFA] leading-tight"
           >
             Answers &amp; Technical Details
           </h2>
-          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed">
             Direct details regarding client-side runtime execution, prompt delivery, commercial licensing, and refunds.
           </p>
         </FadeInView>
@@ -80,19 +81,19 @@ export default function FAQ() {
             const isOpen = openIds.includes(faq.id);
             return (
               <StaggerItem key={faq.id}>
-                <div className="rounded-xl bg-white dark:bg-[#0E1015] border border-neutral-200/80 dark:border-neutral-800 overflow-hidden shadow-xs transition-colors">
+                <div className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden shadow-xs transition-colors hover:border-[#27272A]/80">
                   <button
                     type="button"
                     onClick={() => toggleFaq(faq.id)}
                     aria-expanded={isOpen}
-                    className="w-full text-left px-5 sm:px-6 py-4 sm:py-5 text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100 flex items-center justify-between gap-4 cursor-pointer select-none"
+                    className="w-full text-left px-5 sm:px-6 py-4 sm:py-5 text-sm sm:text-base font-semibold text-[#FAFAFA] flex items-center justify-between gap-4 cursor-pointer select-none"
                   >
                     <span>{faq.question}</span>
                     <span
                       className={`flex h-6 w-6 items-center justify-center rounded-md text-xs font-mono transition-transform duration-200 shrink-0 ${
                         isOpen
-                          ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
-                          : "text-neutral-400"
+                          ? "bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20"
+                          : "text-[#A1A1AA] bg-[#09090B] border border-[#27272A]"
                       }`}
                     >
                       {isOpen ? "−" : "+"}
@@ -108,7 +109,7 @@ export default function FAQ() {
                         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="px-5 sm:px-6 pb-5 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-100 dark:border-neutral-850 pt-3.5">
+                        <div className="px-5 sm:px-6 pb-5 text-xs sm:text-sm text-[#A1A1AA] leading-relaxed border-t border-[#27272A] pt-3.5">
                           <p>{faq.answer}</p>
                         </div>
                       </motion.div>
@@ -121,13 +122,13 @@ export default function FAQ() {
         </StaggerContainer>
 
         {/* DIRECT HELP BOX */}
-        <FadeInView y={16} delay={0.15} className="mt-12 text-center p-6 rounded-xl bg-white dark:bg-[#0E1015] border border-neutral-200/80 dark:border-neutral-800 shadow-xs">
-          <p className="text-xs text-neutral-600 dark:text-neutral-400">
+        <FadeInView y={16} delay={0.15} className="mt-12 text-center p-6 rounded-xl bg-[#18181B] border border-[#27272A] shadow-xs">
+          <p className="text-xs text-[#A1A1AA]">
             Have a custom engineering question or enterprise license inquiry?
           </p>
           <a
             href="mailto:support@devassets.online"
-            className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-[#10B981] hover:text-[#34D399] transition-colors"
           >
             <span>support@devassets.online</span>
             <span aria-hidden="true">&rarr;</span>

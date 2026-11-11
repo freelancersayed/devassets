@@ -11,8 +11,8 @@ export const fullstackArchitecturePromptsProduct: CatalogProduct = {
   price: "19.00",
   originalPrice: "39.00",
   emoji: "🤖",
-  badgeColor: "text-purple-400",
-  badgeBg: "bg-purple-400/10",
+  badgeColor: "text-[#10B981]",
+  badgeBg: "bg-[#10B981]/10",
   deliverables: [
     "200+ Curated Prompts for Next.js, React & Node.js",
     "API Refactoring, Security & Database Optimization",

@@ -61,7 +61,7 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <article className="min-h-[75vh] bg-slate-50 dark:bg-slate-950 px-6 py-16 text-slate-700 dark:text-slate-300 transition-colors duration-300">
+    <article className="min-h-[75vh] bg-[#09090B] px-6 py-16 text-[#A1A1AA] transition-colors duration-300">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -71,33 +71,33 @@ export default async function ProductPage({ params }: Props) {
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="mb-6 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400"
+          className="mb-6 flex items-center gap-2 text-xs font-mono text-[#71717A]"
         >
-          <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+          <Link href="/" className="hover:text-[#10B981] transition-colors">
             Home
           </Link>
-          <span className="text-slate-400 dark:text-slate-600">/</span>
+          <span>/</span>
           <Link
             href="/#products"
-            className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="hover:text-[#10B981] transition-colors"
           >
             Products
           </Link>
-          <span className="text-slate-400 dark:text-slate-600">/</span>
-          <span className="text-indigo-600 dark:text-indigo-400 font-medium">{product.title}</span>
+          <span>/</span>
+          <span className="text-[#FAFAFA] font-medium">{product.title}</span>
         </nav>
 
         {/* Header */}
         <div className="flex items-start gap-4 mb-8">
           <span className="text-5xl">{product.emoji}</span>
           <div>
-            <span className="inline-block rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900/50 px-3 py-1 text-xs font-bold uppercase text-indigo-700 dark:text-indigo-400 mb-2">
+            <span className="inline-block rounded-full bg-[#18181B] border border-[#27272A] px-3 py-1 text-xs font-mono uppercase text-[#10B981] mb-2">
               {product.categoryLabel || product.category}
             </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-50">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#FAFAFA]">
               {product.title}
             </h1>
-            <p className="mt-3 text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
+            <p className="mt-3 text-base text-[#A1A1AA] leading-relaxed max-w-2xl">
               {product.description}
             </p>
           </div>
@@ -107,35 +107,35 @@ export default async function ProductPage({ params }: Props) {
           {/* Left column: File Tree + Modules */}
           <div className="lg:col-span-2 space-y-8">
             {/* File Tree */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+            <div className="rounded-xl border border-[#27272A] bg-[#18181B] p-6 shadow-xs">
+              <h2 className="text-lg font-bold text-[#FAFAFA] mb-4 flex items-center gap-2">
                 <span>📁</span> Package File Tree
               </h2>
-              <pre className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed font-mono bg-slate-100 dark:bg-slate-950 rounded-xl p-4 border border-slate-200 dark:border-slate-800/60 overflow-x-auto">
+              <pre className="text-xs text-[#A1A1AA] leading-relaxed font-mono bg-[#09090B] rounded-xl p-4 border border-[#27272A] overflow-x-auto">
                 {product.fileTree.join("\n")}
               </pre>
             </div>
 
             {/* Module Breakdown */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+            <div className="rounded-xl border border-[#27272A] bg-[#18181B] p-6 shadow-xs">
+              <h2 className="text-lg font-bold text-[#FAFAFA] mb-4 flex items-center gap-2">
                 <span>📖</span> Module / Chapter Breakdown
               </h2>
               <ol className="space-y-3">
                 {product.modules.map((mod, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900/50 text-xs font-bold text-indigo-700 dark:text-indigo-400 shrink-0">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#09090B] border border-[#27272A] text-xs font-mono font-bold text-[#10B981] shrink-0">
                       {i + 1}
                     </span>
-                    <span className="text-slate-700 dark:text-slate-300">{mod}</span>
+                    <span className="text-[#A1A1AA]">{mod}</span>
                   </li>
                 ))}
               </ol>
             </div>
 
             {/* Deliverables */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+            <div className="rounded-xl border border-[#27272A] bg-[#18181B] p-6 shadow-xs">
+              <h2 className="text-lg font-bold text-[#FAFAFA] mb-4 flex items-center gap-2">
                 <span>📦</span> What You Get (Enterprise Deliverables)
               </h2>
               <ul className="space-y-3">
@@ -256,63 +256,63 @@ export default async function ProductPage({ params }: Props) {
 
             {/* UI/UX & Product Design Prompt Library Value & Features Breakdown */}
             {product.slug === "ui-ux-product-design-prompts" && (
-              <div className="rounded-2xl border border-pink-500/30 bg-gradient-to-b from-pink-950/20 via-slate-900/60 to-slate-900/80 p-6 space-y-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-pink-500/20 pb-4">
+              <div className="rounded-2xl border border-[#27272A] bg-[#18181B] p-6 space-y-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#27272A] pb-4">
                   <div>
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/10 text-pink-400 border border-pink-500/30">
-                      🎨 Design System & Token Playbook
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">
+                      🎨 Design System &amp; Token Playbook
                     </span>
-                    <h3 className="text-xl font-bold text-white mt-1">
+                    <h3 className="text-xl font-bold text-[#FAFAFA] mt-1">
                       Professional Design System Engineering at $15
                     </h3>
                   </div>
                   <Link
                     href="/access/ui-ux-product-design-prompts"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-xs shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:scale-105 transition-all shrink-0"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold text-xs shadow-sm shadow-[#10B981]/20 transition-all shrink-0"
                   >
                     <span>⚡ Try Interactive Playbook &rarr;</span>
                   </Link>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
                     <span className="text-2xl">📐</span>
-                    <h4 className="text-sm font-bold text-slate-100">Figma Auto-Layout to Clean Code</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <h4 className="text-sm font-bold text-[#FAFAFA]">Figma Auto-Layout to Clean Code</h4>
+                    <p className="text-xs text-[#A1A1AA] leading-relaxed">
                       Transform complex Figma component hierarchies and nested auto-layouts directly into production Tailwind CSS v4 and React JSX with strict token mapping.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
                     <span className="text-2xl">♿</span>
-                    <h4 className="text-sm font-bold text-slate-100">WCAG 2.2 AA Contrast &amp; Audits</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <h4 className="text-sm font-bold text-[#FAFAFA]">WCAG 2.2 AA Contrast &amp; Audits</h4>
+                    <p className="text-xs text-[#A1A1AA] leading-relaxed">
                       Evaluate color contrast ratios, focus rings, keyboard navigability, and ARIA attributes before writing a single line of client UI code.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
                     <span className="text-2xl">🎨</span>
-                    <h4 className="text-sm font-bold text-slate-100">OKLCH &amp; HSL Semantic Tokens</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <h4 className="text-sm font-bold text-[#FAFAFA]">OKLCH &amp; HSL Semantic Tokens</h4>
+                    <p className="text-xs text-[#A1A1AA] leading-relaxed">
                       Generate mathematically cohesive 12-step color palettes with harmonious dark/light mode surface elevations and accessible text contrast.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
                     <span className="text-2xl">✨</span>
-                    <h4 className="text-sm font-bold text-slate-100">Micro-Interaction Physics</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <h4 className="text-sm font-bold text-[#FAFAFA]">Micro-Interaction Physics</h4>
+                    <p className="text-xs text-[#A1A1AA] leading-relaxed">
                       Create fluid spring animations, skeleton loading sequences, and hover states with copy-paste Framer Motion and Tailwind transition directives.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-slate-950 border border-pink-500/20 flex flex-wrap items-center justify-between gap-4">
-                  <div className="text-xs text-slate-300">
-                    <strong className="text-white">FastSpring Instant Delivery:</strong> Includes .ZIP file with JSON token scales, Markdown playbooks, printable PDF, and interactive online studio access.
+                <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] flex flex-wrap items-center justify-between gap-4">
+                  <div className="text-xs text-[#A1A1AA]">
+                    <strong className="text-[#FAFAFA]">FastSpring Instant Delivery:</strong> Includes .ZIP file with JSON token scales, Markdown playbooks, printable PDF, and interactive online studio access.
                   </div>
-                  <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2.5 py-1 rounded-lg">
+                  <span className="text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/20 px-2.5 py-1 rounded-lg">
                     100% Client-Side Privacy
                   </span>
                 </div>
@@ -353,13 +353,13 @@ export default async function ProductPage({ params }: Props) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-slate-500 text-xs uppercase tracking-wider font-semibold">
+                  <dt className="text-[#71717A] text-xs font-mono uppercase tracking-wider">
                     Support
                   </dt>
                   <dd className="mt-0.5">
                     <a
                       href={`mailto:${product.specs.support}`}
-                      className="text-indigo-600 dark:text-indigo-400 hover:underline"
+                      className="text-[#10B981] hover:text-[#34D399] font-mono hover:underline"
                     >
                       {product.specs.support}
                     </a>
@@ -369,25 +369,25 @@ export default async function ProductPage({ params }: Props) {
             </div>
 
             {/* Purchase Card */}
-            <div className="rounded-2xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-900/70 p-6 sticky top-24 shadow-md dark:shadow-none">
+            <div className="rounded-xl border border-[#27272A] bg-[#18181B] p-6 sticky top-24 shadow-2xl">
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-3xl font-black text-slate-900 dark:text-slate-50">
+                <span className="text-3xl font-bold text-[#FAFAFA]">
                   ${product.price}
                 </span>
-                <span className="text-sm font-medium line-through text-slate-400 dark:text-slate-500">
+                <span className="text-sm font-medium line-through text-[#71717A]">
                   ${product.originalPrice}
                 </span>
-                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-mono font-semibold text-[#10B981]">
                   USD
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mb-6">
+              <p className="text-xs text-[#A1A1AA] mb-6 font-mono">
                 One-time purchase • Instant access • Free minor updates
               </p>
 
               <ProductPageClient product={product} />
 
-              <p className="text-center text-[10px] text-slate-400 dark:text-slate-600 mt-3">
+              <p className="text-center text-[10px] text-[#71717A] mt-3 font-mono">
                 🔒 256-bit SSL encrypted • Secure payment processing
               </p>
             </div>

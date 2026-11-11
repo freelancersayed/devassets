@@ -917,7 +917,7 @@ export function buildFormattedWordDoc(text: string, font: "SutonnyMJ" | "Solaima
                     type="text"
                     value={cliInputDir}
                     onChange={(e) => setCliInputDir(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-mono text-indigo-300 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#09090B] border border-[#27272A] rounded-xl px-3 py-2 text-xs font-mono text-[#10B981] focus:outline-none focus:border-[#10B981]"
                   />
                 </div>
                 <div>
@@ -1123,7 +1123,7 @@ export function buildFormattedWordDoc(text: string, font: "SutonnyMJ" | "Solaima
                   </button>
                 </div>
 
-                <pre className="p-4 text-xs font-mono text-indigo-300 leading-relaxed overflow-x-auto">
+                <pre className="p-4 text-xs font-mono text-[#10B981] leading-relaxed overflow-x-auto">
                   {sourceCodeSnippets[selectedModule]}
                 </pre>
               </div>

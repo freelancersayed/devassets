@@ -3,19 +3,19 @@ import Hero from "@/components/Hero";
 
 // Code-split below-the-fold sections for lightning-fast First Contentful Paint (FCP)
 const ToolsSection = dynamic(() => import("@/components/ToolsSection"), {
-  loading: () => <div className="min-h-[400px] bg-[#FAFAFA] dark:bg-[#0B0C0E]" />,
+  loading: () => <div className="min-h-[400px] bg-[#09090B]" />,
 });
 
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog"), {
-  loading: () => <div className="min-h-[500px] bg-[#FAFAFA] dark:bg-[#0B0C0E]" />,
+  loading: () => <div className="min-h-[500px] bg-[#09090B]" />,
 });
 
 const WhyChooseUs = dynamic(() => import("@/components/WhyChooseUs"), {
-  loading: () => <div className="min-h-[300px] bg-[#FAFAFA] dark:bg-[#0B0C0E]" />,
+  loading: () => <div className="min-h-[300px] bg-[#09090B]" />,
 });
 
 const FAQ = dynamic(() => import("@/components/FAQ"), {
-  loading: () => <div className="min-h-[300px] bg-[#FAFAFA] dark:bg-[#0B0C0E]" />,
+  loading: () => <div className="min-h-[300px] bg-[#09090B]" />,
 });
 
 export default function HomePage() {

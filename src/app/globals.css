@@ -1,6 +1,18 @@
 @import "tailwindcss";
+@config "../../tailwind.config.mjs";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-bg: #09090B;
+  --color-brand-surface: #18181B;
+  --color-brand-border: #27272A;
+  --color-brand-emerald: #10B981;
+  --color-brand-emerald-hover: #34D399;
+  --color-brand-heading: #FAFAFA;
+  --color-brand-muted: #A1A1AA;
+  --color-brand-amber: #F59E0B;
+}
 
 /* ─── Base Layer ─── */
 @layer base {
@@ -9,11 +21,14 @@
   }
 
   body {
-    @apply bg-[#FAFAFA] text-neutral-900 dark:bg-[#0B0C0E] dark:text-neutral-100 antialiased transition-colors duration-200;
+    background-color: #09090B;
+    color: #A1A1AA;
+    @apply antialiased transition-colors duration-200;
   }
 
   ::selection {
-    @apply bg-indigo-600 text-white;
+    background-color: #10B981;
+    color: #09090B;
   }
 }
 
@@ -23,44 +38,23 @@
   .bg-grid-subtle {
     background-size: 32px 32px;
     background-image: 
-      linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-  }
-
-  .dark .bg-grid-subtle {
-    background-image: 
-      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   }
 
   /* Dot matrix pattern */
   .bg-dot-subtle {
-    background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
     background-size: 20px 20px;
   }
 
-  .dark .bg-dot-subtle {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  }
-
-  /* Craft surface with multi-layer micro-shadow and inner rim */
-  .surface-craft {
-    @apply bg-white dark:bg-[#0E1015] border border-neutral-200/80 dark:border-neutral-800/80;
-    box-shadow: 
-      0 1px 2px rgba(0, 0, 0, 0.04), 
-      0 4px 12px rgba(0, 0, 0, 0.03),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  }
-
-  .dark .surface-craft {
-    box-shadow: 
-      0 1px 2px rgba(0, 0, 0, 0.3), 
-      0 4px 16px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* Emerald Glow Utility */
+  .shadow-emerald-glow {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: fadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 }
 

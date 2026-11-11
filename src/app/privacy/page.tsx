@@ -12,24 +12,24 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <article className="min-h-[70vh] bg-slate-50 dark:bg-slate-950 px-6 py-16 text-slate-700 dark:text-slate-300 transition-colors">
+    <article className="min-h-[70vh] bg-[#09090B] px-6 py-16 text-[#A1A1AA] transition-colors">
       <div className="mx-auto max-w-4xl">
         <nav
           aria-label="Breadcrumb"
-          className="mb-6 flex items-center gap-2 text-xs text-slate-400"
+          className="mb-6 flex items-center gap-2 text-xs font-mono text-[#71717A]"
         >
-          <Link href="/" className="hover:text-indigo-400 transition-colors">
+          <Link href="/" className="hover:text-[#10B981] transition-colors">
             Home
           </Link>
-          <span className="text-slate-600">/</span>
-          <span className="text-indigo-400 font-medium">Privacy Policy</span>
+          <span>/</span>
+          <span className="text-[#FAFAFA] font-medium">Privacy Policy</span>
         </nav>
 
-        <h1 className="mb-4 text-gradient text-4xl font-extrabold">
+        <h1 className="mb-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#FAFAFA]">
           Privacy Policy
         </h1>
 
-        <p className="mb-8 text-xs text-slate-500">
+        <p className="mb-8 text-xs font-mono text-[#71717A]">
           Last Updated: October 2026
         </p>
 
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
               2. How We Use Your Information
             </h2>
             <p>We use relevant information for the following purposes:</p>
-            <ul className="mt-3 list-disc space-y-2 pl-6 marker:text-indigo-400">
+            <ul className="mt-3 list-disc space-y-2 pl-6 marker:text-[#10B981]">
               <li>
                 To deliver purchased digital products and fulfill orders.
               </li>
@@ -195,23 +195,23 @@ export default function PrivacyPage() {
                 Satkhira-9450, Khulna, Bangladesh
               </p>
               <p>
-                <span className="text-slate-500">Email:</span>{" "}
+                <span className="text-[#71717A] font-mono">Email:</span>{" "}
                 <a
                   href="mailto:support@devassets.online"
-                  className="text-indigo-400 hover:underline"
+                  className="text-[#10B981] hover:text-[#34D399] font-mono hover:underline"
                 >
                   support@devassets.online
                 </a>
               </p>
               <p>
-                <span className="text-slate-500">Business Hours:</span> Monday
+                <span className="text-[#71717A] font-mono">Business Hours:</span> Monday
                 – Friday, 9:00 AM – 5:00 PM (UTC+6)
               </p>
               <p>
-                <span className="text-slate-500">Website:</span>{" "}
+                <span className="text-[#71717A] font-mono">Website:</span>{" "}
                 <a
                   href="https://devassets.online"
-                  className="text-indigo-400 hover:underline"
+                  className="text-[#10B981] hover:text-[#34D399] font-mono hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

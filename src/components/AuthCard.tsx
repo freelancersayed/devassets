@@ -11,42 +11,41 @@ interface AuthCardProps {
 const slides = [
   {
     id: 1,
-    tag: "⚡ 100% Client-Side Privacy",
+    tag: "100% Client-Side Privacy",
     headline: "Instant Browser Tools. Zero Server Uploads.",
     subtext: "Fast, 100% private client-side conversions right inside your browser.",
-    accentColor: "from-cyan-500/20 via-blue-600/15 to-transparent",
-    badgeBorder: "border-cyan-400/40 text-cyan-300 bg-cyan-950/60",
+    accentColor: "from-[#10B981]/15 via-transparent to-transparent",
+    badgeBorder: "border-[#10B981]/30 text-[#10B981] bg-[#10B981]/10",
     visualContent: (
-      <div className="space-y-3 p-4 rounded-2xl bg-slate-950/70 border border-cyan-500/30 shadow-[0_0_25px_rgba(6,182,212,0.15)] backdrop-blur-md">
-        <div className="flex items-center justify-between text-xs pb-2 border-b border-white/10 font-mono">
-          <span className="text-cyan-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+      <div className="space-y-3 p-4 rounded-xl bg-[#09090B] border border-[#27272A] shadow-xs">
+        <div className="flex items-center justify-between text-xs pb-2 border-b border-[#27272A] font-mono">
+          <span className="text-[#10B981] flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
             Client Web APIs Active
           </span>
-          <span className="text-slate-400">0 KB Uploaded</span>
+          <span className="text-[#71717A]">0 KB Uploaded</span>
         </div>
-        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-white/[0.06] text-xs">
+        <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs">
           <div className="flex items-center gap-2">
             <span className="text-base">🎵</span>
             <div>
-              <p className="font-semibold text-white">Audio Detacher</p>
-              <p className="text-[10px] text-slate-400">Web Audio API &bull; 48kHz WAV</p>
+              <p className="font-semibold text-[#FAFAFA]">Audio Detacher</p>
+              <p className="text-[10px] text-[#A1A1AA]">Web Audio API &bull; 48kHz WAV</p>
             </div>
           </div>
-          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-bold text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/20 px-2 py-0.5 rounded font-mono">
             Lossless
           </span>
         </div>
-        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-white/[0.06] text-xs">
+        <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs">
           <div className="flex items-center gap-2">
             <span className="text-base">📄</span>
             <div>
-              
-              <p className="font-semibold text-white">PDF to Word / TXT</p>
-              <p className="text-[10px] text-slate-400">Zero-knowledge memory stream</p>
+              <p className="font-semibold text-[#FAFAFA]">PDF to Word / TXT</p>
+              <p className="text-[10px] text-[#A1A1AA]">Zero-knowledge memory stream</p>
             </div>
           </div>
-          <span className="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-bold text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/20 px-2 py-0.5 rounded font-mono">
             Native
           </span>
         </div>
@@ -55,62 +54,62 @@ const slides = [
   },
   {
     id: 2,
-    tag: "🤖 450+ Curated Prompts",
+    tag: "450+ Curated Prompts",
     headline: "Supercharge Workflows with AI Prompts.",
     subtext: "Over 450+ production-ready prompts for Next.js, React, UI/UX, and SEO.",
-    accentColor: "from-purple-500/25 via-indigo-600/15 to-transparent",
-    badgeBorder: "border-purple-400/40 text-purple-300 bg-purple-950/60",
+    accentColor: "from-[#10B981]/15 via-transparent to-transparent",
+    badgeBorder: "border-[#10B981]/30 text-[#10B981] bg-[#10B981]/10",
     visualContent: (
-      <div className="space-y-3 p-4 rounded-2xl bg-slate-950/70 border border-purple-500/30 shadow-[0_0_25px_rgba(168,85,247,0.15)] backdrop-blur-md">
-        <div className="flex items-center justify-between text-xs pb-2 border-b border-white/10 font-mono">
-          <span className="text-purple-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+      <div className="space-y-3 p-4 rounded-xl bg-[#09090B] border border-[#27272A] shadow-xs">
+        <div className="flex items-center justify-between text-xs pb-2 border-b border-[#27272A] font-mono">
+          <span className="text-[#10B981] flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
             Claude 3.7 / GPT-4o / DeepSeek
           </span>
-          <span className="text-slate-400">JSON + MD + PDF</span>
+          <span className="text-[#71717A]">JSON + MD + PDF</span>
         </div>
-        <div className="p-3 rounded-xl bg-slate-900/80 border border-white/[0.06] text-xs space-y-1.5 font-mono">
-          <p className="text-indigo-400 font-semibold">&gt; prompt.system_architecture.init()</p>
-          <p className="text-slate-300 text-[11px] leading-relaxed">
+        <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] text-xs space-y-1.5 font-mono">
+          <p className="text-[#10B981] font-semibold">&gt; prompt.system_architecture.init()</p>
+          <p className="text-[#A1A1AA] text-[11px] leading-relaxed">
             &quot;Architect high-concurrency Next.js App Router endpoints with defensive validation and Prisma schema indexing...&quot;
           </p>
         </div>
-        <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
-          <span>⚡ 200+ Architecture Directives</span>
-          <span className="text-purple-400 font-medium">Instant Export</span>
+        <div className="flex items-center justify-between text-[11px] text-[#A1A1AA] px-1 font-mono">
+          <span>200+ Architecture Directives</span>
+          <span className="text-[#10B981]">Instant Export</span>
         </div>
       </div>
     ),
   },
   {
     id: 3,
-    tag: "📚 Technical Blueprints",
+    tag: "Technical Blueprints",
     headline: "Master Modern Tech with Deep Blueprints.",
     subtext: "In-depth masterclass guides and tested production boilerplates.",
-    accentColor: "from-emerald-500/20 via-indigo-600/15 to-transparent",
-    badgeBorder: "border-emerald-400/40 text-emerald-300 bg-emerald-950/60",
+    accentColor: "from-[#10B981]/15 via-transparent to-transparent",
+    badgeBorder: "border-[#10B981]/30 text-[#10B981] bg-[#10B981]/10",
     visualContent: (
-      <div className="space-y-3 p-4 rounded-2xl bg-slate-950/70 border border-emerald-500/30 shadow-[0_0_25px_rgba(16,185,129,0.15)] backdrop-blur-md">
-        <div className="flex items-center justify-between text-xs pb-2 border-b border-white/10 font-mono">
-          <span className="text-emerald-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+      <div className="space-y-3 p-4 rounded-xl bg-[#09090B] border border-[#27272A] shadow-xs">
+        <div className="flex items-center justify-between text-xs pb-2 border-b border-[#27272A] font-mono">
+          <span className="text-[#10B981] flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
             Verified Source Code Kits
           </span>
-          <span className="text-slate-400">Commercial License</span>
+          <span className="text-[#71717A]">Commercial License</span>
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-white/[0.06]">
-            <p className="font-bold text-white">React Enterprise</p>
-            <p className="text-[10px] text-slate-400 mt-0.5">2 Reference Apps + PDF</p>
+          <div className="p-2.5 rounded-lg bg-[#18181B] border border-[#27272A]">
+            <p className="font-bold text-[#FAFAFA]">React Enterprise</p>
+            <p className="text-[10px] text-[#A1A1AA] mt-0.5">2 Reference Apps + PDF</p>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-white/[0.06]">
-            <p className="font-bold text-white">JS Engine Patterns</p>
-            <p className="text-[10px] text-slate-400 mt-0.5">50+ Modular Patterns</p>
+          <div className="p-2.5 rounded-lg bg-[#18181B] border border-[#27272A]">
+            <p className="font-bold text-[#FAFAFA]">JS Engine Patterns</p>
+            <p className="text-[10px] text-[#A1A1AA] mt-0.5">50+ Modular Patterns</p>
           </div>
         </div>
-        <div className="flex items-center justify-between text-[11px] text-slate-400 px-1 pt-1">
-          <span>📦 Includes Jest Suites &amp; Benchmarks</span>
-          <span className="text-emerald-400 font-medium">v2.4 Ready</span>
+        <div className="flex items-center justify-between text-[11px] text-[#A1A1AA] px-1 pt-1 font-mono">
+          <span>Includes Test Suites</span>
+          <span className="text-[#10B981]">v2.4 Ready</span>
         </div>
       </div>
     ),
@@ -279,13 +278,13 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 relative z-10">
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-cyan-500/10 blur-[140px] pointer-events-none rounded-full" />
+      {/* Background Subtle Accent Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#10B981]/5 blur-[120px] pointer-events-none rounded-full" />
 
       {/* ─── Split Screen Auth Card Container ─── */}
-      <div className="max-w-5xl w-full mx-auto rounded-3xl overflow-hidden bg-slate-900/60 border border-white/10 backdrop-blur-2xl shadow-[0_25px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 items-stretch relative">
+      <div className="max-w-5xl w-full mx-auto rounded-2xl overflow-hidden bg-[#18181B] border border-[#27272A] p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 items-stretch relative shadow-2xl">
         {/* ══════════════════════════════════════════════════════════════
-            IMAGE BANNER / CAROUSEL SIDE
+            CAROUSEL SIDE
             • On Register (/register): LEFT (md:order-1)
             • On Login (/login): RIGHT (md:order-2)
             • On Mobile: Secondary (order-2 md:order-...)
@@ -293,45 +292,31 @@ export default function AuthCard({ mode }: AuthCardProps) {
         <div
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className={`relative rounded-2xl overflow-hidden min-h-[440px] sm:min-h-[500px] p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-br from-slate-950 via-[#0B0F19] to-slate-950 border border-white/10 shadow-inner order-2 ${
+          className={`relative rounded-xl overflow-hidden min-h-[440px] sm:min-h-[500px] p-6 sm:p-8 flex flex-col justify-between bg-[#09090B] border border-[#27272A] order-2 ${
             isRegister ? "md:order-1" : "md:order-2"
           }`}
         >
-          {/* Ambient Glow for Active Slide */}
+          {/* Subtle Accent Glow for Active Slide */}
           <div
             className={`absolute inset-0 bg-gradient-to-b ${slides[currentSlide].accentColor} pointer-events-none transition-all duration-700`}
           />
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-indigo-500/15 blur-3xl pointer-events-none rounded-full" />
-          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/15 blur-3xl pointer-events-none rounded-full" />
 
           {/* Top Controls on the Banner */}
           <div className="flex items-center justify-between relative z-10">
             {/* Top-Left: DevAssets Logo with Glowing Terminal Icon */}
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-600/40 group-hover:scale-105 transition-transform duration-200">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+              <span className="w-8 h-8 rounded-lg bg-[#18181B] border border-[#27272A] text-[#10B981] flex items-center justify-center font-mono font-bold text-xs group-hover:border-[#10B981]/50 transition-colors">
+                &gt;_
               </span>
-              <span className="text-lg font-black tracking-tight text-white">
-                Dev<span className="text-indigo-400">Assets</span>
+              <span className="text-base font-bold tracking-tight text-[#FAFAFA]">
+                Dev<span className="text-[#10B981]">Assets</span>
               </span>
             </Link>
 
-            {/* Top-Right: Glassmorphic "Back to website →" Button */}
+            {/* Top-Right: "Back to website →" Button */}
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-300 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 backdrop-blur-md transition-all duration-200 active:scale-95 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#A1A1AA] hover:text-[#FAFAFA] bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] transition-all duration-200"
             >
               <span>Back to website</span>
               <span>→</span>
@@ -339,23 +324,23 @@ export default function AuthCard({ mode }: AuthCardProps) {
           </div>
 
           {/* Center Dynamic Slide Visual Content */}
-          <div className="my-auto py-6 relative z-10 animate-fade-in key={currentSlide}">
+          <div className="my-auto py-6 relative z-10">
             {slides[currentSlide].visualContent}
           </div>
 
           {/* Slide Text Content & Indicators */}
           <div className="relative z-10 space-y-4">
             <span
-              className={`rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide uppercase inline-flex items-center gap-1.5 border backdrop-blur-md transition-colors ${slides[currentSlide].badgeBorder}`}
+              className={`rounded-full px-3 py-1 text-[11px] font-mono tracking-wide uppercase inline-flex items-center gap-1.5 border transition-colors ${slides[currentSlide].badgeBorder}`}
             >
               {slides[currentSlide].tag}
             </span>
 
             <div className="space-y-1.5">
-              <h3 className="text-xl sm:text-2xl font-bold text-white leading-snug">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#FAFAFA] leading-snug">
                 {slides[currentSlide].headline}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
+              <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed max-w-sm">
                 {slides[currentSlide].subtext}
               </p>
             </div>
@@ -372,8 +357,8 @@ export default function AuthCard({ mode }: AuthCardProps) {
                     aria-label={`Go to slide ${idx + 1}`}
                     className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                       isActive
-                        ? "w-8 bg-white shadow-[0_0_12px_rgba(255,255,255,0.7)]"
-                        : "w-2.5 bg-white/30 hover:bg-white/50"
+                        ? "w-8 bg-[#10B981]"
+                        : "w-2.5 bg-[#27272A] hover:bg-[#3F3F46]"
                     }`}
                   />
                 );
@@ -395,16 +380,16 @@ export default function AuthCard({ mode }: AuthCardProps) {
         >
           {/* Header Title & Subtitle */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#FAFAFA] tracking-tight">
               {isRegister ? "Create an account" : "Welcome back"}
             </h1>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="text-sm text-[#A1A1AA] mt-2">
               {isRegister ? (
                 <>
                   Already have an account?{" "}
                   <Link
                     href="/login"
-                    className="text-indigo-400 hover:text-purple-300 font-medium underline transition-colors"
+                    className="text-[#10B981] hover:text-[#34D399] font-medium transition-colors"
                   >
                     Log in
                   </Link>
@@ -414,7 +399,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
                   Don&apos;t have an account?{" "}
                   <Link
                     href="/register"
-                    className="text-indigo-400 hover:text-purple-300 font-medium underline transition-colors"
+                    className="text-[#10B981] hover:text-[#34D399] font-medium transition-colors"
                   >
                     Sign up
                   </Link>
@@ -425,7 +410,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
           {/* Error & Success Feedback Banners */}
           {errorMessage && (
-            <div className="mb-6 p-3.5 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs flex items-start gap-2.5 backdrop-blur-md animate-fade-in shadow-[0_0_20px_rgba(244,63,94,0.15)]">
+            <div className="mb-6 p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs flex items-start gap-2.5">
               <svg className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
@@ -434,8 +419,8 @@ export default function AuthCard({ mode }: AuthCardProps) {
           )}
 
           {successMessage && (
-            <div className="mb-6 p-3.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2.5 backdrop-blur-md animate-fade-in shadow-[0_0_20px_rgba(16,185,129,0.15)]">
-              <svg className="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="mb-6 p-3.5 rounded-xl bg-[#10B981]/10 border border-[#10B981]/40 text-[#10B981] text-xs flex items-center gap-2.5">
+              <svg className="w-4 h-4 shrink-0 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
               <div className="flex-1 font-medium">{successMessage}</div>
@@ -448,10 +433,10 @@ export default function AuthCard({ mode }: AuthCardProps) {
               type="button"
               disabled={isLoading || Boolean(socialLoading)}
               onClick={() => handleSocialAuth("google")}
-              className="flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 text-xs sm:text-sm font-semibold text-slate-200 transition-all duration-200 active:scale-[0.98] cursor-pointer"
+              className="flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#09090B] hover:bg-[#27272A] disabled:opacity-50 disabled:cursor-not-allowed border border-[#27272A] text-xs sm:text-sm font-semibold text-[#FAFAFA] transition-all duration-200 cursor-pointer"
             >
               {socialLoading === "google" ? (
-                <svg className="w-4 h-4 animate-spin text-indigo-400" fill="none" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 animate-spin text-[#10B981]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                 </svg>
@@ -483,10 +468,10 @@ export default function AuthCard({ mode }: AuthCardProps) {
               type="button"
               disabled={isLoading || Boolean(socialLoading)}
               onClick={() => handleSocialAuth("github")}
-              className="flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 text-xs sm:text-sm font-semibold text-slate-200 transition-all duration-200 active:scale-[0.98] cursor-pointer"
+              className="flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#09090B] hover:bg-[#27272A] disabled:opacity-50 disabled:cursor-not-allowed border border-[#27272A] text-xs sm:text-sm font-semibold text-[#FAFAFA] transition-all duration-200 cursor-pointer"
             >
               {socialLoading === "github" ? (
-                <svg className="w-4 h-4 animate-spin text-purple-400" fill="none" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 animate-spin text-[#10B981]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                 </svg>
@@ -506,11 +491,11 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
           {/* Social Sign-in Divider */}
           <div className="relative flex items-center justify-center mb-6">
-            <div className="border-t border-white/10 w-full" />
-            <span className="bg-slate-900/90 px-3 text-xs text-slate-500 uppercase tracking-wider relative shrink-0">
+            <div className="border-t border-[#27272A] w-full" />
+            <span className="bg-[#18181B] px-3 text-xs text-[#71717A] uppercase tracking-wider relative shrink-0 font-mono">
               {isRegister ? "Or register with" : "Or continue with"}
             </span>
-            <div className="border-t border-white/10 w-full" />
+            <div className="border-t border-[#27272A] w-full" />
           </div>
 
           {/* Actual Form Fields */}
@@ -518,7 +503,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
             {isRegister && (
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  <label className="block text-xs font-medium text-[#A1A1AA] mb-1.5">
                     First name
                   </label>
                   <input
@@ -527,24 +512,26 @@ export default function AuthCard({ mode }: AuthCardProps) {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Sayed"
-                    className="w-full bg-white/[0.04] border border-white/10 focus:border-indigo-400/60 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+                    className="w-full bg-[#09090B] border border-[#27272A] focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] rounded-xl px-4 py-3 text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  <label className="block text-xs font-medium text-[#A1A1AA] mb-1.5">
                     Last name
                   </label>
-                  <input type="text" value={lastName}
+                  <input
+                    type="text"
+                    value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Hossain"
-                    className="w-full bg-white/[0.04] border border-white/10 focus:border-indigo-400/60 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+                    className="w-full bg-[#09090B] border border-[#27272A] focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] rounded-xl px-4 py-3 text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none transition-all"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-[#A1A1AA] mb-1.5">
                 Email address
               </label>
               <input
@@ -553,12 +540,12 @@ export default function AuthCard({ mode }: AuthCardProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full bg-white/[0.04] border border-white/10 focus:border-indigo-400/60 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+                className="w-full bg-[#09090B] border border-[#27272A] focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] rounded-xl px-4 py-3 text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-[#A1A1AA] mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -568,13 +555,13 @@ export default function AuthCard({ mode }: AuthCardProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white/[0.04] border border-white/10 focus:border-indigo-400/60 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all pr-11"
+                  className="w-full bg-[#09090B] border border-[#27272A] focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] rounded-xl px-4 py-3 text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none transition-all pr-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-1 cursor-pointer transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#71717A] hover:text-[#FAFAFA] p-1 cursor-pointer transition-colors"
                 >
                   {showPassword ? (
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -591,15 +578,15 @@ export default function AuthCard({ mode }: AuthCardProps) {
 
               {/* Password Requirements Guide (Registration Mode) */}
               {isRegister && password.length > 0 && (
-                <div className="mt-2 p-2.5 rounded-xl bg-slate-950/70 border border-white/[0.08] text-xs space-y-1.5 animate-fadeIn">
+                <div className="mt-2 p-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs space-y-1.5">
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-slate-400">Password strength:</span>
+                    <span className="text-[#A1A1AA]">Password strength:</span>
                     <span
                       className={`font-semibold ${
                         isLengthValid && hasMixedChars
-                          ? "text-emerald-400"
+                          ? "text-[#10B981]"
                           : isLengthValid
-                          ? "text-amber-400"
+                          ? "text-[#F59E0B]"
                           : "text-rose-400"
                       }`}
                     >
@@ -613,7 +600,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
                   <div className="grid grid-cols-2 gap-2 text-[11px]">
                     <div
                       className={`flex items-center gap-1.5 ${
-                        isLengthValid ? "text-emerald-400 font-medium" : "text-slate-500"
+                        isLengthValid ? "text-[#10B981] font-medium" : "text-[#71717A]"
                       }`}
                     >
                       <span className="text-xs">{isLengthValid ? "✓" : "○"}</span>
@@ -621,7 +608,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
                     </div>
                     <div
                       className={`flex items-center gap-1.5 ${
-                        hasMixedChars ? "text-emerald-400 font-medium" : "text-slate-500"
+                        hasMixedChars ? "text-[#10B981] font-medium" : "text-[#71717A]"
                       }`}
                     >
                       <span className="text-xs">{hasMixedChars ? "✓" : "○"}</span>
@@ -635,7 +622,7 @@ export default function AuthCard({ mode }: AuthCardProps) {
             {/* Confirm Password Field (Registration Mode) */}
             {isRegister && (
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-[#A1A1AA] mb-1.5">
                   Confirm password
                 </label>
                 <div className="relative">
@@ -645,19 +632,19 @@ export default function AuthCard({ mode }: AuthCardProps) {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className={`w-full bg-white/[0.04] border rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all pr-11 ${
+                    className={`w-full bg-[#09090B] border rounded-xl px-4 py-3 text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none transition-all pr-11 ${
                       confirmPassword.length > 0
                         ? doPasswordsMatch
-                          ? "border-emerald-500/60 focus:border-emerald-400 bg-emerald-500/[0.02]"
-                          : "border-rose-500/60 focus:border-rose-400 bg-rose-500/[0.02]"
-                        : "border-white/10 focus:border-indigo-400/60"
+                          ? "border-[#10B981] focus:border-[#10B981]"
+                          : "border-rose-500/60 focus:border-rose-400"
+                        : "border-[#27272A] focus:border-[#10B981]"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 p-1 cursor-pointer transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#71717A] hover:text-[#FAFAFA] p-1 cursor-pointer transition-colors"
                   >
                     {showConfirmPassword ? (
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -674,12 +661,12 @@ export default function AuthCard({ mode }: AuthCardProps) {
                 {confirmPassword.length > 0 && (
                   <p
                     className={`mt-1.5 text-[11px] flex items-center gap-1.5 font-medium ${
-                      doPasswordsMatch ? "text-emerald-400" : "text-rose-400"
+                      doPasswordsMatch ? "text-[#10B981]" : "text-rose-400"
                     }`}
                   >
                     {doPasswordsMatch ? (
                       <>
-                        <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="w-3.5 h-3.5 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                         <span>Passwords match</span>
@@ -706,15 +693,15 @@ export default function AuthCard({ mode }: AuthCardProps) {
                     id="agreeTerms"
                     checked={agreeTerms}
                     onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/[0.05] text-indigo-500 focus:ring-indigo-500 cursor-pointer accent-indigo-500"
+                    className="mt-0.5 h-4 w-4 rounded border-[#27272A] bg-[#09090B] text-[#10B981] focus:ring-[#10B981] cursor-pointer accent-[#10B981]"
                   />
-                  <span className="text-xs text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
+                  <span className="text-xs text-[#A1A1AA] leading-relaxed group-hover:text-[#FAFAFA] transition-colors">
                     I agree to the{" "}
-                    <Link href="/terms" target="_blank" className="text-indigo-400 underline hover:text-indigo-300">
+                    <Link href="/terms" target="_blank" className="text-[#10B981] underline hover:text-[#34D399]">
                       Terms &amp; Conditions
                     </Link>{" "}
                     and{" "}
-                    <Link href="/privacy" target="_blank" className="text-indigo-400 underline hover:text-indigo-300">
+                    <Link href="/privacy" target="_blank" className="text-[#10B981] underline hover:text-[#34D399]">
                       Privacy Policy
                     </Link>
                     .
@@ -723,38 +710,38 @@ export default function AuthCard({ mode }: AuthCardProps) {
               </div>
             ) : (
               <div className="flex items-center justify-between pt-1 text-xs">
-                <label className="flex items-center gap-2 cursor-pointer group text-slate-400 select-none">
+                <label className="flex items-center gap-2 cursor-pointer group text-[#A1A1AA] select-none">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-white/20 bg-white/[0.05] text-indigo-500 focus:ring-indigo-500 cursor-pointer accent-indigo-500"
+                    className="h-4 w-4 rounded border-[#27272A] bg-[#09090B] text-[#10B981] focus:ring-[#10B981] cursor-pointer accent-[#10B981]"
                   />
                   <span>Remember me</span>
                 </label>
                 <a
                   href="mailto:support@devassets.online?subject=Password%20Reset%20Request"
-                  className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+                  className="text-[#10B981] hover:text-[#34D399] font-medium transition-colors"
                 >
                   Forgot password?
                 </a>
               </div>
             )}
 
-            {/* Submit Button (Active only when Terms agreed and inputs valid) */}
+            {/* Submit Button */}
             <div className="pt-2">
               <button
                 type="submit"
                 disabled={isSubmitDisabled}
-                className={`w-full py-3.5 px-4 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 px-4 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
                   isSubmitDisabled
-                    ? "bg-slate-800/40 text-slate-500 border border-white/[0.06] cursor-not-allowed opacity-50 shadow-none"
-                    : "bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 hover:opacity-95 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] active:scale-[0.98] cursor-pointer"
+                    ? "bg-[#27272A] text-[#71717A] border border-[#27272A] cursor-not-allowed opacity-60"
+                    : "bg-[#10B981] hover:bg-[#34D399] text-[#09090B] shadow-emerald-glow active:scale-[0.98] cursor-pointer"
                 }`}
               >
                 {isLoading ? (
                   <>
-                    <svg className="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 animate-spin text-[#09090B]" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                     </svg>

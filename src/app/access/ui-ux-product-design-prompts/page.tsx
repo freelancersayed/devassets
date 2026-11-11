@@ -312,7 +312,7 @@ export default function UiUxPromptAccessPage() {
             <button
               type="button"
               onClick={() => setShowCheckout(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white font-bold text-xs shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold text-xs shadow-sm shadow-[#10B981]/20 active:scale-95 transition-all cursor-pointer"
             >
               <span>Buy License — $15.00</span>
             </button>
@@ -320,44 +320,42 @@ export default function UiUxPromptAccessPage() {
         </div>
 
         {/* Hero Header */}
-        <div className="relative overflow-hidden rounded-3xl border border-pink-500/30 bg-gradient-to-b from-pink-950/20 via-slate-900/80 to-slate-950 p-8 md:p-10 shadow-[0_0_50px_rgba(236,72,153,0.08)]">
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
+        <div className="relative overflow-hidden rounded-3xl border border-[#27272A] bg-[#18181B] p-8 md:p-10 shadow-xl">
           <div className="relative z-10 max-w-3xl space-y-4">
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-pink-500/15 text-pink-300 border border-pink-500/40">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">
                 🎨 Design System &amp; Token Studio
               </span>
-              <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 border border-slate-700 text-slate-300">
+              <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-[#09090B] border border-[#27272A] text-[#FAFAFA]">
                 v2.0 Release
               </span>
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 border border-emerald-800 text-emerald-400">
+              <span className="px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981]">
                 FastSpring Instant Delivery
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-[#FAFAFA] tracking-tight leading-tight">
               UI/UX &amp; Product Design <br />
-              <span className="bg-gradient-to-r from-pink-300 via-rose-400 to-pink-500 bg-clip-text text-transparent">
+              <span className="text-[#10B981]">
                 Prompt Library &amp; Token Studio
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+            <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed max-w-2xl">
               150+ battle-tested prompts for UI/UX designers and frontend developers. Generate scalable OKLCH design tokens, translate Figma auto-layouts into zero-regression Tailwind code, and run automated WCAG 2.2 AA accessibility audits.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <a
                 href="/api/downloads/prod_ui_ux_design_prompts?key=DESIGN-UIUX-2026"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 border border-pink-500/50 hover:border-pink-400 text-pink-300 font-bold text-xs sm:text-sm hover:bg-pink-950/30 transition-all shadow-[0_0_20px_rgba(236,72,153,0.15)]"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold text-xs sm:text-sm shadow-sm shadow-[#10B981]/20 transition-all cursor-pointer"
               >
                 <span>📦 Download Full Package (.ZIP)</span>
               </a>
 
               <Link
                 href="/products/ui-ux-product-design-prompts"
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 text-xs sm:text-sm font-semibold transition-all"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-[#09090B] border border-[#27272A] text-[#FAFAFA] hover:border-[#10B981]/50 text-xs sm:text-sm font-semibold transition-all"
               >
                 <span>Inspect Product Details &rarr;</span>
               </Link>

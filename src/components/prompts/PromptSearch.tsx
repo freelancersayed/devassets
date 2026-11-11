@@ -61,7 +61,7 @@ export default function PromptSearch({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search prompts..."
-        className="w-full pl-11 pr-24 py-3.5 bg-white dark:bg-[#0f111a] hover:bg-slate-50 dark:hover:bg-[#131722] focus:bg-white dark:focus:bg-[#131722] text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-2xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 shadow-sm transition-all outline-none"
+        className="w-full pl-11 pr-24 py-3 bg-[#18181B] text-sm text-[#FAFAFA] placeholder-[#71717A] rounded-xl border border-[#27272A] hover:border-[#3F3F46] focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] shadow-xs transition-all outline-none"
       />
 
       {/* Right Controls: Clear button + Ctrl K Badge */}
@@ -71,7 +71,7 @@ export default function PromptSearch({
             type="button"
             onClick={onClear}
             aria-label="Clear search input"
-            className="p-1 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+            className="p-1 rounded-md text-[#71717A] hover:text-[#FAFAFA] hover:bg-[#27272A] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -79,7 +79,7 @@ export default function PromptSearch({
           </button>
         ) : null}
 
-        <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/[0.05] border border-slate-200 dark:border-white/10 rounded-lg shadow-sm">
+        <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-[11px] font-mono text-[#71717A] bg-[#09090B] border border-[#27272A] rounded-md shadow-xs">
           Ctrl K
         </kbd>
       </div>

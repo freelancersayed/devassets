@@ -282,12 +282,12 @@ export default function PdfToWordClient() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-12 sm:px-6">
+    <main className="min-h-screen bg-[#09090B] px-4 py-12 sm:px-6 text-[#A1A1AA]">
       {/* Back Navigation */}
       <div className="container mx-auto max-w-4xl mb-8">
         <Link
           href="/#tools"
-          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-indigo-400 transition-colors group"
+          className="inline-flex items-center gap-2 text-xs font-mono text-[#71717A] hover:text-[#10B981] transition-colors group"
         >
           <svg
             className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"
@@ -305,16 +305,14 @@ export default function PdfToWordClient() {
       <div className="container mx-auto max-w-4xl space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60">
-            ⚡ Free Browser Tool — No Upload Required
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#18181B] px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-[#10B981] border border-[#27272A]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+            Free Browser Tool — No Upload Required
           </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-50 tracking-tight">
-            PDF to Word /{" "}
-            <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              Text Converter
-            </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#FAFAFA] tracking-tight">
+            PDF to Word / <span className="text-[#10B981]">Text Converter</span>
           </h1>
-          <p className="text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base text-[#A1A1AA] max-w-2xl mx-auto leading-relaxed">
             Extract formatted text and generate genuine OpenXML Word (.docx) &amp; TXT files directly in your browser.
             100% compatible with all Microsoft Word versions (2007–2024, Office 365, Word Online, Mac).
           </p>
@@ -361,10 +359,10 @@ export default function PdfToWordClient() {
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`relative rounded-2xl border-2 border-dashed p-12 text-center cursor-pointer transition-all duration-300 ${
+              className={`relative rounded-xl border-2 border-dashed p-12 text-center cursor-pointer transition-all duration-300 ${
                 isDragging
-                  ? "border-indigo-500 bg-indigo-950/30 scale-[1.01]"
-                  : "border-slate-700 bg-slate-950/50 hover:border-indigo-500/60 hover:bg-slate-950/80"
+                  ? "border-[#10B981] bg-[#10B981]/10 scale-[1.01]"
+                  : "border-[#27272A] bg-[#18181B] hover:border-[#10B981]/60"
               }`}
             >
               <input
@@ -375,29 +373,29 @@ export default function PdfToWordClient() {
                 className="hidden"
                 id="pdfFileInput"
               />
-              <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center">
-                <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <div className="mx-auto mb-4 w-16 h-16 rounded-xl bg-[#09090B] border border-[#27272A] text-[#10B981] flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                 </svg>
               </div>
               {status === "loading-lib" ? (
                 <>
-                  <p className="text-sm font-semibold text-indigo-400 animate-pulse">Loading PDF engine...</p>
-                  <p className="text-xs text-slate-500 mt-1">Please wait a moment</p>
+                  <p className="text-sm font-semibold text-[#10B981] animate-pulse">Loading PDF engine...</p>
+                  <p className="text-xs text-[#71717A] mt-1">Please wait a moment</p>
                 </>
               ) : (
                 <>
-                  <p className="text-base font-semibold text-slate-200 mb-1">
+                  <p className="text-base font-semibold text-[#FAFAFA] mb-1">
                     {isDragging ? "Drop your PDF here" : "Drag & Drop PDF here"}
                   </p>
-                  <p className="text-sm text-slate-400 mb-4">or click to browse files</p>
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-colors">
+                  <p className="text-sm text-[#A1A1AA] mb-4">or click to browse files</p>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] text-sm font-semibold transition-colors shadow-emerald-glow">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                     Choose PDF File
                   </span>
-                  <p className="text-[11px] text-slate-600 mt-4">
+                  <p className="text-[11px] text-[#71717A] mt-4 font-mono">
                     Processed locally via PDF.js Web API • Standard OpenXML .DOCX output • No upload
                   </p>
                 </>
@@ -407,27 +405,27 @@ export default function PdfToWordClient() {
 
           {/* Processing State */}
           {status === "processing" && (
-            <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-8 text-center space-y-5">
-              <div className="mx-auto w-16 h-16 rounded-2xl bg-indigo-950/60 border border-indigo-700/50 flex items-center justify-center">
-                <svg className="animate-spin w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24">
+            <div className="rounded-xl border border-[#27272A] bg-[#18181B] p-8 text-center space-y-5 shadow-2xl">
+              <div className="mx-auto w-16 h-16 rounded-xl bg-[#09090B] border border-[#27272A] flex items-center justify-center">
+                <svg className="animate-spin w-8 h-8 text-[#10B981]" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-semibold text-indigo-400 animate-pulse">{statusMsg}</p>
+                <p className="text-sm font-semibold text-[#10B981] animate-pulse">{statusMsg}</p>
                 {pageCount > 0 && (
-                  <p className="text-xs text-slate-500 mt-1">{pageCount} pages detected</p>
+                  <p className="text-xs text-[#71717A] mt-1 font-mono">{pageCount} pages detected</p>
                 )}
               </div>
               {/* Progress Bar */}
-              <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-[#09090B] border border-[#27272A] rounded-full h-2 overflow-hidden">
                 <div
-                  className="h-2 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full transition-all duration-300"
+                  className="h-2 bg-[#10B981] rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-400">{progress}% complete</p>
+              <p className="text-xs text-[#A1A1AA] font-mono">{progress}% complete</p>
             </div>
           )}
 
@@ -488,8 +486,8 @@ export default function PdfToWordClient() {
               </div>
 
               {/* Compatibility Notice */}
-              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-950/40 border border-indigo-900/60 text-xs text-indigo-300">
-                <span className="text-sm">✨</span>
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-[#10B981] font-mono">
+                <span className="text-sm">✓</span>
                 <span>
                   <strong>All-Version Word Compatibility:</strong> Generates genuine OpenXML (.docx) with 1-inch margins and standard typography. Guaranteed to open in MS Word 2007–2024, Office 365, Word Online, Google Docs &amp; Mac.
                 </span>
@@ -499,9 +497,9 @@ export default function PdfToWordClient() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   onClick={downloadTxt}
-                  className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all duration-200 active:scale-[0.98] shadow-lg shadow-indigo-900/30 cursor-pointer"
+                  className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] font-semibold text-sm transition-all duration-200 active:scale-[0.98] cursor-pointer"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-4 h-4 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
                   Download as .TXT
@@ -510,11 +508,11 @@ export default function PdfToWordClient() {
                 <button
                   onClick={downloadDocx}
                   disabled={isGeneratingDocx}
-                  className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-semibold text-sm transition-all duration-200 active:scale-[0.98] shadow-lg shadow-cyan-900/30 cursor-pointer disabled:opacity-50"
+                  className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-semibold text-sm transition-all duration-200 active:scale-[0.98] shadow-emerald-glow cursor-pointer disabled:opacity-50"
                 >
                   {isGeneratingDocx ? (
                     <>
-                      <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin w-4 h-4 text-[#09090B]" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                       </svg>
@@ -522,7 +520,7 @@ export default function PdfToWordClient() {
                     </>
                   ) : (
                     <>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className="w-4 h-4 text-[#09090B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
                       <span>Download OpenXML Word (.DOCX)</span>
@@ -543,27 +541,27 @@ export default function PdfToWordClient() {
           ].map((item) => (
             <div
               key={item.step}
-              className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 text-center space-y-3"
+              className="rounded-xl border border-[#27272A] bg-[#18181B] p-5 text-center space-y-3"
             >
               <div className="text-2xl">{item.icon}</div>
-              <div className="w-6 h-6 rounded-full bg-indigo-950 border border-indigo-800 text-indigo-400 text-xs font-bold flex items-center justify-center mx-auto">
+              <div className="w-6 h-6 rounded-full bg-[#09090B] border border-[#27272A] text-[#10B981] text-xs font-mono font-bold flex items-center justify-center mx-auto">
                 {item.step}
               </div>
-              <p className="text-sm font-semibold text-slate-200">{item.title}</p>
-              <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+              <p className="text-sm font-semibold text-[#FAFAFA]">{item.title}</p>
+              <p className="text-xs text-[#A1A1AA] leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
 
         {/* Other Tools CTA */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="rounded-xl border border-[#27272A] bg-[#18181B] p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-slate-200">Explore all free browser tools</p>
-            <p className="text-xs text-slate-500">Image OCR, Video Audio Extractor, Smart Image Studio &amp; more</p>
+            <p className="text-sm font-semibold text-[#FAFAFA]">Explore all free browser tools</p>
+            <p className="text-xs text-[#A1A1AA]">Image OCR, Video Audio Extractor, Smart Image Studio &amp; more</p>
           </div>
           <Link
             href="/#tools"
-            className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white text-sm font-semibold transition-all duration-200 border border-slate-700 hover:border-indigo-500"
+            className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] text-[#FAFAFA] text-sm font-medium transition-all duration-200 border border-[#27272A] hover:border-[#10B981]/50 font-mono"
           >
             View All Tools &rarr;
           </Link>
