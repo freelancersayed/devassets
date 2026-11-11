@@ -57,17 +57,17 @@ export default function WhyChooseUs() {
   ];
 
   return (
-    <section id="features" className="py-24 bg-slate-950 border-t border-slate-900 scroll-mt-20">
+    <section id="features" className="py-24 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 scroll-mt-20 transition-colors">
       <div className="container mx-auto max-w-6xl px-6">
         {/* Section Header */}
         <FadeInView y={20} className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60 shadow-inner">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/60 shadow-xs dark:shadow-inner">
             🛡️ Engineered for Developers
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
             Why Choose DevAssets
           </h2>
-          <p className="text-base text-slate-400 leading-relaxed">
+          <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
             Everything we build is engineered with strict attention to privacy, performance, and real-world developer productivity.
           </p>
         </FadeInView>
@@ -77,25 +77,25 @@ export default function WhyChooseUs() {
           {features.map((feature, i) => (
             <StaggerItem key={i}>
               <InteractiveCard className="h-full">
-                <div className="group relative rounded-2xl border border-slate-800 bg-slate-900/60 p-8 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-colors duration-300 shadow-xl backdrop-blur-sm h-full flex flex-col justify-between">
+                <div className="group relative rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-8 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:bg-white dark:hover:bg-slate-900/90 transition-colors duration-300 shadow-md dark:shadow-xl backdrop-blur-sm h-full flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-5">
                       <motion.div
                         whileHover={{ scale: 1.15, rotate: 5 }}
                         transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-950 border border-slate-800 group-hover:border-indigo-500/40 transition-colors shadow-inner"
+                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 group-hover:border-indigo-500/40 transition-colors shadow-inner"
                       >
                         {feature.icon}
                       </motion.div>
-                      <span className="rounded-full bg-slate-800/80 border border-slate-700/60 px-3 py-1 text-xs font-semibold text-slate-300">
+                      <span className="rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
                         {feature.badge}
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                       {feature.title}
                     </h3>
-                    <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                       {feature.description}
                     </p>
                   </div>

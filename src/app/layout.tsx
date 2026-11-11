@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Dynamic import for client components to reduce initial SSR payload
 const AiChatWidget = dynamic(() => import("@/components/AiChatWidget"));
@@ -96,7 +97,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} scroll-smooth dark`}>
+    <html lang="en" className={`${inter.variable} scroll-smooth`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://d1f8f9xcsvx3ha.cloudfront.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://d1f8f9xcsvx3ha.cloudfront.net" />
@@ -153,13 +154,20 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-slate-950 text-slate-50 antialiased font-[family-name:var(--font-inter)]">
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
-        <AiChatWidget />
+      <body className="antialiased font-[family-name:var(--font-inter)] bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          storageKey="devassets-theme"
+        >
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+          <AiChatWidget />
+        </ThemeProvider>
         <Script
           id="fsc-api"
           src="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/0.8.5/fastspring-builder.min.js"

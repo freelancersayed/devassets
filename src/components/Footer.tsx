@@ -6,10 +6,10 @@ export default function Footer() {
   return (
     <footer
       aria-label="Site Footer"
-      className="bg-slate-950 border-t border-slate-900 px-6 py-12 transition-colors duration-300"
+      className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 px-6 py-12 transition-colors duration-300"
     >
       <div className="container mx-auto max-w-6xl space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8 border-b border-slate-900 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8 border-b border-slate-200 dark:border-slate-900 text-sm">
           {/* Left Column */}
           <div className="space-y-3 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2.5">
@@ -28,11 +28,11 @@ export default function Footer() {
                   />
                 </svg>
               </span>
-              <span className="text-xl font-black text-slate-50">
-                Dev<span className="text-indigo-400">Assets</span>
+              <span className="text-xl font-black text-slate-900 dark:text-slate-50">
+                Dev<span className="text-indigo-600 dark:text-indigo-400">Assets</span>
               </span>
             </div>
-            <p className="text-xs font-semibold text-slate-400">
+            <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
               Operated by Md Sayed
             </p>
             <p className="text-xs text-slate-500 max-w-sm leading-relaxed">
@@ -44,7 +44,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="DevAssets Help Zone Community"
-                className="inline-flex items-center gap-2 text-xs text-indigo-400 hover:text-indigo-300 hover:underline"
+                className="inline-flex items-center gap-2 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 hover:underline"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -55,12 +55,12 @@ export default function Footer() {
           </div>
 
           {/* Right Column */}
-          <div className="space-y-2 text-center md:text-right text-xs text-slate-400">
+          <div className="space-y-2 text-center md:text-right text-xs text-slate-600 dark:text-slate-400">
             <p>
               📧 Support Email:{" "}
               <a
                 href="mailto:support@devassets.online"
-                className="text-indigo-400 hover:underline font-medium"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
               >
                 support@devassets.online
               </a>
@@ -68,7 +68,7 @@ export default function Footer() {
             <p>📍 Address: Satkhira-9450, Khulna, Bangladesh</p>
             <p>⏱️ Business Hours: Monday – Friday, 9:00 AM – 5:00 PM (UTC+6)</p>
             <p className="text-slate-500 pt-1">
-              🔒 Merchant of Record & Payment Compliance Verified
+              🔒 Merchant of Record &amp; Payment Compliance Verified
             </p>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-xs text-slate-500 text-center md:text-left">
-            &copy; {currentYear} <span className="font-semibold text-slate-400">DevAssets</span>. All rights reserved.
+            &copy; {currentYear} <span className="font-semibold text-slate-700 dark:text-slate-400">DevAssets</span>. All rights reserved.
           </div>
 
           <nav
@@ -85,25 +85,25 @@ export default function Footer() {
           >
             <Link
               href="/about"
-              className="hover:text-indigo-400 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               About Us
             </Link>
             <Link
               href="/privacy"
-              className="hover:text-indigo-400 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
               href="/terms"
-              className="hover:text-indigo-400 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Terms of Service
             </Link>
             <Link
               href="/refund"
-              className="hover:text-indigo-400 transition-colors"
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Refund Policy
             </Link>

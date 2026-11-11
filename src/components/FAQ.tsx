@@ -55,21 +55,21 @@ export default function FAQ() {
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="py-24 bg-slate-950 transition-colors duration-300 scroll-mt-20 border-t border-slate-900"
+      className="py-24 bg-white dark:bg-slate-950 transition-colors duration-300 scroll-mt-20 border-t border-slate-200 dark:border-slate-900"
     >
       <div className="container mx-auto max-w-4xl px-6">
         {/* Section Header */}
         <FadeInView y={20} className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60 shadow-inner">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/60 shadow-xs dark:shadow-inner">
             💡 Got Questions? We Have Answers
           </span>
           <h2
             id="faq-heading"
-            className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight"
+            className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight"
           >
             Frequently Asked Questions
           </h2>
-          <p className="text-base text-slate-400 leading-relaxed">
+          <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
             Everything you need to know about our free client-side tools, prompt systems, digital kits, and buyer protection.
           </p>
         </FadeInView>
@@ -80,12 +80,12 @@ export default function FAQ() {
             const isOpen = openIds.includes(faq.id);
             return (
               <StaggerItem key={faq.id}>
-                <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/40 transition-colors duration-200 shadow-lg backdrop-blur-sm overflow-hidden">
+                <div className="rounded-2xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-400 dark:hover:border-indigo-500/40 transition-colors duration-200 shadow-sm dark:shadow-lg backdrop-blur-sm overflow-hidden">
                   <button
                     type="button"
                     onClick={() => toggleFaq(faq.id)}
                     aria-expanded={isOpen}
-                    className="w-full text-left px-6 py-5 text-base sm:text-lg font-semibold text-slate-100 flex items-center justify-between gap-4 cursor-pointer select-none"
+                    className="w-full text-left px-6 py-5 text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center justify-between gap-4 cursor-pointer select-none"
                   >
                     <span>{faq.question}</span>
                     <motion.span
@@ -94,7 +94,7 @@ export default function FAQ() {
                       className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors shrink-0 ${
                         isOpen
                           ? "bg-indigo-600 text-white"
-                          : "bg-slate-800 text-slate-400"
+                          : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                       }`}
                     >
                       <svg
@@ -122,7 +122,7 @@ export default function FAQ() {
                         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-4">
+                        <div className="px-6 pb-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-800/60 pt-4">
                           <p>{faq.answer}</p>
                         </div>
                       </motion.div>
@@ -135,16 +135,16 @@ export default function FAQ() {
         </StaggerContainer>
 
         {/* Help Box */}
-        <FadeInView y={20} delay={0.2} className="mt-14 text-center p-8 rounded-2xl bg-gradient-to-b from-slate-900/80 to-slate-900/40 border border-slate-800/80 max-w-xl mx-auto shadow-xl">
-          <div className="w-10 h-10 rounded-full bg-indigo-950 border border-indigo-800/60 flex items-center justify-center text-indigo-400 mx-auto mb-3">
+        <FadeInView y={20} delay={0.2} className="mt-14 text-center p-8 rounded-2xl bg-slate-50 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-900/40 border border-slate-200 dark:border-slate-800/80 max-w-xl mx-auto shadow-md dark:shadow-xl">
+          <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mx-auto mb-3">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <p className="text-base text-slate-200 font-bold">
+          <p className="text-base text-slate-900 dark:text-slate-200 font-bold">
             Have a question that is not answered here?
           </p>
-          <p className="text-xs text-slate-400 mt-2 mb-4">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 mb-4">
             Reach out to our support team anytime at{" "}
             <a
               href="mailto:support@devassets.online"

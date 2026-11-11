@@ -29,10 +29,10 @@ export default function PromptCard({ prompt }: PromptCardProps) {
   return (
     <Link
       href={`/prompts/${prompt.slug}`}
-      className="group flex flex-col rounded-2xl bg-[#0f131f] border border-slate-800/80 hover:border-indigo-500/50 shadow-lg hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+      className="group flex flex-col rounded-2xl bg-white dark:bg-[#0f131f] border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500/50 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
     >
       {/* 1. Card Media Thumbnail */}
-      <div className="relative w-full aspect-[16/10] bg-slate-900 overflow-hidden">
+      <div className="relative w-full aspect-[16/10] bg-slate-100 dark:bg-slate-900 overflow-hidden">
         <img
           src={imgError ? fallbackSvg : prompt.image}
           alt={prompt.title}
@@ -42,7 +42,7 @@ export default function PromptCard({ prompt }: PromptCardProps) {
         />
 
         {/* Subtle Dark Bottom Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f131f] via-transparent to-black/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 dark:from-[#0f131f] via-transparent to-black/30 pointer-events-none" />
 
         {/* Top-Right Menu Badge Overlay (matching reference image) */}
         <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white/80 hover:text-white text-xs flex items-center justify-center transition-opacity opacity-80 group-hover:opacity-100">
@@ -72,10 +72,10 @@ export default function PromptCard({ prompt }: PromptCardProps) {
         <div>
           {/* Title Row with vertical 3-dots icon */}
           <div className="flex items-start justify-between gap-2 mb-1.5">
-            <h3 className="font-bold text-sm sm:text-base text-white group-hover:text-indigo-300 transition-colors line-clamp-1 tracking-tight">
+            <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors line-clamp-1 tracking-tight">
               {prompt.title}
             </h3>
-            <span className="text-slate-500 group-hover:text-slate-300 shrink-0 mt-0.5">
+            <span className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 shrink-0 mt-0.5">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <circle cx="12" cy="5" r="1.75" />
                 <circle cx="12" cy="12" r="1.75" />
@@ -85,20 +85,20 @@ export default function PromptCard({ prompt }: PromptCardProps) {
           </div>
 
           {/* Short Description */}
-          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
             {prompt.description}
           </p>
         </div>
 
         {/* 3. Footer Stats & Category Meta */}
-        <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2 text-xs">
+        <div className="pt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between gap-2 text-xs">
           {/* Category Pill */}
-          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-indigo-950/50 text-indigo-300 border border-indigo-800/40 truncate max-w-[120px]">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40 truncate max-w-[120px]">
             {prompt.category}
           </span>
 
           {/* Engagement Counters: Likes & Views */}
-          <div className="flex items-center gap-3 text-slate-400 font-medium text-[11px] shrink-0">
+          <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 font-medium text-[11px] shrink-0">
             {/* Heart / Likes */}
             <span className="flex items-center gap-1 hover:text-rose-400 transition-colors">
               <svg className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-400/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

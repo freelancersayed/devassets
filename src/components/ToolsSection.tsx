@@ -153,17 +153,17 @@ export default function ToolsSection() {
   };
 
   return (
-    <section id="tools" className="relative bg-slate-950 px-6 py-24 border-t border-slate-900 scroll-mt-20">
+    <section id="tools" className="relative bg-slate-50 dark:bg-slate-950 px-6 py-24 border-t border-slate-200 dark:border-slate-900 scroll-mt-20 transition-colors">
       <div className="container mx-auto max-w-6xl">
         {/* Section Header */}
         <FadeInView y={20} className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60 shadow-inner">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/60 shadow-xs dark:shadow-inner">
             ⚡ Instant Browser Utilities
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
             100% Client-Side &amp; Private Web Tools
           </h2>
-          <p className="text-base text-slate-400 leading-relaxed">
+          <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
             No files are ever uploaded to our servers. All conversions and extractions run natively in your browser using modern Web APIs.
           </p>
         </FadeInView>
@@ -189,32 +189,32 @@ export default function ToolsSection() {
                       }
                     }
                   }}
-                  className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-7 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-colors duration-300 shadow-xl backdrop-blur-sm"
+                  className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-7 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:bg-white dark:hover:bg-slate-900/90 transition-colors duration-300 shadow-md dark:shadow-xl backdrop-blur-sm"
                 >
                   <div>
                     {/* Header: Icon + Badge */}
                     <div className="flex items-center justify-between gap-4 mb-5">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-950 border border-slate-800 group-hover:border-indigo-500/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-inner">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 group-hover:border-indigo-500/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-inner">
                         {renderIcon(tool.icon)}
                       </div>
-                      <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-400">
+                      <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                         {tool.badge || "Free Tool"}
                       </span>
                     </div>
 
                     {/* Title & Description */}
-                    <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                       {tool.title}
                     </h3>
-                    <p className="mt-2.5 text-sm text-slate-400 leading-relaxed">
+                    <p className="mt-2.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                       {tool.desc}
                     </p>
 
                     {/* Capabilities Checklist: Identical 4-item checklist for all 4 cards */}
-                    <div className="mt-5 space-y-2 pt-4 border-t border-slate-800/80">
+                    <div className="mt-5 space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800/80">
                       {tool.capabilities.map((cap, i) => (
-                        <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                          <svg className="w-3.5 h-3.5 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <div key={i} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                          <svg className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                           <span>{cap}</span>
@@ -229,7 +229,7 @@ export default function ToolsSection() {
                       {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" || tool.slug === "image-studio" ? (
                         <Link
                           href={`/tools/${tool.slug}`}
-                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 active:scale-[0.98]"
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-100 hover:bg-indigo-600 text-slate-800 hover:text-white dark:bg-slate-800/80 dark:hover:bg-indigo-600 dark:text-slate-200 dark:hover:text-white text-sm font-semibold transition-all duration-200 shadow-sm border border-slate-200 hover:border-indigo-600 dark:border-slate-700/60 dark:hover:border-indigo-500 active:scale-[0.98]"
                         >
                           <span>Launch Tool</span>
                           <span className="text-base">→</span>
@@ -238,7 +238,7 @@ export default function ToolsSection() {
                         <button
                           type="button"
                           onClick={() => handleLaunch(tool)}
-                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 cursor-pointer active:scale-[0.98]"
+                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-100 hover:bg-indigo-600 text-slate-800 hover:text-white dark:bg-slate-800/80 dark:hover:bg-indigo-600 dark:text-slate-200 dark:hover:text-white text-sm font-semibold transition-all duration-200 shadow-sm border border-slate-200 hover:border-indigo-600 dark:border-slate-700/60 dark:hover:border-indigo-500 cursor-pointer active:scale-[0.98]"
                         >
                           <span>Launch Tool</span>
                           <span className="text-base">→</span>
