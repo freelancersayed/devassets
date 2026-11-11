@@ -1,156 +1,229 @@
-import {
-  FadeInView,
-  FloatingElement,
-  MagneticButton,
-} from "@/components/motion/MotionContainers";
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { FadeInView } from "@/components/motion/MotionContainers";
+
+interface TabCode {
+  filename: string;
+  language: string;
+  code: string;
+}
+
+const TABS: TabCode[] = [
+  {
+    filename: "convert.ts",
+    language: "typescript",
+    code: `import { createFFmpeg } from "@ffmpeg/ffmpeg";
+
+// 100% Client-Side In-Memory Audio Extraction
+export async function extractAudio(file: File): Promise<Blob> {
+  const ffmpeg = createFFmpeg({ log: false });
+  await ffmpeg.load();
+
+  ffmpeg.FS("writeFile", file.name, await fetchFile(file));
+  await ffmpeg.run("-i", file.name, "-vn", "-acodec", "pcm_s16le", "output.wav");
+
+  const data = ffmpeg.FS("readFile", "output.wav");
+  return new Blob([data.buffer], { type: "audio/wav" });
+}`,
+  },
+  {
+    filename: "prompt.json",
+    language: "json",
+    code: `{
+  "role": "Principal Systems Architect",
+  "task": "Refactor React Monorepo to Next.js 15 App Router",
+  "constraints": {
+    "zero_server_leaks": true,
+    "strict_token_contracts": true,
+    "framework": "Tailwind CSS v4 + TypeScript 5.8"
+  },
+  "deliverables": [
+    "Atomic design token mapping",
+    "Zero-flicker hydration architecture",
+    "Client-side WASM thread pooling"
+  ]
+}`,
+  },
+  {
+    filename: "architecture.md",
+    language: "markdown",
+    code: `# Client-First Architectural Blueprint
+
+1. **Air-Gapped Processing**: Zero payload bytes leave browser memory.
+2. **Deterministic Output**: Reproducible code patterns across LLMs.
+3. **Sub-10ms Latency**: Native Web Audio API & Canvas Web Workers.
+4. **Indemnity**: Unrestricted commercial redistribution rights.`,
+  },
+];
 
 export default function Hero() {
-  return (
-    <section className="relative min-h-[85vh] flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 py-20 transition-colors duration-300 overflow-hidden">
-      {/* Background Radial Glow Gradients - using will-change and transform3d for GPU acceleration */}
-      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-indigo-500/10 dark:bg-indigo-500/15 blur-3xl pointer-events-none transform-gpu" />
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-purple-500/10 dark:bg-purple-500/15 blur-3xl pointer-events-none transform-gpu" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-cyan-500/5 blur-3xl pointer-events-none transform-gpu" />
+  const [activeTabIdx, setActiveTabIdx] = useState(0);
+  const [copied, setCopied] = useState(false);
 
-      <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-        {/* Left Column (Headline + Subheading + CTAs + Badges) */}
-        <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-          {/* Tagline Badge */}
-          <FadeInView delay={0} duration={0.3} y={10}>
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/70 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60 shadow-xs dark:shadow-inner">
-              <span className="flex h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-pulse" />
-              <span>🚀 All-in-One Digital Hub — Web Tools, AI Prompts &amp; Engineering Guides</span>
+  const activeTab = TABS[activeTabIdx];
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(activeTab.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <section className="relative min-h-[85vh] flex items-center justify-center bg-[#FAFAFA] dark:bg-[#0B0C0E] px-4 sm:px-6 lg:px-8 py-16 sm:py-24 border-b border-neutral-200/80 dark:border-neutral-850 overflow-hidden transition-colors">
+      {/* Subtle Razor-Sharp 1px Grid Matrix */}
+      <div className="absolute inset-0 bg-grid-subtle pointer-events-none" />
+
+      {/* Restrained Edge Vignette to frame the canvas */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(250,250,250,0.85)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(11,12,14,0.95)_100%)]" />
+
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center relative z-10">
+        {/* LEFT COLUMN: EDITORIAL GROUNDED HEADLINE & CTAS */}
+        <div className="lg:col-span-7 space-y-6 text-left">
+          {/* Version / Release Pill Tag */}
+          <FadeInView delay={0} duration={0.3} y={8}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 px-3 py-1 text-xs font-mono text-neutral-600 dark:text-neutral-400 backdrop-blur-sm shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>v2.4 stable &middot; 100% client-side execution</span>
             </div>
           </FadeInView>
 
-          {/* Main Headline */}
-          <FadeInView delay={0.05} duration={0.35} y={12}>
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-black tracking-tight text-slate-900 dark:text-slate-50 leading-[1.12]">
-              Free Browser Utilities, Curated AI Prompts &amp;{" "}
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 dark:from-indigo-400 dark:via-purple-400 dark:to-cyan-400 bg-clip-text text-transparent">
-                Developer Guides
-              </span>
+          {/* Main Grounded Headline */}
+          <FadeInView delay={0.05} duration={0.35} y={10}>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.035em] text-neutral-900 dark:text-neutral-50 leading-[1.08] text-balance">
+              Engineered Developer Utilities, AI Prompts &amp; Architecture Guides
             </h1>
           </FadeInView>
 
-          {/* Subheadline */}
+          {/* Subtitle in Human Tone */}
           <FadeInView delay={0.08} duration={0.35} y={10}>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Convert files securely in your browser with zero server uploads, 10x your development speed with structured AI prompt systems, and master modern web engineering with in-depth technical manuals.
+            <p className="text-base text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl text-pretty">
+              A curated toolkit of client-side browser utilities, 450+ production-ready prompts, and in-depth JavaScript &amp; React architectural blueprints. Built for engineers who value performance and privacy.
             </p>
           </FadeInView>
 
-          {/* CTAs */}
-          <FadeInView delay={0.1} duration={0.35} y={10}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center pt-2">
-              <MagneticButton className="w-full sm:w-auto">
-                <a
-                  href="#tools"
-                  className="w-full sm:w-auto block px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/25 transition-all duration-200 text-center"
-                >
-                  Try Free Tools
-                </a>
-              </MagneticButton>
-              <MagneticButton className="w-full sm:w-auto">
-                <a
-                  href="#products"
-                  className="w-full sm:w-auto block px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-800 dark:bg-slate-900/80 dark:hover:bg-slate-800 dark:text-slate-200 font-semibold rounded-xl border border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm dark:shadow-md transition-all duration-200 text-center"
-                >
-                  Browse All Products
-                </a>
-              </MagneticButton>
+          {/* Clean Primary & Secondary Action Buttons */}
+          <FadeInView delay={0.1} duration={0.35} y={8}>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <a
+                href="#tools"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:translate-y-[1px] text-white text-sm font-medium shadow-xs transition-all"
+              >
+                <span>Explore Free Tools</span>
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+
+              <a
+                href="#products"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-850 active:translate-y-[1px] text-neutral-800 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-800 text-sm font-medium shadow-xs transition-all"
+              >
+                <span>Browse Products</span>
+              </a>
             </div>
           </FadeInView>
 
-          {/* Trust Badges Row */}
+          {/* Grounded Engineering Metrics */}
           <FadeInView delay={0.12} duration={0.35} y={8}>
-            <div className="pt-4 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-medium text-slate-600 dark:text-slate-400">
-              <div className="flex items-center gap-1.5 bg-white/90 dark:bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/60 shadow-xs">
-                <span className="text-emerald-500 dark:text-emerald-400">🔒</span>
-                <span>256-Bit SSL Encrypted Checkout</span>
+            <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono text-neutral-500 dark:text-neutral-400">
+              <div className="p-2.5 rounded-lg border border-neutral-200/70 dark:border-neutral-850 bg-white/60 dark:bg-neutral-900/40">
+                <div className="font-semibold text-neutral-800 dark:text-neutral-200">0 KB</div>
+                <div className="text-[11px] text-neutral-500">Server Uploads</div>
               </div>
-              <div className="flex items-center gap-1.5 bg-white/90 dark:bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/60 shadow-xs">
-                <span className="text-indigo-500 dark:text-indigo-400">⚡</span>
-                <span>100% Client-Side Privacy</span>
+              <div className="p-2.5 rounded-lg border border-neutral-200/70 dark:border-neutral-850 bg-white/60 dark:bg-neutral-900/40">
+                <div className="font-semibold text-neutral-800 dark:text-neutral-200">&lt; 10ms</div>
+                <div className="text-[11px] text-neutral-500">WASM Latency</div>
               </div>
-              <div className="flex items-center gap-1.5 bg-white/90 dark:bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/60 shadow-xs">
-                <span className="text-cyan-600 dark:text-cyan-400">📦</span>
-                <span>Instant Digital &amp; Tool Access</span>
+              <div className="p-2.5 rounded-lg border border-neutral-200/70 dark:border-neutral-850 bg-white/60 dark:bg-neutral-900/40">
+                <div className="font-semibold text-neutral-800 dark:text-neutral-200">TypeScript</div>
+                <div className="text-[11px] text-neutral-500">Strict Engine</div>
               </div>
-              <div className="flex items-center gap-1.5 bg-white/90 dark:bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800/60 shadow-xs">
-                <span className="text-purple-600 dark:text-purple-400">🔄</span>
-                <span>Lifetime Updates Included</span>
+              <div className="p-2.5 rounded-lg border border-neutral-200/70 dark:border-neutral-850 bg-white/60 dark:bg-neutral-900/40">
+                <div className="font-semibold text-neutral-800 dark:text-neutral-200">MIT / Comm.</div>
+                <div className="text-[11px] text-neutral-500">Rights Included</div>
               </div>
             </div>
           </FadeInView>
         </div>
 
-        {/* Right Column (Visual Preview Container) */}
-        <div className="lg:col-span-5 flex justify-center relative">
-          <FadeInView delay={0.1} scale={0.97} y={0} duration={0.4} className="w-full max-w-[440px]">
-            <FloatingElement duration={6} yOffset={6}>
-              <div className="relative w-full bg-white/90 dark:bg-gradient-to-br dark:from-slate-900/90 dark:to-slate-950 rounded-3xl p-6 sm:p-7 shadow-xl dark:shadow-2xl border border-slate-200 dark:border-slate-800/90 space-y-4 backdrop-blur-xl">
-                {/* Top Bar Indicator */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-                    <span className="text-slate-800 dark:text-slate-300 font-semibold font-mono">DevAssets Live Hub</span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800/50 text-[10px] text-indigo-700 dark:text-indigo-300 font-semibold">
-                    Client-Native
-                  </span>
+        {/* RIGHT COLUMN: REAL INTERACTIVE CODE & UTILITY TERMINAL */}
+        <div className="lg:col-span-5 flex justify-center">
+          <FadeInView delay={0.08} duration={0.4} scale={0.98} className="w-full max-w-lg">
+            <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#0E1015] shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden font-mono text-xs">
+              {/* Terminal Window Chrome / Tabs */}
+              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 bg-neutral-100/70 dark:bg-neutral-900/80 px-3.5 py-2.5 select-none">
+                {/* macOS Style Traffic Dots */}
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-neutral-300 dark:bg-neutral-700 hover:bg-rose-500/80 transition-colors" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-neutral-300 dark:bg-neutral-700 hover:bg-amber-500/80 transition-colors" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-neutral-300 dark:bg-neutral-700 hover:bg-emerald-500/80 transition-colors" />
                 </div>
 
-                {/* Mock Visual Content */}
-                <div className="space-y-3 font-mono text-xs">
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-indigo-600 dark:text-indigo-400">📄</span>
-                      <span className="text-slate-700 dark:text-slate-300">PDF to Word Engine</span>
-                    </div>
-                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/40">
-                      Active
-                    </span>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-purple-600 dark:text-purple-400">🤖</span>
-                      <span className="text-slate-700 dark:text-slate-300">System Architecture Prompts</span>
-                    </div>
-                    <span className="text-[10px] text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800/40">
-                      200+ Prompts
-                    </span>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-cyan-600 dark:text-cyan-400">⚡</span>
-                      <span className="text-slate-700 dark:text-slate-300">Client-Side WASM OCR</span>
-                    </div>
-                    <span className="text-[10px] text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-200 dark:border-cyan-800/40">
-                      0 ms Server
-                    </span>
-                  </div>
+                {/* Tab Switcher */}
+                <div className="flex items-center gap-1">
+                  {TABS.map((tab, idx) => (
+                    <button
+                      key={tab.filename}
+                      type="button"
+                      onClick={() => setActiveTabIdx(idx)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
+                        activeTabIdx === idx
+                          ? "bg-white dark:bg-[#0E1015] text-neutral-900 dark:text-neutral-100 font-semibold border border-neutral-200/80 dark:border-neutral-800 shadow-xs"
+                          : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300"
+                      }`}
+                    >
+                      {tab.filename}
+                    </button>
+                  ))}
                 </div>
 
-                {/* Bottom Stats Row */}
-                <div className="pt-2 grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/60">
-                    <span className="block font-bold text-slate-800 dark:text-slate-200">100%</span>
-                    <span className="text-[10px] text-slate-500">Private</span>
-                  </div>
-                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/60">
-                    <span className="block font-bold text-emerald-600 dark:text-emerald-400">&lt; 10ms</span>
-                    <span className="text-[10px] text-slate-500">Latency</span>
-                  </div>
-                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/60">
-                    <span className="block font-bold text-indigo-600 dark:text-indigo-400">0 KB</span>
-                    <span className="text-[10px] text-slate-500">Uploads</span>
-                  </div>
-                </div>
+                {/* Interactive Copy Button */}
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-1 text-[11px] text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200 px-2 py-0.5 rounded transition-colors cursor-pointer"
+                  title="Copy code to clipboard"
+                >
+                  {copied ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">Copied</span>
+                  ) : (
+                    <span>Copy</span>
+                  )}
+                </button>
               </div>
-            </FloatingElement>
+
+              {/* Code Editor Body with Line Numbers */}
+              <div className="p-4 overflow-x-auto max-h-[380px] bg-neutral-50/50 dark:bg-[#0A0C0F] text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                <pre className="grid grid-cols-[auto_1fr] gap-x-4">
+                  {/* Line Numbers */}
+                  <span className="select-none text-right text-neutral-400 dark:text-neutral-600 space-y-0.5">
+                    {activeTab.code.split("\n").map((_, i) => (
+                      <span key={i} className="block leading-5">
+                        {i + 1}
+                      </span>
+                    ))}
+                  </span>
+
+                  {/* Code Lines */}
+                  <code className="space-y-0.5 whitespace-pre">
+                    {activeTab.code.split("\n").map((line, i) => (
+                      <span key={i} className="block leading-5">
+                        {line || " "}
+                      </span>
+                    ))}
+                  </code>
+                </pre>
+              </div>
+
+              {/* Terminal Status Footer Bar */}
+              <div className="border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100/60 dark:bg-neutral-900/50 px-3.5 py-1.5 flex items-center justify-between text-[10px] text-neutral-500">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>WASM Thread Ready</span>
+                </div>
+                <span>UTF-8 &middot; {activeTab.language}</span>
+              </div>
+            </div>
           </FadeInView>
         </div>
       </div>

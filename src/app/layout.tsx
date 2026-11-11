@@ -154,7 +154,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased font-[family-name:var(--font-inter)] bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
+      <body className="antialiased font-[family-name:var(--font-inter)] bg-[#FAFAFA] text-neutral-900 dark:bg-[#0B0C0E] dark:text-neutral-100">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

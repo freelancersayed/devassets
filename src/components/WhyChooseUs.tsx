@@ -1,11 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   FadeInView,
   StaggerContainer,
   StaggerItem,
-  InteractiveCard,
 } from "@/components/motion/MotionContainers";
 
 export default function WhyChooseUs() {
@@ -13,94 +11,98 @@ export default function WhyChooseUs() {
     {
       title: "Zero-Knowledge Client Privacy",
       description:
-        "Files processed in our tools never leave your device. All conversions, audio extractions, and OCR run directly in client-side memory using Web APIs.",
-      badge: "100% Private",
+        "Files processed in our tools never leave your device memory. Conversions, audio extractions, and OCR run directly via client-side Web APIs with zero network telemetry.",
+      badge: "In-Memory",
       icon: (
-        <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       ),
     },
     {
-      title: "Instant Digital Delivery",
+      title: "Instant Deterministic Delivery",
       description:
-        "Direct download links and PDF/Prompt access provided immediately after checkout. No wait times, delayed emails, or hidden download barriers.",
-      badge: "Zero Latency",
+        "Direct download access and license key verification provided immediately upon checkout. No delayed verification emails, waiting queues, or token throttles.",
+      badge: "0ms Queue",
       icon: (
-        <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
     },
     {
-      title: "Production-Tested Standards",
+      title: "Production-Tested TypeScript Standards",
       description:
-        "All code templates, prompts, and architectures are tested against real-world projects, enterprise requirements, and modern Web Vitals benchmarks.",
-      badge: "Industry Grade",
+        "Every code pattern and architecture toolkit is written in strict TypeScript 5.8+, tested against modern Web Vitals, and designed to drop cleanly into production repositories.",
+      badge: "Type-Safe",
       icon: (
-        <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       ),
     },
     {
-      title: "14-Day Buyer Protection",
+      title: "14-Day Buyer Protection & Direct Support",
       description:
-        "Transparent refund policy covering corrupted downloads, non-delivery, and technical defects with dedicated support via support@devassets.online.",
-      badge: "Risk-Free",
+        "Clear, transparent refund terms covering corrupted downloads or technical defects, backed by responsive engineering support directly from the maintainer.",
+      badge: "Commercial Grant",
       icon: (
-        <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
     },
   ];
 
   return (
-    <section id="features" className="py-24 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 scroll-mt-20 transition-colors">
-      <div className="container mx-auto max-w-6xl px-6">
-        {/* Section Header */}
-        <FadeInView y={20} className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/60 shadow-xs dark:shadow-inner">
-            🛡️ Engineered for Developers
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
-            Why Choose DevAssets
+    <section
+      id="features"
+      aria-labelledby="features-heading"
+      className="py-20 sm:py-24 bg-white dark:bg-[#0E1015] border-b border-neutral-200/80 dark:border-neutral-850 scroll-mt-20 transition-colors"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* SECTION HEADER */}
+        <FadeInView y={16} className="max-w-3xl mb-14 space-y-3">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 px-3 py-1 text-xs font-mono text-neutral-600 dark:text-neutral-400">
+            <span>engineering standards</span>
+          </div>
+
+          <h2
+            id="features-heading"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-neutral-900 dark:text-neutral-50 leading-tight"
+          >
+            Built on Core Engineering Principles
           </h2>
-          <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-            Everything we build is engineered with strict attention to privacy, performance, and real-world developer productivity.
+          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl">
+            Everything we build is engineered with strict attention to client-side privacy, deterministic execution, and clean developer ergonomics.
           </p>
         </FadeInView>
 
-        {/* 4 Feature Cards with Staggered Scroll-In & Hover Lift */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* 4 FEATURE CARDS */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {features.map((feature, i) => (
-            <StaggerItem key={i}>
-              <InteractiveCard className="h-full">
-                <div className="group relative rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 p-8 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:bg-white dark:hover:bg-slate-900/90 transition-colors duration-300 shadow-md dark:shadow-xl backdrop-blur-sm h-full flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-5">
-                      <motion.div
-                        whileHover={{ scale: 1.15, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 group-hover:border-indigo-500/40 transition-colors shadow-inner"
-                      >
-                        {feature.icon}
-                      </motion.div>
-                      <span className="rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        {feature.badge}
-                      </span>
+            <StaggerItem key={i} className="h-full">
+              <div className="rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-[#FAFAFA] dark:bg-[#0B0C0E] p-6 sm:p-7 flex flex-col justify-between h-full shadow-xs hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex items-center justify-center shadow-xs">
+                      {feature.icon}
                     </div>
+                    <span className="font-mono text-[11px] text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-900 px-2 py-0.5 rounded border border-neutral-200/60 dark:border-neutral-800/80">
+                      {feature.badge}
+                    </span>
+                  </div>
 
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
+                  <div>
+                    <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-100 tracking-[-0.015em]">
                       {feature.title}
                     </h3>
-                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p className="mt-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
                 </div>
-              </InteractiveCard>
+              </div>
             </StaggerItem>
           ))}
         </StaggerContainer>

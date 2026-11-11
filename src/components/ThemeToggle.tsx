@@ -15,7 +15,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   if (!mounted) {
     return (
       <div
-        className={`w-14 h-7 sm:w-16 sm:h-8 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 opacity-60 ${className}`}
+        className={`w-13 h-7 rounded-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 opacity-60 ${className}`}
         aria-hidden="true"
       />
     );
@@ -33,16 +33,15 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       title={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      className={`relative inline-flex items-center w-14 h-7 sm:w-16 sm:h-8 p-0.5 sm:p-1 rounded-full bg-slate-200/90 dark:bg-slate-900/90 border border-slate-300/80 dark:border-slate-700/80 shadow-inner hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${className}`}
+      className={`relative inline-flex items-center w-13 h-7 p-0.5 rounded-full bg-neutral-200/80 dark:bg-neutral-900 border border-neutral-300/80 dark:border-neutral-800 transition-colors cursor-pointer group focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${className}`}
     >
-      {/* Sliding animated indicator */}
       <motion.div
-        className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white dark:bg-slate-800 shadow-sm text-amber-500 dark:text-indigo-400 z-10"
+        className="flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-neutral-800 shadow-xs z-10"
         layout
         transition={{
           type: "spring",
           stiffness: 500,
-          damping: 30,
+          damping: 32,
         }}
         style={{
           marginLeft: isDark ? "auto" : "0",
@@ -55,12 +54,12 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
               initial={{ rotate: -90, scale: 0 }}
               animate={{ rotate: 0, scale: 1 }}
               exit={{ rotate: 90, scale: 0 }}
-              transition={{ duration: 0.18 }}
-              className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-400"
+              transition={{ duration: 0.15 }}
+              className="w-3 h-3 text-neutral-200"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2.5}
+              strokeWidth={2}
             >
               <path
                 strokeLinecap="round"
@@ -74,31 +73,19 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
               initial={{ rotate: 90, scale: 0 }}
               animate={{ rotate: 0, scale: 1 }}
               exit={{ rotate: -90, scale: 0 }}
-              transition={{ duration: 0.18 }}
-              className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500"
+              transition={{ duration: 0.15 }}
+              className="w-3 h-3 text-neutral-700"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2.5}
+              strokeWidth={2}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
+              <circle cx="12" cy="12" r="4" />
+              <path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41" />
             </motion.svg>
           )}
         </AnimatePresence>
       </motion.div>
-
-      {/* Background icons */}
-      <span className="absolute left-1.5 sm:left-2 text-[9px] sm:text-[10px] select-none pointer-events-none opacity-60 dark:opacity-0 transition-opacity">
-        ☀️
-      </span>
-      <span className="absolute right-1.5 sm:right-2 text-[9px] sm:text-[10px] select-none pointer-events-none opacity-0 dark:opacity-60 transition-opacity">
-        🌙
-      </span>
     </button>
   );
 }
-
