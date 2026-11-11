@@ -9,14 +9,34 @@ import {
   FadeInView,
   StaggerContainer,
   StaggerItem,
-  InteractiveCard,
-  MagneticButton,
 } from "@/components/motion/MotionContainers";
+
+const TOOL_SPECS: Record<string, { io: string; engine: string; speed: string }> = {
+  "pdf-to-word": {
+    io: ".PDF → .DOCX / .TXT",
+    engine: "PDF.js + Docx Engine",
+    speed: "< 20ms init",
+  },
+  "image-to-text": {
+    io: "IMG → TXT (OCR)",
+    engine: "Tesseract WASM",
+    speed: "Multi-threaded",
+  },
+  "video-to-audio": {
+    io: "MP4/WEBM → WAV (PCM)",
+    engine: "Native Web Audio API",
+    speed: "Real-time buffer",
+  },
+  "image-studio": {
+    io: "PNG ⇄ WEBP ⇄ JPG",
+    engine: "Canvas 2D Offscreen",
+    speed: "Sub-10ms buffer",
+  },
+};
 
 export default function ToolsSection() {
   const [activeTool, setActiveTool] = useState<ToolItem | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processSuccess, setProcessSuccess] = useState(false);
 
   // Video to audio tool state inside modal
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -50,14 +70,12 @@ export default function ToolsSection() {
     resetVideoState();
     setActiveTool(tool);
     setIsProcessing(false);
-    setProcessSuccess(false);
   };
 
   const handleCloseModal = () => {
     resetVideoState();
     setActiveTool(null);
     setIsProcessing(false);
-    setProcessSuccess(false);
   };
 
   const processVideo = async (file: File) => {
@@ -70,7 +88,6 @@ export default function ToolsSection() {
 
     setVideoFile(file);
     setIsProcessing(true);
-    setProcessSuccess(false);
     setVideoError(null);
     setVideoProgress(5);
     setVideoStatusMsg(`Loading ${file.name}...`);
@@ -85,16 +102,15 @@ export default function ToolsSection() {
       setVideoOutputFileName(res.filename);
       setVideoDuration(res.duration);
       setVideoProgress(100);
-      setVideoStatusMsg(`Audio track detached successfully (${res.duration})!`);
+      setVideoStatusMsg(`Audio track detached successfully (${res.duration})`);
       setIsProcessing(false);
-      setProcessSuccess(true);
     } catch (err: unknown) {
       console.error("Audio extraction error:", err);
       setIsProcessing(false);
       setVideoError(
         err instanceof Error && err.message
           ? err.message
-          : "Could not decode audio track. The video may contain an unsupported codec or have no audio track."
+          : "Could not decode audio track. The video may contain an unsupported codec."
       );
     }
   };
@@ -115,227 +131,229 @@ export default function ToolsSection() {
     }
   };
 
-  const handleRunDemo = () => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setProcessSuccess(true);
-    }, 1200);
-  };
-
-  const renderIcon = (iconName: ToolItem["icon"]) => {
+  const renderMonochromeIcon = (iconName: ToolItem["icon"]) => {
     switch (iconName) {
       case "FileText":
         return (
-          <svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         );
       case "ScanText":
         return (
-          <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 9h10M7 13h10M7 17h6" />
           </svg>
         );
       case "Music":
         return (
-          <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
           </svg>
         );
       case "Image":
         return (
-          <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-5 h-5 text-neutral-800 dark:text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         );
+      default:
+        return null;
     }
   };
 
   return (
-    <section id="tools" className="relative bg-slate-950 px-6 py-24 border-t border-slate-900 scroll-mt-20">
-      <div className="container mx-auto max-w-6xl">
-        {/* Section Header */}
-        <FadeInView y={20} className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-indigo-400 border border-indigo-900/60 shadow-inner">
-            ⚡ Instant Browser Utilities
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-50 tracking-tight">
-            100% Client-Side &amp; Private Web Tools
+    <section
+      id="tools"
+      aria-labelledby="tools-heading"
+      className="py-20 sm:py-24 bg-white dark:bg-[#0E1015] border-b border-neutral-200/80 dark:border-neutral-850 scroll-mt-20 transition-colors"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* SECTION HEADER */}
+        <FadeInView y={16} className="max-w-3xl mb-14 space-y-3">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 px-3 py-1 text-xs font-mono text-neutral-600 dark:text-neutral-400">
+            <span>client-side utilities</span>
+          </div>
+
+          <h2
+            id="tools-heading"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-neutral-900 dark:text-neutral-50 leading-tight"
+          >
+            Zero-Server Web Utilities
           </h2>
-          <p className="text-base text-slate-400 leading-relaxed">
-            No files are ever uploaded to our servers. All conversions and extractions run natively in your browser using modern Web APIs.
+          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl">
+            Execute file conversions, OCR, and audio extractions directly inside your browser. No files leave your machine, no queues, zero telemetry.
           </p>
         </FadeInView>
 
-        {/* 4 Tool Cards Grid with Identical Harmonious Design */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {toolsData.map((tool) => (
-            <StaggerItem key={tool.id}>
-              <InteractiveCard className="h-full">
-                <div
-                  onDragOver={(e) => {
-                    if (tool.slug === "video-to-audio") {
-                      e.preventDefault();
-                    }
-                  }}
-                  onDrop={(e) => {
-                    if (tool.slug === "video-to-audio") {
-                      e.preventDefault();
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) {
-                        handleLaunch(tool);
-                        processVideo(file);
-                      }
-                    }
-                  }}
-                  className="group relative flex flex-col justify-between h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-7 hover:border-indigo-500/50 hover:bg-slate-900/90 transition-colors duration-300 shadow-xl backdrop-blur-sm"
-                >
-                  <div>
-                    {/* Header: Icon + Badge */}
-                    <div className="flex items-center justify-between gap-4 mb-5">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-950 border border-slate-800 group-hover:border-indigo-500/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-inner">
-                        {renderIcon(tool.icon)}
+        {/* 4-COLUMN DEVELOPER UTILITY GRID */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {toolsData.map((tool) => {
+            const spec = TOOL_SPECS[tool.slug] || {
+              io: "LOCAL EXECUTION",
+              engine: "Client API",
+              speed: "< 10ms",
+            };
+
+            return (
+              <StaggerItem key={tool.id} className="h-full">
+                <div className="group rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-[#FAFAFA] dark:bg-[#0B0C0E] p-5 flex flex-col justify-between h-full hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors duration-200 shadow-xs">
+                  <div className="space-y-4">
+                    {/* Top Row: Icon + Monospace IO Badge */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 flex items-center justify-center shadow-xs">
+                        {renderMonochromeIcon(tool.icon)}
                       </div>
-                      <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-400">
-                        {tool.badge || "Free Tool"}
+                      <span className="font-mono text-[11px] font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-900 px-2.5 py-1 rounded border border-neutral-200/60 dark:border-neutral-800/80">
+                        {spec.io}
                       </span>
                     </div>
 
-                    {/* Title & Description */}
-                    <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
-                      {tool.title}
-                    </h3>
-                    <p className="mt-2.5 text-sm text-slate-400 leading-relaxed">
-                      {tool.desc}
-                    </p>
+                    {/* Tool Title & Description */}
+                    <div>
+                      <h3 className="text-base font-semibold tracking-[-0.015em] text-neutral-900 dark:text-neutral-100">
+                        {tool.title}
+                      </h3>
+                      <p className="mt-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-3">
+                        {tool.desc}
+                      </p>
+                    </div>
 
-                    {/* Capabilities Checklist: Identical 4-item checklist for all 4 cards */}
-                    <div className="mt-5 space-y-2 pt-4 border-t border-slate-800/80">
-                      {tool.capabilities.map((cap, i) => (
-                        <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                          <svg className="w-3.5 h-3.5 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span>{cap}</span>
-                        </div>
-                      ))}
+                    {/* Technical Specs List */}
+                    <div className="pt-3 border-t border-neutral-200/60 dark:border-neutral-850 space-y-1.5 font-mono text-[11px] text-neutral-500">
+                      <div className="flex items-center justify-between">
+                        <span>Engine:</span>
+                        <span className="text-neutral-700 dark:text-neutral-300">{spec.engine}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Throughput:</span>
+                        <span className="text-neutral-700 dark:text-neutral-300">{spec.speed}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Privacy:</span>
+                        <span className="text-emerald-600 dark:text-emerald-400">100% In-Memory</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Action Button: Identical Launch Tool Button for all 4 cards */}
-                  <div className="mt-6 pt-4">
-                    <MagneticButton className="w-full">
-                      {tool.slug === "pdf-to-word" || tool.slug === "image-to-text" || tool.slug === "image-studio" ? (
-                        <Link
-                          href={`/tools/${tool.slug}`}
-                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 active:scale-[0.98]"
-                        >
-                          <span>Launch Tool</span>
-                          <span className="text-base">→</span>
-                        </Link>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleLaunch(tool)}
-                          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-800/80 hover:bg-indigo-600 text-slate-200 hover:text-white text-sm font-semibold transition-all duration-200 shadow-md border border-slate-700/60 hover:border-indigo-500 cursor-pointer active:scale-[0.98]"
-                        >
-                          <span>Launch Tool</span>
-                          <span className="text-base">→</span>
-                        </button>
-                      )}
-                    </MagneticButton>
+                  {/* Launch CTA */}
+                  <div className="pt-5">
+                    {tool.slug === "image-studio" ||
+                    tool.slug === "image-to-text" ||
+                    tool.slug === "pdf-to-word" ||
+                    tool.slug === "video-to-audio" ? (
+                      <Link
+                        href={`/tools/${tool.slug}`}
+                        className="w-full flex items-center justify-between px-3.5 py-2 rounded-lg bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-850 active:translate-y-[1px] text-neutral-800 dark:text-neutral-200 text-xs font-medium border border-neutral-200 dark:border-neutral-800 transition-all duration-150 group-hover:border-neutral-300 dark:group-hover:border-neutral-700"
+                      >
+                        <span>Launch Tool</span>
+                        <span className="text-neutral-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">&nearr;</span>
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleLaunch(tool)}
+                        className="w-full flex items-center justify-between px-3.5 py-2 rounded-lg bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-850 active:translate-y-[1px] text-neutral-800 dark:text-neutral-200 text-xs font-medium border border-neutral-200 dark:border-neutral-800 transition-all duration-150 cursor-pointer"
+                      >
+                        <span>Launch Tool</span>
+                        <span className="text-neutral-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">&nearr;</span>
+                      </button>
+                    )}
                   </div>
                 </div>
-              </InteractiveCard>
-            </StaggerItem>
-          ))}
+              </StaggerItem>
+            );
+          })}
         </StaggerContainer>
 
-        {/* Enterprise Pro Utility Suite Spotlight Card */}
-        <div className="mt-12 rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-950/20 via-slate-900/90 to-slate-950 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_40px_rgba(245,158,11,0.08)]">
-          <div className="space-y-2 text-center md:text-left">
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                🛠️ Commercial Tier ($39)
+        {/* ENTERPRISE PRO UTILITY SUITE WORKBENCH SPOTLIGHT */}
+        <div className="mt-10 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#FAFAFA] dark:bg-[#0B0C0E] p-6 sm:p-7 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-wider bg-neutral-200 dark:bg-neutral-850 text-neutral-800 dark:text-neutral-200 px-2 py-0.5 rounded">
+                CLI + Desktop Suite &middot; $39
               </span>
-              <span className="text-xs font-semibold text-slate-400">
-                Offline Desktop Runners (.EXE &amp; .DMG) + Headless CLI
+              <span className="text-xs text-neutral-500 font-mono">
+                Native macOS, Windows &amp; Linux
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-white">
-              Need Unrestricted Batch Processing &amp; Commercial Rights?
+            <h3 className="text-lg font-semibold tracking-[-0.015em] text-neutral-900 dark:text-neutral-100">
+              Need Unrestricted Batch Processing &amp; Commercial Redistribution Rights?
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
+            <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Process 10,000+ files locally without browser limits, automate CLI batch pipelines, access 100% unminified engine source code, and get a perpetual multi-client redistribution license.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 shrink-0 w-full md:w-auto">
             <Link
               href="/tools/pro-utility-suite"
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs sm:text-sm text-center shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all"
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-white text-white dark:text-neutral-900 text-xs font-medium text-center transition-colors"
             >
-              ⚡ Open Pro Workbench &amp; CLI Builder
+              Pro Workbench &rarr;
             </Link>
             <Link
               href="/products/pro-utility-suite"
-              className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 text-slate-300 text-center text-xs sm:text-sm font-semibold transition-colors"
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-850 text-neutral-800 dark:text-neutral-200 text-xs font-medium border border-neutral-200 dark:border-neutral-800 text-center transition-colors"
             >
-              View License Details ($39)
+              Specs &amp; License ($39)
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Interactive Tool Modal Launcher with AnimatePresence */}
+      {/* VIDEO TO AUDIO IN-BROWSER CONVERTER MODAL */}
       <AnimatePresence>
         {activeTool && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4"
             onClick={handleCloseModal}
             role="dialog"
             aria-modal="true"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              initial={{ opacity: 0, scale: 0.98, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-8"
+              exit={{ opacity: 0, scale: 0.98, y: 8 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-lg bg-white dark:bg-[#0E1015] border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-xl p-6"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+                className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
                 aria-label="Close modal"
               >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
 
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 border border-slate-800">
-                  {renderIcon(activeTool.icon)}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                  {renderMonochromeIcon(activeTool.icon)}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-50">{activeTool.title}</h3>
-                  <span className="text-xs text-emerald-400 font-medium">⚡ Client-Side Web API Engine</span>
+                  <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+                    {activeTool.title}
+                  </h3>
+                  <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+                    Client-Side In-Memory Engine
+                  </span>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-400 mt-2 mb-5">
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-5 leading-relaxed">
                 {activeTool.privacyNotice}
               </p>
 
-              {/* Video to Audio Specific Interactive Detacher */}
+              {/* Video to Audio Specific Detacher */}
               {activeTool.slug === "video-to-audio" ? (
                 <>
                   <input
@@ -355,209 +373,104 @@ export default function ToolsSection() {
                     }}
                     onDragLeave={() => setIsDraggingVideo(false)}
                     onDrop={handleVideoDrop}
-                    className={`rounded-xl border-2 border-dashed p-8 text-center space-y-3 cursor-pointer transition-all duration-200 ${
+                    className={`rounded-xl border border-dashed p-7 text-center space-y-3 cursor-pointer transition-colors duration-150 ${
                       isDraggingVideo
-                        ? "border-indigo-400 bg-indigo-950/60 scale-[1.01]"
-                        : "border-slate-700 hover:border-indigo-500/70 bg-slate-950/80 hover:bg-slate-950"
+                        ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-950/20"
+                        : "border-neutral-300 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-700 bg-neutral-50/50 dark:bg-neutral-900/50"
                     }`}
                   >
-                    <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400 transition-transform">
-                      {videoFile ? (
-                        <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                        </svg>
-                      ) : (
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
-                      )}
+                    <div className="mx-auto w-10 h-10 rounded-lg bg-white dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-neutral-600 dark:text-neutral-300">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
                     </div>
 
                     {videoFile ? (
                       <div className="space-y-1">
-                        <p className="text-sm font-semibold text-slate-100 truncate max-w-sm mx-auto">
+                        <p className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 truncate max-w-sm mx-auto">
                           {videoFile.name}
                         </p>
-                        <p className="text-xs text-indigo-400 font-medium">
-                          {(videoFile.size / (1024 * 1024)).toFixed(2)} MB • Click or drop another to replace
+                        <p className="text-[11px] font-mono text-neutral-500">
+                          {(videoFile.size / (1024 * 1024)).toFixed(2)} MB &middot; Ready to extract
                         </p>
                       </div>
                     ) : (
-                      <>
-                        <p className="text-sm font-semibold text-slate-200">
-                          Drag &amp; drop file here or click to browse
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+                          Drop MP4, WebM or MOV video here
                         </p>
-                        <p className="text-xs text-slate-500">
-                          Supports MP4, WebM, MOV. Processed locally in browser memory via Web Audio API.
+                        <p className="text-[11px] font-mono text-neutral-500">
+                          or click to browse from local disk
                         </p>
-                      </>
+                      </div>
                     )}
                   </div>
 
-                  {/* Status / Output Preview */}
-                  <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                    <div className="flex items-center justify-between text-slate-400 mb-2">
-                      <span>Privacy Status:</span>
-                      <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
+                  {/* Processing Status / Progress */}
+                  {isProcessing && (
+                    <div className="mt-4 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-mono text-neutral-600 dark:text-neutral-400">
+                        <span>{videoStatusMsg}</span>
+                        <span>{videoProgress}%</span>
+                      </div>
+                      <div className="w-full bg-neutral-200 dark:bg-neutral-800 h-1.5 rounded-full overflow-hidden">
+                        <div
+                          className="bg-indigo-600 h-full transition-all duration-150"
+                          style={{ width: `${videoProgress}%` }}
+                        />
+                      </div>
                     </div>
+                  )}
 
-                    {isProcessing && (
-                      <div className="space-y-2 py-1">
-                        <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-800">
-                          <div
-                            className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300"
-                            style={{ width: `${videoProgress}%` }}
-                          />
+                  {videoError && (
+                    <div className="mt-4 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-400 text-xs">
+                      {videoError}
+                    </div>
+                  )}
+
+                  {/* Download Action */}
+                  {videoDownloadUrl && !isProcessing && (
+                    <div className="mt-5 p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 flex items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 truncate">
+                          {videoOutputFileName}
                         </div>
-                        <div className="flex items-center gap-2 text-indigo-400 font-medium">
-                          <svg className="animate-spin h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                          </svg>
-                          <span>{videoStatusMsg || "Processing file stream in browser memory..."}</span>
+                        <div className="text-[11px] font-mono text-neutral-500 mt-0.5">
+                          PCM 16-bit WAV &middot; {videoDuration}
                         </div>
                       </div>
-                    )}
-
-                    {processSuccess && videoDownloadUrl && (
-                      <div className="text-emerald-400 font-medium py-1 flex items-center gap-1.5">
-                        <span>✓</span>
-                        <span>{videoStatusMsg || `Audio detached successfully (${videoDuration})!`}</span>
-                      </div>
-                    )}
-
-                    {videoError && (
-                      <div className="text-rose-400 font-medium py-1">
-                        ✕ {videoError}
-                      </div>
-                    )}
-
-                    {!isProcessing && !processSuccess && !videoError && (
-                      <div className="text-slate-500 py-0.5">
-                        Ready. Drop an MP4, WebM, or MOV video to detach audio.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Modal Actions */}
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                    {processSuccess && videoDownloadUrl ? (
                       <a
                         href={videoDownloadUrl}
                         download={videoOutputFileName}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all shadow-lg shadow-emerald-950/40"
+                        className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-colors shrink-0"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        <span>Download Lossless WAV</span>
+                        Download WAV
                       </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => videoFileInputRef.current?.click()}
-                        disabled={isProcessing}
-                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
-                      >
-                        {isProcessing ? "Processing..." : "Select Video File"}
-                      </button>
-                    )}
-
-                    {processSuccess && (
-                      <button
-                        type="button"
-                        onClick={resetVideoState}
-                        className="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
-                      >
-                        Convert Another
-                      </button>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
-                    >
-                      Close
-                    </button>
-                  </div>
-
-                  <div className="mt-3 text-center">
-                    <Link
-                      href="/tools/video-to-audio"
-                      className="text-xs text-indigo-400 hover:text-indigo-300 underline"
-                    >
-                      Open dedicated full-page converter ↗
-                    </Link>
-                  </div>
+                    </div>
+                  )}
                 </>
               ) : (
-                <>
-                  {/* Sandbox Dropzone Area for other tools */}
-                  <div className="rounded-xl border-2 border-dashed border-slate-700 bg-slate-950/80 p-8 text-center space-y-3">
-                    <div className="mx-auto w-12 h-12 rounded-full bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center text-indigo-400">
-                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                      </svg>
-                    </div>
-                    <p className="text-sm font-semibold text-slate-200">
-                      Drag &amp; drop file here or click to browse
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      Processed locally in your browser memory via WebAssembly &amp; Web Workers.
-                    </p>
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 space-y-2 font-mono text-xs">
+                    <div className="text-neutral-500 uppercase tracking-wider text-[10px]">Capabilities:</div>
+                    <ul className="space-y-1 text-neutral-700 dark:text-neutral-300">
+                      {activeTool.capabilities.map((c, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <span className="text-emerald-500">&check;</span>
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {/* Status / Output Preview */}
-                  <div className="mt-5 p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                    <div className="flex items-center justify-between text-slate-400 mb-2">
-                      <span>Privacy Status:</span>
-                      <span className="text-emerald-400 font-semibold">🔒 0 Bytes Uploaded</span>
-                    </div>
-                    {isProcessing && (
-                      <div className="flex items-center gap-2 text-indigo-400 font-medium py-1 animate-pulse">
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                        </svg>
-                        <span>Processing file stream in browser memory...</span>
-                      </div>
-                    )}
-                    {processSuccess && (
-                      <div className="text-emerald-400 font-medium py-1">
-                        ✓ Done! Extracted output generated. Click below to download.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Modal Actions */}
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                    {activeTool.slug === "pdf-to-word" || activeTool.slug === "image-to-text" || activeTool.slug === "image-studio" ? (
-                      <Link
-                        href={`/tools/${activeTool.slug}`}
-                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors text-center"
-                      >
-                        Open Full Tool Page →
-                      </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleRunDemo}
-                        disabled={isProcessing}
-                        className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
-                      >
-                        {isProcessing ? "Processing..." : "Run Client-Side Test"}
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </>
+                  <Link
+                    href={`/tools/${activeTool.slug}`}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-colors"
+                  >
+                    <span>Open Dedicated Tool Page</span>
+                    <span>&rarr;</span>
+                  </Link>
+                </div>
               )}
             </motion.div>
           </motion.div>

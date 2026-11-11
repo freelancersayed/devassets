@@ -63,7 +63,7 @@ export default function PromptPagination({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
         aria-label="Previous Page"
-        className="w-9 h-9 rounded-xl bg-[#0f111a] hover:bg-[#161a29] text-slate-300 hover:text-white border border-white/5 hover:border-white/15 flex items-center justify-center text-sm font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+        className="w-9 h-9 rounded-xl bg-white dark:bg-[#0f111a] hover:bg-slate-100 dark:hover:bg-[#161a29] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15 flex items-center justify-center text-sm font-medium shadow-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -95,7 +95,7 @@ export default function PromptPagination({
             className={`w-9 h-9 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
               isActive
                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 border border-indigo-400/50"
-                : "bg-[#0f111a] hover:bg-[#161a29] text-slate-300 hover:text-white border border-white/5 hover:border-white/15"
+                : "bg-white dark:bg-[#0f111a] hover:bg-slate-100 dark:hover:bg-[#161a29] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15 shadow-sm"
             }`}
           >
             {pageNum}
@@ -109,7 +109,7 @@ export default function PromptPagination({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
         aria-label="Next Page"
-        className="w-9 h-9 rounded-xl bg-[#0f111a] hover:bg-[#161a29] text-slate-300 hover:text-white border border-white/5 hover:border-white/15 flex items-center justify-center text-sm font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+        className="w-9 h-9 rounded-xl bg-white dark:bg-[#0f111a] hover:bg-slate-100 dark:hover:bg-[#161a29] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15 flex items-center justify-center text-sm font-medium shadow-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

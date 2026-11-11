@@ -71,7 +71,7 @@ export default function ContactPage() {
   };
 
   return (
-    <article className="min-h-[80vh] bg-[#070B14] py-16 px-4 sm:px-6 relative overflow-hidden text-slate-300">
+    <article className="min-h-[80vh] bg-slate-50 dark:bg-[#070B14] py-16 px-4 sm:px-6 relative overflow-hidden text-slate-700 dark:text-slate-300 transition-colors">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}

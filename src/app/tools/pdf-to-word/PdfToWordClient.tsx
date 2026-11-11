@@ -21,7 +21,6 @@ export default function PdfToWordClient() {
   const [fileName, setFileName] = useState("");
   const [pageCount, setPageCount] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [libReady, setLibReady] = useState(false);
   const [isGeneratingDocx, setIsGeneratingDocx] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,7 +28,6 @@ export default function PdfToWordClient() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.pdfjsLib) {
-      setLibReady(true);
       return;
     }
     setStatus("loading-lib");
@@ -39,7 +37,6 @@ export default function PdfToWordClient() {
     script.onload = () => {
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-      setLibReady(true);
       setStatus("idle");
       setStatusMsg("");
     };

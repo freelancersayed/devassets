@@ -254,7 +254,7 @@ export default function DashboardClient() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#070A12] text-slate-200 py-6 sm:py-8 px-4 sm:px-6 lg:px-8 relative selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#070A12] text-slate-800 dark:text-slate-200 py-6 sm:py-8 px-4 sm:px-6 lg:px-8 relative selection:bg-indigo-500 selection:text-white transition-colors duration-300">
       {/* Background Ambient Glows */}
       <div className="absolute top-10 left-1/4 w-96 h-96 bg-indigo-600/10 blur-[130px] rounded-full pointer-events-none" />
       <div className="absolute top-40 right-1/4 w-96 h-96 bg-purple-600/10 blur-[130px] rounded-full pointer-events-none" />
@@ -265,7 +265,7 @@ export default function DashboardClient() {
           {/* LEFT SIDEBAR */}
           <aside className="w-full lg:w-72 shrink-0 space-y-4 lg:sticky lg:top-24">
             {/* User Profile Summary Card */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/70 border border-white/10 backdrop-blur-xl shadow-xl flex items-center gap-3.5">
+            <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm dark:shadow-xl flex items-center gap-3.5">
               {user.image ? (
                 <img
                   src={user.image}
@@ -278,15 +278,15 @@ export default function DashboardClient() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-white text-sm truncate">
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm truncate">
                   {user.name || "Developer"}
                 </h3>
-                <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                   {user.email}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
                     Verified Member
                   </span>
                 </div>
@@ -294,8 +294,8 @@ export default function DashboardClient() {
             </div>
 
             {/* Sidebar Navigation Items Menu */}
-            <div className="p-2 sm:p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 backdrop-blur-xl shadow-xl">
-              <div className="px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold hidden lg:block">
+            <div className="p-2 sm:p-2.5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm dark:shadow-xl">
+              <div className="px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-semibold hidden lg:block">
                 Dashboard Menu
               </div>
 
@@ -311,7 +311,7 @@ export default function DashboardClient() {
                       className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer w-full text-left ${
                         isActive
                           ? "bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-600/25"
-                          : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.04]"
                       }`}
                     >
                       <div className="flex items-center gap-2.5">

@@ -38,7 +38,7 @@ export default function AboutPage() {
   };
 
   return (
-    <article className="max-w-4xl mx-auto py-16 px-6 text-slate-300 bg-slate-950 min-h-[75vh]">
+    <article className="max-w-4xl mx-auto py-16 px-6 text-slate-700 dark:text-slate-300 min-h-[75vh] transition-colors">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema) }}

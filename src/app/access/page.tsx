@@ -208,30 +208,30 @@ export default function AccessPortalPage() {
       : SAMPLE_PROMPTS.filter((p) => p.section === activeSection);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-10">
         {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-medium text-indigo-400">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-xs font-medium text-indigo-700 dark:text-indigo-400">
             <span>🔑</span> DevAssets License & Downloads Vault
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
             Customer Product Access Portal
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             Enter your commercial license key to unlock your digital assets, download the
             production bundle, and access the prompt matrix playbook.
           </p>
         </div>
 
         {/* License Verification Card */}
-        <div className="max-w-2xl mx-auto bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
+        <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm dark:shadow-2xl backdrop-blur-sm">
           {!licenseData ? (
             <div className="space-y-6">
               <div className="space-y-2">
                 <label
                   htmlFor="licenseKey"
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-400"
+                  className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
                 >
                   Enter License Key
                 </label>
@@ -242,7 +242,7 @@ export default function AccessPortalPage() {
                     value={licenseKey}
                     onChange={(e) => setLicenseKey(e.target.value)}
                     placeholder="e.g. DEVASSETS-DEMO-2026"
-                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm font-mono text-indigo-300 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-colors uppercase"
+                    className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-mono text-indigo-700 dark:text-indigo-300 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-colors uppercase"
                   />
                   <button
                     type="button"

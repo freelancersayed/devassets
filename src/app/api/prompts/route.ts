@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     await ensurePromptsSeeded();
     return NextResponse.json({ success: true, message: "Prompts verified and seeded" });

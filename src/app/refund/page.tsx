@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RefundPage() {
   return (
-    <article className="min-h-[70vh] bg-slate-950 px-6 py-16 text-slate-300">
+    <article className="min-h-[70vh] bg-slate-50 dark:bg-slate-950 px-6 py-16 text-slate-700 dark:text-slate-300 transition-colors">
       <div className="mx-auto max-w-4xl">
         <nav
           aria-label="Breadcrumb"

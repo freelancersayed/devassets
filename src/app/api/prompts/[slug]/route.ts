@@ -7,7 +7,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function GET(request: NextRequest, { params }: Props) {
+export async function GET(_request: NextRequest, { params }: Props) {
   try {
     const { slug } = await params;
     const prompt = await getPromptBySlug(slug);
