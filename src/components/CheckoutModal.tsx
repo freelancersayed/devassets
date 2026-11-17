@@ -150,7 +150,7 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
       aria-label={`Checkout for ${product.title}`}
     >
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-8 animate-slide-up"
+        className="relative w-full max-w-lg bg-[#18181B] border border-[#27272A] rounded-2xl shadow-2xl p-6 sm:p-8 animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -158,10 +158,10 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
           type="button"
           onClick={onClose}
           aria-label="Close checkout modal"
-          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors cursor-pointer"
         >
           <svg
-            className="h-6 w-6"
+            className="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -176,53 +176,53 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
         </button>
 
         {/* Header */}
-        <h2 className="text-xl font-bold text-slate-50 mb-1">
+        <h2 className="text-xl font-bold text-[#FAFAFA] mb-1">
           Order Summary
         </h2>
-        <p className="text-xs text-slate-500 mb-6">
+        <p className="text-xs text-[#A1A1AA] mb-6">
           Review your order before proceeding to secure checkout.
         </p>
 
         {/* Account Association Indicator */}
-        <div className="mb-4 flex items-center justify-between rounded-lg bg-slate-950/80 px-3.5 py-2.5 border border-slate-800 text-xs">
-          <span className="text-slate-400">Account:</span>
+        <div className="mb-4 flex items-center justify-between rounded-lg bg-[#09090B] px-3.5 py-2.5 border border-[#27272A] text-xs">
+          <span className="text-[#A1A1AA]">Account:</span>
           {session?.user ? (
-            <span className="font-medium text-emerald-400 flex items-center gap-1.5 truncate max-w-[240px]">
-              <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+            <span className="font-medium text-[#10B981] flex items-center gap-1.5 truncate max-w-[240px]">
+              <span className="h-2 w-2 rounded-full bg-[#10B981]"></span>
               {session.user.email}
             </span>
           ) : (
-            <span className="text-indigo-400 flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-indigo-400"></span>
+            <span className="text-[#10B981] flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-[#10B981]"></span>
               Guest Session (Instant License Allocation)
             </span>
           )}
         </div>
 
         {/* Product details */}
-        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 mb-6">
+        <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] mb-6">
           <div className="flex items-start gap-4">
             <span className="text-3xl">{product.emoji}</span>
             <div className="flex-1">
-              <h3 className="font-bold text-slate-100 text-sm">
+              <h3 className="font-bold text-[#FAFAFA] text-sm">
                 {product.title}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">{product.categoryLabel || product.category}</p>
+              <p className="text-xs text-[#A1A1AA] mt-1">{product.categoryLabel || product.category}</p>
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-800">
-            <p className="text-xs font-semibold text-slate-400 mb-2">
+          <div className="mt-4 pt-4 border-t border-[#27272A]">
+            <p className="text-xs font-semibold text-[#A1A1AA] mb-2 font-mono">
               Included in this package:
             </p>
             <ul className="space-y-1.5">
               {product.deliverables.map((item, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2 text-xs text-slate-300"
+                  className="flex items-start gap-2 text-xs text-[#A1A1AA]"
                 >
                   <svg
-                    className="h-3.5 w-3.5 text-emerald-400 shrink-0 mt-0.5"
+                    className="h-3.5 w-3.5 text-[#10B981] shrink-0 mt-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -243,29 +243,29 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
 
         {/* Price */}
         <div className="flex items-baseline justify-between mb-6">
-          <span className="text-sm text-slate-400">Total</span>
+          <span className="text-sm text-[#A1A1AA]">Total</span>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-50">
+            <span className="text-2xl font-black text-[#FAFAFA]">
               ${product.price}
             </span>
-            <span className="text-xs font-semibold text-indigo-400">USD</span>
+            <span className="text-xs font-semibold text-[#10B981] font-mono">USD</span>
           </div>
         </div>
 
         {/* Terms agreement checkbox */}
-        <label className="flex items-start gap-3 mb-6 cursor-pointer group">
+        <label className="flex items-start gap-3 mb-6 cursor-pointer group select-none">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-1 h-4 w-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer accent-indigo-500"
+            className="mt-1 h-4 w-4 rounded border-[#27272A] bg-[#09090B] text-[#10B981] focus:ring-[#10B981] cursor-pointer accent-[#10B981]"
           />
-          <span className="text-xs text-slate-400 leading-relaxed">
+          <span className="text-xs text-[#A1A1AA] leading-relaxed">
             I have read and agree to the{" "}
             <Link
               href="/terms"
               target="_blank"
-              className="text-indigo-400 underline hover:text-indigo-300"
+              className="text-[#10B981] underline hover:text-[#34D399]"
             >
               Terms of Service
             </Link>{" "}
@@ -273,7 +273,7 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
             <Link
               href="/refund"
               target="_blank"
-              className="text-indigo-400 underline hover:text-indigo-300"
+              className="text-[#10B981] underline hover:text-[#34D399]"
             >
               Refund Policy
             </Link>
@@ -286,16 +286,16 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
           type="button"
           onClick={handleCheckout}
           disabled={!agreed || isProcessing}
-          className={`w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 shadow-lg flex items-center justify-center gap-2 ${
+          className={`w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
             agreed && !isProcessing
-              ? "bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/25 active:scale-[0.98] cursor-pointer"
-              : "bg-slate-700 text-slate-400 cursor-not-allowed shadow-none"
+              ? "bg-[#10B981] hover:bg-[#34D399] text-[#09090B] shadow-emerald-glow active:scale-[0.98] cursor-pointer"
+              : "bg-[#27272A] text-[#71717A] cursor-not-allowed shadow-none"
           }`}
         >
           {isProcessing ? (
             <>
               <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#09090B]"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -314,14 +314,14 @@ export default function CheckoutModal({ product, onClose }: CheckoutModalProps) 
                   d="M4 12a8 8 0 018-8v8H4z"
                 ></path>
               </svg>
-              Connecting to FastSpring...
+              <span>Connecting to FastSpring...</span>
             </>
           ) : (
             "Proceed to Checkout"
           )}
         </button>
 
-        <p className="text-center text-[10px] text-slate-600 mt-3">
+        <p className="text-center text-[10px] text-[#71717A] mt-3 font-mono">
           🔒 256-bit SSL encrypted • FastSpring Global Merchant of Record
         </p>
       </div>

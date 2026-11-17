@@ -12,24 +12,24 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <article className="min-h-[70vh] bg-slate-50 dark:bg-slate-950 px-6 py-16 text-slate-700 dark:text-slate-300 transition-colors">
+    <article className="min-h-[70vh] bg-[#09090B] px-6 py-16 text-[#A1A1AA] transition-colors">
       <div className="mx-auto max-w-4xl">
         <nav
           aria-label="Breadcrumb"
-          className="mb-6 flex items-center gap-2 text-xs text-slate-400"
+          className="mb-6 flex items-center gap-2 text-xs font-mono text-[#71717A]"
         >
-          <Link href="/" className="hover:text-indigo-400 transition-colors">
+          <Link href="/" className="hover:text-[#10B981] transition-colors">
             Home
           </Link>
-          <span className="text-slate-600">/</span>
-          <span className="text-indigo-400 font-medium">Terms of Service</span>
+          <span>/</span>
+          <span className="text-[#FAFAFA] font-medium">Terms of Service</span>
         </nav>
 
-        <h1 className="mb-4 text-gradient text-4xl font-extrabold">
+        <h1 className="mb-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#FAFAFA]">
           Terms of Service
         </h1>
 
-        <p className="mb-8 text-xs text-slate-500">
+        <p className="mb-8 text-xs font-mono text-[#71717A]">
           Last Updated: October 2026
         </p>
 
@@ -70,7 +70,7 @@ export default function TermsPage() {
               Unless expressly permitted by the applicable license or by law,
               you may not:
             </p>
-            <ul className="mt-3 list-disc space-y-2 pl-6 marker:text-indigo-400">
+            <ul className="mt-3 list-disc space-y-2 pl-6 marker:text-[#10B981]">
               <li>
                 Resell, redistribute, sublicense, or publicly share purchased
                 files as standalone products.
@@ -124,7 +124,7 @@ export default function TermsPage() {
               Our digital products are subject to the DevAssets{" "}
               <Link
                 href="/refund"
-                className="text-indigo-400 underline hover:text-indigo-300"
+                className="text-[#10B981] underline hover:text-[#34D399]"
               >
                 Refund Policy
               </Link>
@@ -217,37 +217,37 @@ export default function TermsPage() {
                 DevAssets (Operated by Md Sayed)
               </p>
               <p>
-                <span className="text-slate-500">Address:</span>{" "}
+                <span className="text-[#71717A] font-mono">Address:</span>{" "}
                 Satkhira-9450, Khulna, Bangladesh
               </p>
               <p>
-                <span className="text-slate-500">Email:</span>{" "}
+                <span className="text-[#71717A] font-mono">Email:</span>{" "}
                 <a
                   href="mailto:support@devassets.online"
-                  className="text-indigo-400 hover:underline"
+                  className="text-[#10B981] hover:text-[#34D399] font-mono hover:underline"
                 >
                   support@devassets.online
                 </a>
               </p>
               <p>
-                <span className="text-slate-500">Business Hours:</span> Monday
+                <span className="text-[#71717A] font-mono">Business Hours:</span> Monday
                 – Friday, 9:00 AM – 5:00 PM (UTC+6)
               </p>
             </div>
           </section>
 
-          <p className="border-t border-slate-800 pt-5 text-xs text-slate-500">
+          <p className="border-t border-[#27272A] pt-5 text-xs text-[#71717A]">
             These Terms should be read together with our{" "}
             <Link
               href="/privacy"
-              className="text-indigo-400 underline hover:text-indigo-300"
+              className="text-[#10B981] underline hover:text-[#34D399]"
             >
               Privacy Policy
             </Link>{" "}
             and{" "}
             <Link
               href="/refund"
-              className="text-indigo-400 underline hover:text-indigo-300"
+              className="text-[#10B981] underline hover:text-[#34D399]"
             >
               Refund Policy
             </Link>

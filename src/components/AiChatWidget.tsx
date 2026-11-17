@@ -205,26 +205,26 @@ export default function AiChatWidget() {
           role="dialog"
           aria-modal="true"
           aria-label="DevAssets AI Assistant Chat"
-          className="relative w-[calc(100vw-2rem)] sm:w-[400px] h-[520px] max-h-[85vh] rounded-3xl flex flex-col overflow-hidden backdrop-blur-2xl bg-slate-900/85 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_25px_50px_rgba(0,0,0,0.8)] animate-slide-up mb-4 before:absolute before:inset-x-0 before:top-0 before:h-24 before:bg-gradient-to-b before:from-indigo-500/15 before:to-transparent before:pointer-events-none"
+          className="relative w-[calc(100vw-2rem)] sm:w-[400px] h-[520px] max-h-[85vh] rounded-2xl flex flex-col overflow-hidden bg-[#18181B] border border-[#27272A] shadow-2xl animate-slide-up mb-4"
         >
           {/* Header Bar */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-slate-950/60 backdrop-blur-md relative z-10">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#27272A] bg-[#09090B] relative z-10">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="w-8 h-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center text-[#10B981]">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693l-1.57-.393m15.6 0l1.24 3.72a2.25 2.25 0 01-2.134 2.98H4.724a2.25 2.25 0 01-2.134-2.98l1.24-3.72" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm flex items-center gap-1.5">
-                  <span>DevAssets AI Assistant</span>
-                  <span className="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.2 rounded font-mono">
+                <h3 className="text-[#FAFAFA] font-semibold text-sm flex items-center gap-1.5">
+                  <span>DevAssets Assistant</span>
+                  <span className="text-[10px] bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-1.5 py-0.2 rounded font-mono">
                     v2.4
                   </span>
                 </h3>
-                <p className="text-emerald-400 text-xs flex items-center gap-1.5 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Instant answers &bull; 24/7 online</span>
+                <p className="text-[#10B981] text-xs flex items-center gap-1.5 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                  <span className="text-[11px] text-[#A1A1AA]">24/7 AI Guidance</span>
                 </p>
               </div>
             </div>
@@ -235,7 +235,7 @@ export default function AiChatWidget() {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Minimize Chat Window"
-                className="p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-[#27272A] text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors cursor-pointer"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -245,7 +245,7 @@ export default function AiChatWidget() {
           </div>
 
           {/* Message Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 scroll-smooth">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 scroll-smooth bg-[#18181B]">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -254,15 +254,15 @@ export default function AiChatWidget() {
                 <div
                   className={
                     msg.sender === "user"
-                      ? "ml-auto bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm max-w-[82%] shadow-md leading-relaxed"
-                      : "mr-auto bg-white/[0.06] border border-white/10 text-slate-200 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm max-w-[88%] backdrop-blur-md shadow-sm leading-relaxed"
+                      ? "ml-auto bg-[#10B981] text-[#09090B] font-medium rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm max-w-[82%] shadow-sm leading-relaxed"
+                      : "mr-auto bg-[#09090B] border border-[#27272A] text-[#FAFAFA] rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm max-w-[88%] shadow-sm leading-relaxed"
                   }
                 >
                   <p className="whitespace-pre-wrap">{msg.text}</p>
 
                   {/* Attached quick links */}
                   {msg.links && msg.links.length > 0 && (
-                    <div className="mt-2.5 pt-2 border-t border-white/10 flex flex-wrap gap-2">
+                    <div className="mt-2.5 pt-2 border-t border-[#27272A] flex flex-wrap gap-2">
                       {msg.links.map((link, idx) => (
                         <Link
                           key={idx}
@@ -270,7 +270,7 @@ export default function AiChatWidget() {
                           onClick={() => {
                             if (link.href.startsWith("/#")) setIsOpen(false);
                           }}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-300 hover:text-white bg-indigo-950/70 border border-indigo-800/60 px-2.5 py-1 rounded-full transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] font-mono text-[#10B981] hover:text-[#34D399] bg-[#18181B] border border-[#27272A] hover:border-[#10B981]/50 px-2.5 py-1 rounded-lg transition-colors"
                         >
                           <span>{link.label}</span>
                           <span>→</span>
@@ -279,7 +279,7 @@ export default function AiChatWidget() {
                     </div>
                   )}
                 </div>
-                <span className="text-[10px] text-slate-500 px-2 mt-1 font-mono">
+                <span className="text-[10px] text-[#A1A1AA] px-2 mt-1 font-mono">
                   {msg.timestamp}
                 </span>
               </div>
@@ -287,11 +287,11 @@ export default function AiChatWidget() {
 
             {/* Typing Indicator */}
             {isTyping && (
-              <div className="mr-auto flex items-center gap-1.5 bg-white/[0.06] border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3 backdrop-blur-md text-slate-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.4s]" />
-                <span className="text-xs text-slate-400 ml-1">AI Assistant is thinking...</span>
+              <div className="mr-auto flex items-center gap-1.5 bg-[#09090B] border border-[#27272A] rounded-2xl rounded-tl-sm px-4 py-3 text-[#A1A1AA]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-bounce" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-bounce [animation-delay:0.4s]" />
+                <span className="text-xs text-[#A1A1AA] ml-1">Assistant is typing...</span>
               </div>
             )}
 
@@ -299,13 +299,13 @@ export default function AiChatWidget() {
           </div>
 
           {/* Quick-Prompt Suggestion Chips */}
-          <div className="px-3 py-2 border-t border-white/[0.06] bg-slate-950/40 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="px-3 py-2 border-t border-[#27272A] bg-[#09090B] flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             {suggestionChips.map((chip, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleSendMessage(chip)}
-                className="whitespace-nowrap px-3 py-1 rounded-full text-[11px] font-medium bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 border border-white/10 transition-colors shrink-0 cursor-pointer active:scale-95"
+                className="whitespace-nowrap px-3 py-1 rounded-lg text-[11px] font-mono bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-[#FAFAFA] border border-[#27272A] transition-colors shrink-0 cursor-pointer active:scale-95"
               >
                 {chip}
               </button>
@@ -313,23 +313,23 @@ export default function AiChatWidget() {
           </div>
 
           {/* Input Box */}
-          <div className="p-3 border-t border-white/10 bg-slate-950/70 backdrop-blur-md flex items-center gap-2">
+          <div className="p-3 border-t border-[#27272A] bg-[#09090B] flex items-center gap-2">
             <input
               ref={inputRef}
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything about tools, pricing, prompts..."
+              placeholder="Ask about tools, prompts, or guides..."
               aria-label="Ask DevAssets AI Assistant"
-              className="bg-white/[0.05] border border-white/10 rounded-full px-4 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400/60 focus:ring-1 focus:ring-indigo-400/30 flex-1"
+              className="bg-[#18181B] border border-[#27272A] rounded-xl px-4 py-2.5 text-sm text-[#FAFAFA] placeholder-[#A1A1AA] focus:outline-none focus:border-[#10B981] flex-1"
             />
             <button
               type="button"
               onClick={() => handleSendMessage()}
               disabled={!inputValue.trim() || isTyping}
               aria-label="Send message"
-              className="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex items-center justify-center hover:opacity-90 disabled:opacity-40 transition-all cursor-pointer shrink-0 shadow-md shadow-indigo-600/30 active:scale-95"
+              className="w-9 h-9 rounded-xl bg-[#10B981] text-[#09090B] font-bold flex items-center justify-center hover:bg-[#34D399] disabled:opacity-40 transition-all cursor-pointer shrink-0 shadow-sm active:scale-95"
             >
               <svg className="w-4 h-4 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7" />
@@ -346,7 +346,7 @@ export default function AiChatWidget() {
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close AI Assistant" : "Open DevAssets AI Assistant"}
-          className="w-14 h-14 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white shadow-[0_0_25px_rgba(99,102,241,0.5)] hover:shadow-[0_0_35px_rgba(99,102,241,0.7)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer relative"
+          className="w-13 h-13 rounded-2xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] shadow-lg shadow-[#10B981]/25 hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer relative border border-[#10B981]"
         >
           {isOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -358,10 +358,10 @@ export default function AiChatWidget() {
             </svg>
           )}
 
-          {/* Glowing Status Dot */}
+          {/* Status Dot */}
           {!isOpen && (
             <span
-              className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-[#070B14] animate-pulse"
+              className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#09090B] rounded-full border border-[#10B981]"
               title="Online Assistant"
             />
           )}

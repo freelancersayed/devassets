@@ -97,23 +97,24 @@ export default function VideoToAudioClient() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#09090B] text-[#A1A1AA] py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Navigation Breadcrumb */}
         <div className="text-center space-y-3">
           <Link
             href="/#tools"
-            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-[#71717A] hover:text-[#10B981] transition-colors"
           >
             <span>&larr; Back to All Utilities</span>
           </Link>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/60 text-xs font-semibold text-cyan-400 mx-auto">
-            ⚡ 100% Client-Side Pure Demuxing &amp; Web Audio Engine
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#10B981] mx-auto">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+            <span>100% Client-Side Pure Demuxing &amp; Web Audio Engine</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-bold text-[#FAFAFA] tracking-tight">
             Video to Audio Detacher
           </h1>
-          <p className="text-sm md:text-base text-slate-400 max-w-xl mx-auto">
+          <p className="text-sm md:text-base text-[#A1A1AA] max-w-xl mx-auto leading-relaxed">
             Detach and extract lossless 16-bit PCM WAV audio from MP4, WebM, and MOV videos locally in your browser memory. Zero files are uploaded to any server.
           </p>
         </div>
@@ -192,9 +193,9 @@ export default function VideoToAudioClient() {
                   </div>
                   <span className="font-mono text-cyan-300 font-bold">{progress}%</span>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-[#09090B] border border-[#27272A] rounded-full h-2 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-indigo-500 transition-all duration-200 rounded-full"
+                    className="h-full bg-[#10B981] transition-all duration-200 rounded-full"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -202,13 +203,13 @@ export default function VideoToAudioClient() {
             )}
 
             {processSuccess && (
-              <div className="space-y-1.5 pt-1 text-emerald-400 font-medium">
+              <div className="space-y-1.5 pt-1 text-[#10B981] font-mono text-xs">
                 <div className="flex items-center justify-between">
                   <span>✓ Audio extraction finished! Formatted as lossless 16-bit PCM WAV.</span>
-                  {audioDuration && <span className="font-mono text-xs">⏱ {audioDuration}</span>}
+                  {audioDuration && <span>⏱ {audioDuration}</span>}
                 </div>
                 {outputFileName && (
-                  <p className="text-xs text-slate-400 font-mono">
+                  <p className="text-xs text-[#71717A]">
                     Output: {outputFileName}
                   </p>
                 )}
@@ -216,7 +217,7 @@ export default function VideoToAudioClient() {
             )}
 
             {errorMsg && (
-              <div className="text-rose-400 font-medium flex items-center gap-2">
+              <div className="text-rose-400 font-medium flex items-center gap-2 text-xs">
                 <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
@@ -232,7 +233,7 @@ export default function VideoToAudioClient() {
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="flex-1 py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-base transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+                  className="flex-1 py-4 px-6 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold text-sm transition-all shadow-emerald-glow flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -242,7 +243,7 @@ export default function VideoToAudioClient() {
                 <button
                   type="button"
                   onClick={resetState}
-                  className="py-4 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-colors cursor-pointer"
+                  className="py-4 px-6 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] font-medium text-xs transition-colors cursor-pointer font-mono"
                 >
                   Extract Another Video
                 </button>
@@ -251,7 +252,7 @@ export default function VideoToAudioClient() {
               <button
                 type="button"
                 disabled
-                className="w-full py-4 px-6 rounded-xl bg-cyan-950 border border-cyan-800 text-cyan-300 font-semibold text-base cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-4 px-6 rounded-xl bg-[#18181B] border border-[#27272A] text-[#10B981] font-semibold text-sm cursor-not-allowed flex items-center justify-center gap-2 font-mono"
               >
                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={4} />
@@ -263,7 +264,7 @@ export default function VideoToAudioClient() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-base transition-all shadow-lg shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+                className="w-full py-4 px-6 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold text-sm transition-all shadow-emerald-glow flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -276,24 +277,24 @@ export default function VideoToAudioClient() {
 
         {/* Feature Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-          <div className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-2">
+          <div className="p-5 rounded-2xl border border-[#27272A] bg-[#18181B] space-y-2">
             <span className="text-xl">⚡</span>
-            <h3 className="font-bold text-slate-100 text-sm">Lossless 16-Bit PCM WAV</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="font-bold text-[#FAFAFA] text-sm">Lossless 16-Bit PCM WAV</h3>
+            <p className="text-xs text-[#A1A1AA] leading-relaxed">
               Decoded directly from the video audio stream without re-compression or acoustic degradation.
             </p>
           </div>
-          <div className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-2">
+          <div className="p-5 rounded-2xl border border-[#27272A] bg-[#18181B] space-y-2">
             <span className="text-xl">🔒</span>
-            <h3 className="font-bold text-slate-100 text-sm">100% Offline &amp; Client-Side</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="font-bold text-[#FAFAFA] text-sm">100% Offline &amp; Client-Side</h3>
+            <p className="text-xs text-[#A1A1AA] leading-relaxed">
               Your video stays exclusively on your machine. Nothing leaves your browser memory.
             </p>
           </div>
-          <div className="p-5 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-2">
+          <div className="p-5 rounded-2xl border border-[#27272A] bg-[#18181B] space-y-2">
             <span className="text-xl">🎬</span>
-            <h3 className="font-bold text-slate-100 text-sm">Multi-Format Video Support</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="font-bold text-[#FAFAFA] text-sm">Multi-Format Video Support</h3>
+            <p className="text-xs text-[#A1A1AA] leading-relaxed">
               Seamlessly supports MP4, WebM, and MOV containers encoded with AAC, Opus, Vorbis, or PCM.
             </p>
           </div>

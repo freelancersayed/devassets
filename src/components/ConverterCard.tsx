@@ -298,21 +298,21 @@ export default function ConverterCard() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-slate-900/90 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/80">
+    <div className="w-full max-w-2xl mx-auto bg-[#18181B] border border-[#27272A] rounded-3xl p-6 md:p-8 shadow-2xl transition-all duration-300">
       {/* Header Info */}
-      <div className="flex items-center justify-between pb-6 border-b border-slate-800/80 mb-6">
+      <div className="flex items-center justify-between pb-6 border-b border-[#27272A] mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+          <div className="w-12 h-12 rounded-2xl bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#10B981]">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Image to Word Formatted Converter</h2>
-            <p className="text-xs text-slate-400">100% Client-Side &bull; বিজয় (SutonnyMJ) &amp; Unicode &bull; Bengali + English</p>
+            <h2 className="text-xl font-bold text-[#FAFAFA] tracking-tight">Image to Word Formatted Converter</h2>
+            <p className="text-xs text-[#A1A1AA]">100% Client-Side &bull; বিজয় (SutonnyMJ) &amp; Unicode &bull; Bengali + English</p>
           </div>
         </div>
-        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <span className="px-3 py-1 text-xs font-mono font-semibold rounded-full bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">
           ⚡ বিজয় (SutonnyMJ)
         </span>
       </div>
@@ -320,16 +320,16 @@ export default function ConverterCard() {
       {/* Settings Grid: Language & Font Output */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
         {/* Recognition Language */}
-        <div className="bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60 flex flex-col justify-between gap-2">
-          <span className="text-slate-300 font-medium text-xs">ইমেজ ল্যাঙ্গুয়েজ (Recognition):</span>
+        <div className="bg-[#09090B] p-3 rounded-2xl border border-[#27272A] flex flex-col justify-between gap-2">
+          <span className="text-[#A1A1AA] font-medium text-xs">ইমেজ ল্যাঙ্গুয়েজ (Recognition):</span>
           <div className="flex gap-1.5">
             <button
               type="button"
               onClick={() => setLang("beng")}
               className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 lang === "beng"
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+                  ? "bg-[#10B981] text-[#09090B] shadow-sm shadow-[#10B981]/20"
+                  : "bg-[#18181B] text-[#A1A1AA] hover:text-[#FAFAFA] border border-[#27272A]"
               }`}
             >
               বাংলা + English
@@ -339,8 +339,8 @@ export default function ConverterCard() {
               onClick={() => setLang("en")}
               className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 lang === "en"
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+                  ? "bg-[#10B981] text-[#09090B] shadow-sm shadow-[#10B981]/20"
+                  : "bg-[#18181B] text-[#A1A1AA] hover:text-[#FAFAFA] border border-[#27272A]"
               }`}
             >
               English Only
@@ -349,16 +349,16 @@ export default function ConverterCard() {
         </div>
 
         {/* Word Document Font Format */}
-        <div className="bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60 flex flex-col justify-between gap-2">
-          <span className="text-slate-300 font-medium text-xs">ওয়ার্ড ফন্ট ফরম্যাট (Word Font):</span>
+        <div className="bg-[#09090B] p-3 rounded-2xl border border-[#27272A] flex flex-col justify-between gap-2">
+          <span className="text-[#A1A1AA] font-medium text-xs">ওয়ার্ড ফন্ট ফরম্যাট (Word Font):</span>
           <div className="flex gap-1.5">
             <button
               type="button"
               onClick={() => setOutputFont("bijoy")}
               className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                 outputFont === "bijoy"
-                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30"
-                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+                  ? "bg-[#10B981] text-[#09090B] shadow-sm shadow-[#10B981]/20"
+                  : "bg-[#18181B] text-[#A1A1AA] hover:text-[#FAFAFA] border border-[#27272A]"
               }`}
             >
               <span>বিজয় (SutonnyMJ)</span>
@@ -369,8 +369,8 @@ export default function ConverterCard() {
               onClick={() => setOutputFont("unicode")}
               className={`flex-1 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 outputFont === "unicode"
-                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                  : "bg-slate-800/80 text-slate-400 hover:text-white"
+                  ? "bg-[#10B981] text-[#09090B] shadow-sm shadow-[#10B981]/20"
+                  : "bg-[#18181B] text-[#A1A1AA] hover:text-[#FAFAFA] border border-[#27272A]"
               }`}
             >
               ইউনিকোড
@@ -387,10 +387,10 @@ export default function ConverterCard() {
         onClick={() => !file && fileInputRef.current?.click()}
         className={`relative group border-2 border-dashed rounded-2xl p-6 md:p-8 text-center transition-all duration-200 cursor-pointer ${
           isDragging
-            ? "border-indigo-500 bg-indigo-500/10 scale-[1.01]"
+            ? "border-[#10B981] bg-[#10B981]/10 scale-[1.01]"
             : file
-            ? "border-emerald-500/40 bg-slate-950/40"
-            : "border-slate-700/80 hover:border-indigo-500/60 bg-slate-950/30 hover:bg-slate-950/60"
+            ? "border-[#10B981]/40 bg-[#09090B]"
+            : "border-[#27272A] hover:border-[#10B981]/50 bg-[#09090B]"
         }`}
       >
         <input
@@ -403,13 +403,13 @@ export default function ConverterCard() {
 
         {previewUrl ? (
           <div className="flex flex-col items-center gap-3">
-            <div className="relative max-h-48 max-w-full overflow-hidden rounded-xl border border-slate-700 shadow-lg">
+            <div className="relative max-h-48 max-w-full overflow-hidden rounded-xl border border-[#27272A] shadow-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={previewUrl} alt="Preview" className="max-h-48 object-contain" />
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <span className="font-semibold text-white">{file?.name}</span>
-              <span className="text-slate-500">&bull;</span>
+            <div className="flex items-center gap-2 text-xs text-[#A1A1AA]">
+              <span className="font-semibold text-[#FAFAFA]">{file?.name}</span>
+              <span className="text-[#A1A1AA]">&bull;</span>
               <span>{file ? (file.size / 1024).toFixed(1) : 0} KB</span>
             </div>
             <button
@@ -425,16 +425,16 @@ export default function ConverterCard() {
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+            <div className="w-14 h-14 rounded-2xl bg-[#18181B] border border-[#27272A] flex items-center justify-center text-[#10B981] group-hover:scale-110 transition-transform">
               <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-200">
+              <p className="text-sm font-semibold text-[#FAFAFA]">
                 Click to browse or drag and drop your image
               </p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-[#A1A1AA] mt-1">
                 Supports PNG, JPG, JPEG, WEBP, BMP (Bengali &amp; English text)
               </p>
             </div>
@@ -447,7 +447,7 @@ export default function ConverterCard() {
         <div
           className={`mt-5 p-4 rounded-2xl border text-sm flex flex-col gap-2 transition-all ${
             status === "processing"
-              ? "bg-indigo-950/40 border-indigo-500/40 text-indigo-200"
+              ? "bg-[#09090B] border-[#10B981]/30 text-[#10B981]"
               : status === "done"
               ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-200"
               : "bg-rose-950/40 border-rose-500/40 text-rose-200"
@@ -455,7 +455,7 @@ export default function ConverterCard() {
         >
           <div className="flex items-start gap-3">
             {status === "processing" && (
-              <svg className="animate-spin w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin w-5 h-5 text-[#10B981] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -484,9 +484,9 @@ export default function ConverterCard() {
 
           {/* Progress Bar */}
           {status === "processing" && (
-            <div className="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
+            <div className="w-full bg-[#09090B] rounded-full h-1.5 mt-2 overflow-hidden border border-[#27272A]">
               <div
-                className="bg-indigo-500 h-1.5 rounded-full transition-all duration-300"
+                className="bg-[#10B981] h-1.5 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -496,21 +496,21 @@ export default function ConverterCard() {
 
       {/* Extracted Text Preview Card (when done) */}
       {status === "done" && extractedText && (
-        <div className="mt-5 p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2">
-            <span className="font-semibold text-slate-300">Extracted Text Preview:</span>
+        <div className="mt-5 p-4 rounded-2xl bg-[#09090B] border border-[#27272A] space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#A1A1AA] gap-2">
+            <span className="font-semibold text-[#FAFAFA]">Extracted Text Preview:</span>
             <div className="flex flex-wrap items-center gap-1.5">
               <button
                 type="button"
                 onClick={handleCopy}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-xs flex items-center gap-1"
+                className="px-2.5 py-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer text-xs flex items-center gap-1"
               >
                 {copied ? "✓ Copied!" : "📋 Copy"}
               </button>
               <button
                 type="button"
                 onClick={downloadAsTxt}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer text-xs"
+                className="px-2.5 py-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors cursor-pointer text-xs"
               >
                 📄 .TXT
               </button>
@@ -523,7 +523,7 @@ export default function ConverterCard() {
                     "bijoy"
                   )
                 }
-                className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer text-xs font-semibold"
+                className="px-2.5 py-1 rounded-lg bg-[#10B981] hover:bg-[#34D399] text-[#09090B] transition-colors cursor-pointer text-xs font-semibold"
                 title="Download in SutonnyMJ font"
               >
                 📥 বিজয় (.docx)
@@ -537,14 +537,14 @@ export default function ConverterCard() {
                     "unicode"
                   )
                 }
-                className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer text-xs font-semibold"
+                className="px-2.5 py-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#10B981] transition-colors cursor-pointer text-xs font-semibold"
                 title="Download in Unicode font"
               >
                 📥 ইউনিকোড (.docx)
               </button>
             </div>
           </div>
-          <div className="max-h-48 overflow-y-auto p-3 rounded-xl bg-slate-900/90 border border-slate-800/80 text-xs text-slate-300 font-mono whitespace-pre-wrap leading-relaxed select-text">
+          <div className="max-h-48 overflow-y-auto p-3 rounded-xl bg-[#18181B] border border-[#27272A] text-xs text-[#FAFAFA] font-mono whitespace-pre-wrap leading-relaxed select-text">
             {extractedText}
           </div>
         </div>
@@ -558,8 +558,8 @@ export default function ConverterCard() {
           disabled={!file || status === "processing"}
           className={`w-full py-3.5 px-6 rounded-2xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg ${
             !file || status === "processing"
-              ? "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50"
-              : "bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white shadow-emerald-600/25 active:scale-[0.99] border border-emerald-400/30 cursor-pointer"
+              ? "bg-[#18181B] text-[#A1A1AA]/50 cursor-not-allowed border border-[#27272A]"
+              : "bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold shadow-sm shadow-[#10B981]/25 active:scale-[0.99] border border-[#10B981] cursor-pointer"
           }`}
         >
           {status === "processing" ? (
@@ -580,18 +580,18 @@ export default function ConverterCard() {
       </div>
 
       {/* Feature Badges */}
-      <div className="mt-6 pt-4 border-t border-slate-800/60 grid grid-cols-3 gap-2 text-center text-xs text-slate-400">
-        <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-emerald-400">⚡ 100% Client-Side</p>
-          <p className="text-[10px] text-slate-500">Instant / Zero Lag</p>
+      <div className="mt-6 pt-4 border-t border-[#27272A] grid grid-cols-3 gap-2 text-center text-xs text-[#A1A1AA]">
+        <div className="p-2 rounded-xl bg-[#09090B] border border-[#27272A]">
+          <p className="font-medium text-[#10B981]">⚡ 100% Client-Side</p>
+          <p className="text-[10px] text-[#A1A1AA]">Instant / Zero Lag</p>
         </div>
-        <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-amber-300">বিজয় (SutonnyMJ)</p>
-          <p className="text-[10px] text-slate-500">ডিফল্ট বিজয় ফরম্যাট</p>
+        <div className="p-2 rounded-xl bg-[#09090B] border border-[#27272A]">
+          <p className="font-medium text-[#F59E0B]">বিজয় (SutonnyMJ)</p>
+          <p className="text-[10px] text-[#A1A1AA]">ডিফল্ট বিজয় ফরম্যাট</p>
         </div>
-        <div className="p-2 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <p className="font-medium text-indigo-400">Native OpenXML</p>
-          <p className="text-[10px] text-slate-500">All Word Versions Ready</p>
+        <div className="p-2 rounded-xl bg-[#09090B] border border-[#27272A]">
+          <p className="font-medium text-[#10B981]">Native OpenXML</p>
+          <p className="text-[10px] text-[#A1A1AA]">All Word Versions Ready</p>
         </div>
       </div>
     </div>

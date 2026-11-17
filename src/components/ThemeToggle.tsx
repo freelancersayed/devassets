@@ -15,7 +15,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   if (!mounted) {
     return (
       <div
-        className={`w-13 h-7 rounded-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 opacity-60 ${className}`}
+        className={`w-13 h-7 rounded-full bg-[#18181B] border border-[#27272A] opacity-60 ${className}`}
         aria-hidden="true"
       />
     );
@@ -33,10 +33,10 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       title={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      className={`relative inline-flex items-center w-13 h-7 p-0.5 rounded-full bg-neutral-200/80 dark:bg-neutral-900 border border-neutral-300/80 dark:border-neutral-800 transition-colors cursor-pointer group focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${className}`}
+      className={`relative inline-flex items-center w-13 h-7 p-0.5 rounded-full bg-[#18181B] border border-[#27272A] transition-colors cursor-pointer group focus:outline-none focus-visible:ring-1 focus-visible:ring-[#10B981] ${className}`}
     >
       <motion.div
-        className="flex items-center justify-center w-5 h-5 rounded-full bg-white dark:bg-neutral-800 shadow-xs z-10"
+        className="flex items-center justify-center w-5 h-5 rounded-full bg-[#27272A] shadow-xs z-10"
         layout
         transition={{
           type: "spring",
@@ -55,7 +55,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
               animate={{ rotate: 0, scale: 1 }}
               exit={{ rotate: 90, scale: 0 }}
               transition={{ duration: 0.15 }}
-              className="w-3 h-3 text-neutral-200"
+              className="w-3 h-3 text-[#10B981]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -72,9 +72,9 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
               key="sun"
               initial={{ rotate: 90, scale: 0 }}
               animate={{ rotate: 0, scale: 1 }}
-              exit={{ rotate: -90, scale: 0 }}
+              exit={{ rotate: 90, scale: 0 }}
               transition={{ duration: 0.15 }}
-              className="w-3 h-3 text-neutral-700"
+              className="w-3 h-3 text-[#F59E0B]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

@@ -208,30 +208,31 @@ export default function AccessPortalPage() {
       : SAMPLE_PROMPTS.filter((p) => p.section === activeSection);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+    <div className="min-h-screen bg-[#09090B] text-[#A1A1AA] py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-10">
         {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-xs font-medium text-indigo-700 dark:text-indigo-400">
-            <span>🔑</span> DevAssets License & Downloads Vault
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#10B981]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+            <span>DevAssets License &amp; Downloads Vault</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl sm:text-5xl font-bold tracking-[-0.035em] text-[#FAFAFA]">
             Customer Product Access Portal
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="text-[#A1A1AA] max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Enter your commercial license key to unlock your digital assets, download the
             production bundle, and access the prompt matrix playbook.
           </p>
         </div>
 
         {/* License Verification Card */}
-        <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm dark:shadow-2xl backdrop-blur-sm">
+        <div className="max-w-2xl mx-auto bg-[#18181B] border border-[#27272A] rounded-2xl p-6 sm:p-8 shadow-2xl">
           {!licenseData ? (
             <div className="space-y-6">
               <div className="space-y-2">
                 <label
                   htmlFor="licenseKey"
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                  className="block text-xs font-mono uppercase tracking-wider text-[#A1A1AA]"
                 >
                   Enter License Key
                 </label>
@@ -242,17 +243,17 @@ export default function AccessPortalPage() {
                     value={licenseKey}
                     onChange={(e) => setLicenseKey(e.target.value)}
                     placeholder="e.g. DEVASSETS-DEMO-2026"
-                    className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-mono text-indigo-700 dark:text-indigo-300 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-colors uppercase"
+                    className="flex-1 bg-[#09090B] border border-[#27272A] rounded-xl px-4 py-3 text-sm font-mono text-[#FAFAFA] placeholder-[#71717A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors uppercase"
                   />
                   <button
                     type="button"
                     onClick={() => handleVerify()}
                     disabled={loading}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                    className="px-6 py-3 bg-[#10B981] hover:bg-[#34D399] text-[#09090B] text-sm font-semibold rounded-xl shadow-emerald-glow transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
-                        <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-4 w-4 text-[#09090B]" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                         </svg>
@@ -266,11 +267,11 @@ export default function AccessPortalPage() {
               </div>
 
               {/* Demo License Key Auto-Fill Helper */}
-              <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+              <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
                 <div>
-                  <span className="font-semibold text-indigo-300">Need immediate demo access?</span>
-                  <p className="text-slate-400 mt-0.5">
-                    Use our full-access testing key: <code className="text-amber-300 font-mono font-bold">{DEMO_KEY}</code>
+                  <span className="font-semibold text-[#FAFAFA]">Need immediate demo access?</span>
+                  <p className="text-[#A1A1AA] mt-0.5">
+                    Use our full-access testing key: <code className="text-[#F59E0B] font-mono font-bold">{DEMO_KEY}</code>
                   </p>
                 </div>
                 <button
@@ -279,14 +280,14 @@ export default function AccessPortalPage() {
                     setLicenseKey(DEMO_KEY);
                     handleVerify(DEMO_KEY);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 font-semibold text-xs transition-colors shrink-0 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#10B981] font-mono text-xs transition-colors shrink-0 cursor-pointer"
                 >
                   ⚡ Auto-fill Demo Key
                 </button>
               </div>
 
               {error && (
-                <div className="p-3.5 rounded-xl bg-rose-950/60 border border-rose-900/80 text-rose-300 text-xs flex items-center gap-2">
+                <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
                   <svg className="h-4 w-4 shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -297,27 +298,27 @@ export default function AccessPortalPage() {
           ) : (
             /* Unlocked Product Status */
             <div className="space-y-6 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-[#27272A] pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl font-bold">
+                  <div className="w-10 h-10 rounded-xl bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#10B981] text-xl font-bold">
                     ✓
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <h2 className="text-base font-bold text-[#FAFAFA] flex items-center gap-2">
                       {licenseData.productTitle}
                       {licenseData.isDemo && (
-                        <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-mono">
+                        <span className="text-[10px] bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20 px-2 py-0.5 rounded-full font-mono">
                           DEMO ACCESS
                         </span>
                       )}
                     </h2>
-                    <p className="text-xs text-slate-400 font-mono">Key: {licenseData.key}</p>
+                    <p className="text-xs text-[#A1A1AA] font-mono">Key: {licenseData.key}</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={handleClearLicense}
-                  className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                  className="text-xs text-[#71717A] hover:text-[#FAFAFA] transition-colors"
                 >
                   Switch Key
                 </button>
@@ -325,22 +326,22 @@ export default function AccessPortalPage() {
 
               {/* License Specs */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                  <span className="text-slate-500 block">License Type</span>
-                  <span className="font-semibold text-slate-200 mt-1 block">
+                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                  <span className="text-[#71717A] block font-mono text-[11px]">License Type</span>
+                  <span className="font-semibold text-[#FAFAFA] mt-1 block">
                     {licenseData.licenseType}
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                  <span className="text-slate-500 block">Status</span>
-                  <span className="font-semibold text-emerald-400 mt-1 flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                  <span className="text-[#71717A] block font-mono text-[11px]">Status</span>
+                  <span className="font-semibold text-[#10B981] mt-1 flex items-center gap-1.5 font-mono">
+                    <span className="h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></span>
                     ACTIVE
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 col-span-2 sm:col-span-1">
-                  <span className="text-slate-500 block">Version</span>
-                  <span className="font-semibold text-indigo-400 mt-1 block font-mono">
+                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] col-span-2 sm:col-span-1">
+                  <span className="text-[#71717A] block font-mono text-[11px]">Version</span>
+                  <span className="font-semibold text-[#10B981] mt-1 block font-mono">
                     {licenseData.version}
                   </span>
                 </div>
@@ -350,7 +351,7 @@ export default function AccessPortalPage() {
               <div className="pt-2 space-y-3">
                 <a
                   href={licenseData.downloadUrl}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.01] active:scale-95"
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#09090B] font-bold text-sm shadow-emerald-glow transition-all active:scale-[0.98]"
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -362,14 +363,14 @@ export default function AccessPortalPage() {
                   <a
                     href="/products/fullstack-architecture-prompts/catalog.json"
                     download
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 hover:border-slate-500 text-xs font-semibold text-slate-300 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3F3F46] text-xs font-semibold text-[#FAFAFA] transition-colors"
                   >
                     <span>📄</span> Download catalog.json
                   </a>
                   <a
                     href="/products/fullstack-architecture-prompts/prompt-playbook.md"
                     download
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-950 border border-slate-700 hover:border-slate-500 text-xs font-semibold text-slate-300 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3F3F46] text-xs font-semibold text-[#FAFAFA] transition-colors"
                   >
                     <span>📖</span> Download prompt-playbook.md
                   </a>
@@ -382,12 +383,12 @@ export default function AccessPortalPage() {
         {/* Live Prompt Explorer Vault */}
         {licenseData && (
           <div className="space-y-6 pt-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#27272A] pb-4">
               <div>
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                  <span>⚡</span> Live Prompt Playbook & Matrix
+                <h2 className="text-2xl font-bold text-[#FAFAFA] flex items-center gap-2">
+                  <span className="text-[#10B981]">&gt;_</span> Live Prompt Playbook &amp; Matrix
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#A1A1AA] mt-1">
                   Copy battle-tested architecture prompts directly into Claude 3.7, GPT-4o, or DeepSeek.
                 </p>
               </div>
@@ -399,10 +400,10 @@ export default function AccessPortalPage() {
                     key={sec}
                     type="button"
                     onClick={() => setActiveSection(sec)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all whitespace-nowrap cursor-pointer ${
                       activeSection === sec
-                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                        : "bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800"
+                        ? "bg-[#10B981] text-[#09090B] font-semibold shadow-emerald-glow"
+                        : "bg-[#09090B] text-[#A1A1AA] hover:text-[#FAFAFA] border border-[#27272A]"
                     }`}
                   >
                     {sec.replace("Section ", "Sec ")}
@@ -416,46 +417,46 @@ export default function AccessPortalPage() {
               {filteredPrompts.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4 flex flex-col justify-between hover:border-slate-700 transition-colors"
+                  className="rounded-xl border border-[#27272A] bg-[#18181B] p-5 space-y-4 flex flex-col justify-between hover:border-[#10B981]/50 transition-colors"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-semibold text-indigo-400 uppercase tracking-wider">
+                      <span className="text-[11px] font-mono text-[#10B981] uppercase tracking-wider">
                         {item.section}
                       </span>
                       <div className="flex items-center gap-1.5">
                         {item.targetAi.map((ai) => (
                           <span
                             key={ai}
-                            className="px-2 py-0.5 rounded-md bg-purple-950/60 border border-purple-800/60 text-[10px] text-purple-300 font-mono"
+                            className="px-2 py-0.5 rounded-md bg-[#09090B] border border-[#27272A] text-[10px] text-[#10B981] font-mono"
                           >
                             {ai}
                           </span>
                         ))}
                       </div>
                     </div>
-                    <h3 className="text-base font-bold text-slate-100">{item.title}</h3>
+                    <h3 className="text-base font-bold text-[#FAFAFA]">{item.title}</h3>
                     <div className="relative">
-                      <pre className="text-xs text-slate-300 bg-slate-950 rounded-xl p-4 border border-slate-800/80 font-mono max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                      <pre className="text-xs text-[#A1A1AA] bg-[#09090B] rounded-xl p-4 border border-[#27272A] font-mono max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed">
                         {item.prompt}
                       </pre>
                     </div>
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between border-t border-slate-800/60 text-xs">
-                    <span className="text-slate-500 font-mono text-[11px]">{item.filename}</span>
+                  <div className="pt-2 flex items-center justify-between border-t border-[#27272A] text-xs">
+                    <span className="text-[#71717A] font-mono text-[11px]">{item.filename}</span>
                     <button
                       type="button"
                       onClick={() => handleCopyPrompt(item.id, item.prompt)}
-                      className="px-3.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/40 text-indigo-300 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       {copiedId === item.id ? (
                         <>
-                          <span className="text-emerald-400">✓</span> Copied!
+                          <span className="text-[#10B981]">✓</span> Copied!
                         </>
                       ) : (
                         <>
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-3.5 h-3.5 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                           </svg>
                           Copy Prompt
@@ -473,7 +474,7 @@ export default function AccessPortalPage() {
         <div className="text-center pt-8">
           <Link
             href="/products/fullstack-system-architecture-prompts"
-            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1.5"
+            className="text-xs text-[#10B981] hover:text-[#34D399] transition-colors inline-flex items-center gap-1.5 font-mono"
           >
             ← Return to Full-Stack Architecture Prompts Product Page
           </Link>

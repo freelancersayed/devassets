@@ -154,10 +154,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased font-[family-name:var(--font-inter)] bg-[#FAFAFA] text-neutral-900 dark:bg-[#0B0C0E] dark:text-neutral-100">
+      <body className="antialiased font-[family-name:var(--font-inter)] bg-[#09090B] text-[#A1A1AA]">
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem={false}
           storageKey="devassets-theme"
         >

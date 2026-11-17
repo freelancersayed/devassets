@@ -102,8 +102,8 @@ export const allInOneLifetimeBundleProduct: CatalogProduct = {
   price: "69.00",
   originalPrice: "149.00",
   emoji: "👑",
-  badgeColor: "text-indigo-400",
-  badgeBg: "bg-indigo-400/10",
+  badgeColor: "text-[#10B981]",
+  badgeBg: "bg-[#10B981]/10",
   deliverables: [
     "Lifetime Access to All Current & Future Web Tools",
     "All AI Prompt Libraries (Full-Stack, UI/UX, SEO)",

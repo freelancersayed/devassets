@@ -111,24 +111,24 @@ export default function PromptLibraryClient({
       </div>
 
       {/* Results Metadata Row */}
-      <div className="flex items-center justify-between text-xs text-slate-400 px-1">
+      <div className="flex items-center justify-between text-xs text-[#A1A1AA] px-1 font-mono">
         <div>
           Showing{" "}
-          <span className="font-semibold text-white">
+          <span className="font-semibold text-[#FAFAFA]">
             {data.prompts.length}
           </span>{" "}
           of{" "}
-          <span className="font-semibold text-white">{data.total}</span> prompts
+          <span className="font-semibold text-[#FAFAFA]">{data.total}</span> prompts
           {category !== "All" && category !== "All Prompts" && (
             <span>
               {" "}
-              in <span className="text-indigo-400 font-medium">{category}</span>
+              in <span className="text-[#10B981] font-medium">{category}</span>
             </span>
           )}
           {search && (
             <span>
               {" "}
-              matching &ldquo;<span className="text-indigo-300">{search}</span>&rdquo;
+              matching &ldquo;<span className="text-[#10B981]">{search}</span>&rdquo;
             </span>
           )}
         </div>
@@ -137,7 +137,7 @@ export default function PromptLibraryClient({
           <button
             type="button"
             onClick={handleResetFilters}
-            className="text-indigo-400 hover:text-indigo-300 font-medium hover:underline cursor-pointer"
+            className="text-[#10B981] hover:text-[#34D399] font-medium hover:underline cursor-pointer"
           >
             Clear all filters
           </button>
@@ -150,17 +150,17 @@ export default function PromptLibraryClient({
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-2xl bg-[#0f131f] border border-slate-800/80 p-4 space-y-4 animate-pulse"
+              className="rounded-xl bg-[#18181B] border border-[#27272A] p-4 space-y-4 animate-pulse"
             >
-              <div className="w-full aspect-[16/10] bg-slate-800/60 rounded-xl" />
-              <div className="h-4 bg-slate-800/80 rounded w-3/4" />
+              <div className="w-full aspect-[16/10] bg-[#09090B] rounded-lg" />
+              <div className="h-4 bg-[#27272A] rounded w-3/4" />
               <div className="space-y-1.5">
-                <div className="h-3 bg-slate-800/50 rounded w-full" />
-                <div className="h-3 bg-slate-800/50 rounded w-2/3" />
+                <div className="h-3 bg-[#27272A] rounded w-full" />
+                <div className="h-3 bg-[#27272A] rounded w-2/3" />
               </div>
               <div className="flex justify-between items-center pt-2">
-                <div className="h-4 bg-slate-800/80 rounded w-16" />
-                <div className="h-4 bg-slate-800/80 rounded w-20" />
+                <div className="h-4 bg-[#27272A] rounded w-16" />
+                <div className="h-4 bg-[#27272A] rounded w-20" />
               </div>
             </div>
           ))}
@@ -173,20 +173,20 @@ export default function PromptLibraryClient({
         </div>
       ) : (
         /* Empty State */
-        <div className="rounded-3xl border border-white/10 bg-[#0f131f]/60 p-12 text-center space-y-4 max-w-lg mx-auto">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-2xl">
+        <div className="rounded-2xl border border-[#27272A] bg-[#18181B] p-12 text-center space-y-4 max-w-lg mx-auto">
+          <div className="w-12 h-12 mx-auto rounded-xl bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#10B981] text-xl">
             🔍
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-white">No AI prompts found</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-[#FAFAFA]">No AI prompts found</h3>
+            <p className="text-xs text-[#A1A1AA] leading-relaxed">
               We couldn&apos;t find any prompts matching &ldquo;{search || category}&rdquo;. Try another keyword or browse all categories.
             </p>
           </div>
           <button
             type="button"
             onClick={handleResetFilters}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold text-[#09090B] bg-[#10B981] hover:bg-[#34D399] shadow-emerald-glow transition-all cursor-pointer"
           >
             Reset Filters
           </button>

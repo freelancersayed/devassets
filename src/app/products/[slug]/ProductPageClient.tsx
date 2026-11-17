@@ -114,7 +114,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
           <button
             type="button"
             onClick={() => setShowModal(true)}
-            className="block w-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 py-3.5 text-center text-sm font-semibold text-white shadow-[0_0_25px_rgba(99,102,241,0.5)] hover:shadow-[0_0_35px_rgba(99,102,241,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden before:absolute before:inset-0 before:bg-white/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity"
+            className="block w-full rounded-xl bg-[#10B981] hover:bg-[#34D399] py-3.5 text-center text-sm font-semibold text-[#09090B] shadow-emerald-glow active:scale-[0.98] transition-all cursor-pointer"
           >
             Buy Now ${product.price} USD
           </button>
@@ -122,18 +122,18 @@ export default function ProductPageClient({ product }: { product: Product }) {
           {isProSuite && (
             <Link
               href="/tools/pro-utility-suite"
-              className="block w-full rounded-full bg-slate-900/90 border border-amber-500/40 hover:border-amber-400 py-2.5 text-center text-xs font-semibold text-amber-300 hover:text-amber-200 transition-all hover:bg-amber-950/20"
+              className="block w-full rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#10B981]/50 py-2.5 text-center text-xs font-mono font-medium text-[#FAFAFA] hover:text-[#10B981] transition-all"
             >
-              ⚡ Launch Interactive Pro Workbench & CLI Demo
+              ⚡ Launch Interactive Pro Workbench &amp; CLI Demo
             </Link>
           )}
 
           {isUiUxPrompts && (
             <Link
               href="/access/ui-ux-product-design-prompts"
-              className="block w-full rounded-full bg-slate-900/90 border border-pink-500/40 hover:border-pink-400 py-2.5 text-center text-xs font-semibold text-pink-300 hover:text-pink-200 transition-all hover:bg-pink-950/20"
+              className="block w-full rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#10B981]/50 py-2.5 text-center text-xs font-mono font-medium text-[#FAFAFA] hover:text-[#10B981] transition-all"
             >
-              🎨 Launch Interactive Design Playbook & Token Explorer
+              🎨 Launch Interactive Design Playbook &amp; Token Explorer
             </Link>
           )}
 
@@ -142,18 +142,18 @@ export default function ProductPageClient({ product }: { product: Product }) {
             <button
               type="button"
               onClick={() => setShowLicenseInput(true)}
-              className="w-full text-center text-xs text-indigo-400 hover:text-indigo-300 font-medium py-1 transition-colors cursor-pointer"
+              className="w-full text-center text-xs text-[#10B981] hover:text-[#34D399] font-mono py-1 transition-colors cursor-pointer"
             >
               Already have a license key? <span className="underline">Unlock here</span>
             </button>
           ) : (
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5 animate-fade-in text-left">
+            <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2.5 animate-fade-in text-left">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-slate-300">Enter License Key</span>
+                <span className="font-mono text-xs text-[#FAFAFA]">Enter License Key</span>
                 <button
                   type="button"
                   onClick={() => setShowLicenseInput(false)}
-                  className="text-slate-500 hover:text-slate-300"
+                  className="text-[#71717A] hover:text-[#FAFAFA]"
                 >
                   ✕
                 </button>
@@ -165,13 +165,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
                   value={licenseKey}
                   onChange={(e) => setLicenseKey(e.target.value)}
                   placeholder="e.g. DEVASSETS-DEMO-2026"
-                  className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-300 placeholder-slate-600 focus:outline-none focus:border-indigo-500 uppercase"
+                  className="flex-1 bg-[#18181B] border border-[#27272A] rounded-lg px-3 py-1.5 text-xs font-mono text-[#FAFAFA] placeholder-[#71717A] focus:outline-none focus:border-[#10B981] uppercase"
                 />
                 <button
                   type="button"
                   onClick={() => verifyKey(licenseKey, true)}
                   disabled={isVerifying}
-                  className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#10B981] hover:bg-[#34D399] text-[#09090B] text-xs font-semibold transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isVerifying ? "..." : "Unlock"}
                 </button>

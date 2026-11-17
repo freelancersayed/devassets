@@ -153,9 +153,9 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#FAFAFA]/90 dark:bg-[#0B0C0E]/90 border-b border-neutral-200/80 dark:border-neutral-850 transition-colors">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#09090B]/90 border-b border-[#27272A] transition-colors">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
-        {/* COLUMN 1: MINIMALIST BRAND LOGO */}
+        {/* COLUMN 1: BRAND LOGO */}
         <div className="flex items-center shrink-0">
           <Link
             href="/"
@@ -163,8 +163,8 @@ export default function Navbar() {
             aria-label="DevAssets Homepage"
             className="flex items-center gap-2.5 group"
           >
-            {/* Crisp 16px geometric terminal icon */}
-            <div className="w-7 h-7 rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 flex items-center justify-center transition-transform group-hover:scale-105 shadow-xs">
+            {/* Terminal prompt symbol in Emerald #10B981 */}
+            <div className="w-7 h-7 rounded-lg bg-[#18181B] border border-[#27272A] text-[#10B981] flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm">
               <svg
                 className="w-3.5 h-3.5"
                 viewBox="0 0 24 24"
@@ -179,16 +179,16 @@ export default function Navbar() {
                 <line x1="12" y1="19" x2="20" y2="19" />
               </svg>
             </div>
-            <span className="text-base font-semibold tracking-[-0.02em] text-neutral-900 dark:text-neutral-100">
+            <span className="text-base font-semibold tracking-[-0.02em] text-[#FAFAFA]">
               DevAssets
             </span>
           </Link>
         </div>
 
-        {/* COLUMN 2: ARCHITECTURAL 4-ITEM PILL BAR (CENTERED) */}
+        {/* COLUMN 2: CENTER 4-ITEM PILL BAR */}
         <nav
           aria-label="Main Navigation"
-          className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 bg-neutral-100/90 dark:bg-neutral-900/90 border border-neutral-200/80 dark:border-neutral-800/80 rounded-full p-1 backdrop-blur-md"
+          className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 bg-[#18181B]/80 border border-[#27272A] rounded-full px-2 py-1 backdrop-blur-md shadow-xs"
         >
           {centerNavItems.map((item) => {
             const isActive = activeItem === item.id;
@@ -197,10 +197,10 @@ export default function Navbar() {
                 key={item.id}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item)}
-                className={`px-3.5 py-1 rounded-full text-xs transition-all duration-150 ${
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 ${
                   isActive
-                    ? "bg-white text-neutral-900 dark:bg-neutral-800 dark:text-neutral-50 shadow-xs font-semibold"
-                    : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200 font-medium"
+                    ? "bg-[#27272A] text-[#FAFAFA] font-semibold"
+                    : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                 }`}
               >
                 {item.label}
@@ -217,7 +217,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-2.5">
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200/80 dark:bg-neutral-900 dark:hover:bg-neutral-850 border border-neutral-200/80 dark:border-neutral-800 text-xs font-medium text-neutral-800 dark:text-neutral-200 transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-medium text-[#FAFAFA] transition-colors"
               >
                 {session.user.image ? (
                   <img
@@ -226,7 +226,7 @@ export default function Navbar() {
                     className="w-5 h-5 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-5 h-5 rounded-full bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 flex items-center justify-center text-[10px] font-bold uppercase">
+                  <div className="w-5 h-5 rounded-full bg-[#10B981] text-[#09090B] flex items-center justify-center text-[10px] font-bold uppercase">
                     {(session.user.name || session.user.email || "U")[0]}
                   </div>
                 )}
@@ -239,23 +239,23 @@ export default function Navbar() {
                 type="button"
                 onClick={handleSignOut}
                 disabled={isSigningOut}
-                className="text-xs font-medium text-neutral-500 hover:text-rose-600 dark:text-neutral-400 dark:hover:text-rose-400 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                className="text-xs font-medium text-[#A1A1AA] hover:text-rose-400 px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
               >
                 {isSigningOut ? "Signing out..." : "Sign Out"}
               </button>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                className="text-[#A1A1AA] hover:text-[#FAFAFA] text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
               >
                 Log in
               </Link>
 
               <Link
                 href="/register"
-                className="bg-indigo-600 hover:bg-indigo-500 active:translate-y-[1px] text-white text-xs font-medium px-4 py-1.5 rounded-lg shadow-xs transition-all flex items-center gap-1.5"
+                className="bg-[#10B981] hover:bg-[#34D399] active:scale-[0.98] text-[#09090B] text-sm font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow-emerald-glow transition-all flex items-center gap-1.5"
               >
                 <span>Register</span>
                 <span aria-hidden="true">&rarr;</span>
@@ -269,7 +269,7 @@ export default function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
             aria-expanded={isOpen}
             aria-label={isOpen ? "Close menu" : "Open menu"}
-            className="flex md:hidden p-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 transition-colors cursor-pointer"
+            className="flex md:hidden p-2 rounded-lg text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#18181B] border border-[#27272A] transition-colors cursor-pointer"
           >
             <svg
               className="h-5 w-5"
@@ -299,7 +299,7 @@ export default function Navbar() {
 
       {/* MOBILE DRAWER */}
       {isOpen && (
-        <div className="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-[#FAFAFA]/95 dark:bg-[#0B0C0E]/95 backdrop-blur-xl px-4 py-4 space-y-4 shadow-xl animate-fade-in">
+        <div className="md:hidden border-t border-[#27272A] bg-[#09090B]/95 backdrop-blur-xl px-4 py-4 space-y-4 shadow-xl animate-fade-in">
           <div className="flex flex-col space-y-1">
             {mobileNavItems.map((item) => {
               const isActive = activeItem === item.id;
@@ -308,10 +308,10 @@ export default function Navbar() {
                   key={item.id}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item)}
-                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-neutral-200/80 text-neutral-900 dark:bg-neutral-850 dark:text-neutral-100 font-semibold"
-                      : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
+                      ? "bg-[#27272A] text-[#FAFAFA] font-semibold"
+                      : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                   }`}
                 >
                   {item.label}
@@ -320,18 +320,18 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-1">
-            <span className="text-xs font-mono text-neutral-500">Theme</span>
+          <div className="pt-3 border-t border-[#27272A] flex items-center justify-between px-1">
+            <span className="text-xs font-mono text-[#A1A1AA]">Theme</span>
             <ThemeToggle />
           </div>
 
-          <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800 flex flex-col gap-2">
+          <div className="pt-3 border-t border-[#27272A] flex flex-col gap-2">
             {session?.user ? (
               <>
                 <Link
                   href="/dashboard"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2 rounded-lg text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-2 rounded-lg text-sm font-medium text-[#09090B] bg-[#10B981] hover:bg-[#34D399] transition-colors"
                 >
                   Dashboard
                 </Link>
@@ -342,7 +342,7 @@ export default function Navbar() {
                     handleSignOut();
                   }}
                   disabled={isSigningOut}
-                  className="w-full text-center py-2 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer"
+                  className="w-full text-center py-2 rounded-lg text-sm font-medium text-rose-400 hover:bg-rose-950/20 transition-colors cursor-pointer"
                 >
                   {isSigningOut ? "Signing out..." : "Sign Out"}
                 </button>
@@ -352,14 +352,14 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-center py-2 rounded-lg text-xs font-medium text-neutral-800 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 transition-colors"
+                  className="block w-full text-center py-2.5 rounded-xl text-sm font-medium text-[#FAFAFA] bg-[#18181B] border border-[#27272A] transition-colors"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-1.5 w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-[#10B981] hover:bg-[#34D399] text-[#09090B] text-sm font-semibold rounded-full shadow-sm hover:shadow-emerald-glow transition-all"
                 >
                   <span>Register</span>
                   <span>&rarr;</span>

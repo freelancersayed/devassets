@@ -200,7 +200,7 @@ export default function ImageStudioClient() {
         <div className="text-center space-y-3">
           <Link
             href="/#tools"
-            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-[#71717A] hover:text-[#10B981] transition-colors"
           >
             <span>&larr; Back to All Utilities</span>
           </Link>
@@ -391,8 +391,8 @@ export default function ImageStudioClient() {
                             onClick={() => setFitMode(mode)}
                             className={`px-2 py-0.5 rounded text-[11px] capitalize cursor-pointer ${
                               fitMode === mode
-                                ? "bg-indigo-600 text-white"
-                                : "bg-slate-800 text-slate-400 hover:text-slate-200"
+                                ? "bg-[#10B981] text-[#09090B] font-semibold"
+                                : "bg-[#18181B] text-[#A1A1AA] hover:text-[#FAFAFA]"
                             }`}
                           >
                             {mode}
@@ -469,7 +469,7 @@ export default function ImageStudioClient() {
             </div>
 
             {/* Bulk Download Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900 to-indigo-950/40 border border-emerald-900/40 shadow-xl">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-xl">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold">
                   {items.length}
